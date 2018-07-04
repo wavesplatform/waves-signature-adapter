@@ -1,6 +1,6 @@
 {
   "name": "@waves/waves-signature-adapter",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "types": "src/index.ts",
   "dependencies": {
     "@waves/waves-signature-generator": "^0.11.0"
