@@ -4,5 +4,8 @@
   "types": "src/index.ts",
   "dependencies": {
     "@waves/waves-signature-generator": "^0.11.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.9.2"
   }
 }
