@@ -6,7 +6,13 @@ export abstract class Adapter {
 
     public abstract getAddress(): Promise<string>;
 
-    public abstract sign(bytes: Uint8Array): Promise<string>;
+    public abstract signRequest(bytes: Uint8Array): Promise<string>;
+
+    public abstract signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string>;
+
+    public abstract signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string>;
+
+    public abstract signData(bytes: Uint8Array): Promise<string>;
 
     public abstract getSeed(): Promise<string>;
 

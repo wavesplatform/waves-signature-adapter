@@ -1,28 +1,67 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
+import * as Ledger from '@waves/ledger';
 
 
 export class LedgerAdapter extends Adapter {
 
-    public static type = AdapterType.MetaMask;
+    private _currentUser;
+    public static type = AdapterType.Ledger;
+    private static _ledger = new Ledger();
+    private static _hasConnectionPromise;
+
+    constructor(user) {
+        super();
+        this._currentUser = user;
+
+        if (!this._currentUser) {
+            throw 'No selected user';
+        }
+    }
 
     public getPublicKey() {
-        return Promise.resolve(''); // TODO
+        return Promise.resolve(this._currentUser.publicKey);
     }
 
     public getAddress() {
-        return Promise.resolve(''); // TODO
+        return Promise.resolve(this._currentUser.wavesAddress);
     }
 
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
 
-    public sign(bytes: Uint8Array) {
-        return Promise.resolve(''); // TODO
+    public signRequest(bytes: Uint8Array): Promise<string> {
+        return  LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes);
+    }
+
+    public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+        return LedgerAdapter._ledger.signTransaction(this._currentUser.id, bytes, {precision: amountPrecision});
+    }
+
+    public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+        return LedgerAdapter._ledger.signOrder(this._currentUser.id, bytes, {precision: amountPrecision});
+    }
+
+    public signData(bytes: Uint8Array): Promise<string> {
+        return LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes);
+    }
+
+    public static getUserList(from: Number = 1, to: Number = 1) {
+        return LedgerAdapter._ledger.getPaginationUsersData(from, to);
     }
 
     public static isAvailable() {
-        return Promise.resolve(false);
+        if (!LedgerAdapter._hasConnectionPromise) {
+            LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
+        }
+
+        return LedgerAdapter._hasConnectionPromise.then(() => {
+            LedgerAdapter._hasConnectionPromise = null;
+            return true;
+        }, (err) => {
+            LedgerAdapter._hasConnectionPromise = null;
+            return false;
+        });
     }
 }

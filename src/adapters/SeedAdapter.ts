@@ -27,11 +27,28 @@ export class SeedAdapter extends Adapter {
         return Promise.resolve(this.seed.phrase);
     }
 
-    public sign(bytes: Uint8Array) {
+    public signRequest(bytes: Uint8Array): Promise<string> {
+        return this._sign(bytes);
+    }
+
+    public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+        return this._sign(bytes);
+    }
+
+    public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+        return this._sign(bytes);
+    }
+
+    public signData(bytes: Uint8Array): Promise<string> {
+        return this._sign(bytes);
+    }
+
+    private _sign(bytes: Uint8Array) {
         return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
     }
 
     public static isAvailable() {
         return Promise.resolve(true);
     }
+
 }
