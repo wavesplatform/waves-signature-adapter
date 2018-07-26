@@ -5,10 +5,11 @@
   "main": "dist/index.js",
   "dependencies": {
     "@waves/ledger": "^0.0.4",
-    "@waves/waves-signature-generator": "^0.11.0"
+    "@waves/waves-signature-generator": "0.2.0"
   },
   "scripts": {
-    "build": "sh scripts/build.sh"
+    "build": "tsc",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "browserify": "^16.2.2",
