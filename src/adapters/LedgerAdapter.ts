@@ -1,13 +1,13 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
-import * as Ledger from '@waves/ledger';
+import { WavesLedger } from '@waves/ledger';
 
 
 export class LedgerAdapter extends Adapter {
 
     private _currentUser;
     public static type = AdapterType.Ledger;
-    private static _ledger = new Ledger();
+    private static _ledger = new WavesLedger();
     private static _hasConnectionPromise;
 
     constructor(user) {
@@ -32,19 +32,32 @@ export class LedgerAdapter extends Adapter {
     }
 
     public signRequest(bytes: Uint8Array): Promise<string> {
-        return  LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes);
+        return  this._isMyLedger()
+            .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes));
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        return LedgerAdapter._ledger.signTransaction(this._currentUser.id, bytes, {precision: amountPrecision});
+        return this._isMyLedger()
+            .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, bytes, {precision: amountPrecision}));
     }
 
     public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        return LedgerAdapter._ledger.signOrder(this._currentUser.id, bytes, {precision: amountPrecision});
+        return this._isMyLedger()
+            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, bytes, {precision: amountPrecision}));
     }
 
     public signData(bytes: Uint8Array): Promise<string> {
-        return LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes);
+        return this._isMyLedger()
+            .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes));
+    }
+
+    protected _isMyLedger() {
+        return LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
+            .then((user) => {
+                if (user.wavesAddress !== this._currentUser.wavesAddress) {
+                    throw {error: 'Invalid ledger'};
+                }
+            });
     }
 
     public static getUserList(from: Number = 1, to: Number = 1) {
