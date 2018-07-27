@@ -8,7 +8,7 @@
     "@waves/waves-signature-generator": "^0.13.0"
   },
   "scripts": {
-    "build": "tsc && node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-signature-generator -o dist/waves-signature-adapter.js",
+    "build": "tsc && node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-signature-generator -u @waves/ledger -o dist/waves-signature-adapter.js",
     "prepare": "npm run build"
   },
   "devDependencies": {
