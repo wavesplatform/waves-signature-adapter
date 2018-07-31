@@ -1,4 +1,5 @@
 import { SeedAdapter } from './adapters/SeedAdapter';
+import { LedgerAdapter } from './adapters/LedgerAdapter';
 
 export const enum AdapterType {
     Seed = 'seed',
@@ -15,5 +16,6 @@ export const adapterPriorityList = [
 ];
 
 export const adapterList = [
-    SeedAdapter
+    SeedAdapter,
+    LedgerAdapter
 ];
