@@ -19,6 +19,10 @@ export class LedgerAdapter extends Adapter {
         }
     }
 
+    public isAvailable() {
+        return LedgerAdapter.isAvailable();
+    }
+
     public getPublicKey() {
         return Promise.resolve(this._currentUser.publicKey);
     }
@@ -49,6 +53,10 @@ export class LedgerAdapter extends Adapter {
     public signData(bytes: Uint8Array): Promise<string> {
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes));
+    }
+
+    public getPrivateKey() {
+        return Promise.reject('No private key');
     }
 
     protected _isMyLedger() {

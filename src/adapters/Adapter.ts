@@ -6,6 +6,8 @@ export abstract class Adapter {
 
     public abstract getAddress(): Promise<string>;
 
+    public abstract getPrivateKey(): Promise<string>;
+
     public abstract signRequest(bytes: Uint8Array): Promise<string>;
 
     public abstract signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string>;
@@ -35,4 +37,11 @@ export interface IAdapterConstructor {
     getUserList(): Promise<Array<string>>;
 
     isAvailable(): Promise<boolean>;
+}
+
+export interface IUser {
+    encryptedSeed: string;
+    password: string;
+    encryptionRounds: number;
+    networkCode: string;
 }

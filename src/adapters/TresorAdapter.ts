@@ -34,6 +34,10 @@ export class TresorAdapter extends Adapter {
         return Promise.resolve(''); //TODO
     }
 
+    public getPrivateKey() {
+        return Promise.reject('No private key');
+    }
+
     public static isAvailable() {
         return Promise.resolve(false);
     }
