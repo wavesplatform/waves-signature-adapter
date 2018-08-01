@@ -1,10 +1,10 @@
 {
   "name": "@waves/waves-signature-adapter",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "types": "src/index.ts",
   "main": "dist/waves-signature-adapter.js",
   "dependencies": {
-    "@waves/ledger": "0.0.12",
+    "@waves/ledger": "0.0.13",
     "@waves/waves-signature-generator": "0.14.0"
   },
   "scripts": {

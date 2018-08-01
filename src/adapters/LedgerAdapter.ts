@@ -28,7 +28,7 @@ export class LedgerAdapter extends Adapter {
     }
 
     public getAddress() {
-        return Promise.resolve(this._currentUser.wavesAddress);
+        return Promise.resolve(this._currentUser.address);
     }
 
     public getSeed() {
@@ -62,7 +62,7 @@ export class LedgerAdapter extends Adapter {
     protected _isMyLedger() {
         return LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
             .then((user) => {
-                if (user.wavesAddress !== this._currentUser.wavesAddress) {
+                if (user.address !== this._currentUser.address) {
                     throw {error: 'Invalid ledger'};
                 }
             });
