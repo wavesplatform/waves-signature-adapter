@@ -20,13 +20,7 @@ export class LedgerAdapter extends Adapter {
     }
 
     public isAvailable() {
-        return LedgerAdapter.isAvailable().then((result: boolean) => {
-            if (!result) {
-                throw result;
-            }
-
-            return this._isMyLedger().then(() => true);
-        });
+        return this._isMyLedger();
     }
 
     public getPublicKey() {
