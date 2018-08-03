@@ -20,7 +20,13 @@ export class LedgerAdapter extends Adapter {
     }
 
     public isAvailable() {
-        return LedgerAdapter.isAvailable();
+        return LedgerAdapter.isAvailable().then((result: boolean) => {
+            if (!result) {
+                throw result;
+            }
+
+            return this._isMyLedger().then(() => true);
+        });
     }
 
     public getPublicKey() {
@@ -42,12 +48,12 @@ export class LedgerAdapter extends Adapter {
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, bytes, {precision: amountPrecision}));
+            .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
 
     public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, bytes, {precision: amountPrecision}));
+            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
 
     public signData(bytes: Uint8Array): Promise<string> {
