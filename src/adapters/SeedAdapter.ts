@@ -9,9 +9,8 @@ export class SeedAdapter extends Adapter {
     public static type = AdapterType.Seed;
 
 
-    constructor(data: string | IUser, networkByte: number) {
+    constructor(data: string | IUser) {
         super();
-        config.set({ networkByte });
         let seed;
 
         if (typeof data === 'string') {
@@ -59,6 +58,11 @@ export class SeedAdapter extends Adapter {
 
     private _sign(bytes: Uint8Array) {
         return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
+    }
+
+    public static initOptions(options: { code: number }) {
+        this._code = options.code;
+        config.set({ networkByte: options.code });
     }
 
     public static isAvailable() {

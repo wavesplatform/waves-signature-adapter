@@ -10,7 +10,7 @@ export class LedgerAdapter extends Adapter {
     private static _ledger;
     private static _hasConnectionPromise;
 
-    constructor(user, networkCode: number) {
+    constructor(user) {
         super();
         this._currentUser = user;
 
