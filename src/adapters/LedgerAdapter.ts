@@ -7,10 +7,10 @@ export class LedgerAdapter extends Adapter {
 
     private _currentUser;
     public static type = AdapterType.Ledger;
-    private static _ledger = new WavesLedger();
+    private static _ledger;
     private static _hasConnectionPromise;
 
-    constructor(user) {
+    constructor(user, networkCode: number) {
         super();
         this._currentUser = user;
 
@@ -70,6 +70,10 @@ export class LedgerAdapter extends Adapter {
 
     public static getUserList(from: Number = 1, to: Number = 1) {
         return LedgerAdapter._ledger.getPaginationUsersData(from, to);
+    }
+
+    public static initOptions(options: { code: number, debug?: boolean, isNative?: boolean, timeout?: number }) {
+        this._ledger = new WavesLedger( options );
     }
 
     public static isAvailable() {

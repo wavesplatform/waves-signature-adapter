@@ -2,6 +2,8 @@ import { AdapterType } from '../config';
 
 export abstract class Adapter {
 
+    protected static _code: number;
+
     public abstract getPublicKey(): Promise<string>;
 
     public abstract getAddress(): Promise<string>;
@@ -17,6 +19,10 @@ export abstract class Adapter {
     public abstract signData(bytes: Uint8Array): Promise<string>;
 
     public abstract getSeed(): Promise<string>;
+
+    public static initOptions(options: { code: number }) {
+        this._code = options.code;
+    }
 
     public static type: AdapterType = null;
 
