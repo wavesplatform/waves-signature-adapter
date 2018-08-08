@@ -72,7 +72,8 @@ export class LedgerAdapter extends Adapter {
         return LedgerAdapter._ledger.getPaginationUsersData(from, to);
     }
 
-    public static initOptions(options: { code: number, debug?: boolean, isNative?: boolean, timeout?: number }) {
+    public static initOptions(options: { networkCode: number, debug?: boolean, isNative?: boolean, timeout?: number }) {
+        Adapter.initOptions(options);
         this._ledger = new WavesLedger( options );
     }
 

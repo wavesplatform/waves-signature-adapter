@@ -1,4 +1,5 @@
 import { AdapterType } from '../config';
+import { Seed, config, utils } from '@waves/waves-signature-generator';
 
 export abstract class Adapter {
 
@@ -20,8 +21,9 @@ export abstract class Adapter {
 
     public abstract getSeed(): Promise<string>;
 
-    public static initOptions(options: { code: number }) {
-        this._code = options.code;
+    public static initOptions(options: { networkCode: number }) {
+        this._code = options.networkCode;
+        config.set({ networkByte: options.networkCode });
     }
 
     public static type: AdapterType = null;

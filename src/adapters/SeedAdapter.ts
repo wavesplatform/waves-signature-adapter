@@ -60,11 +60,6 @@ export class SeedAdapter extends Adapter {
         return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
     }
 
-    public static initOptions(options: { code: number }) {
-        this._code = options.code;
-        config.set({ networkByte: options.code });
-    }
-
     public static isAvailable() {
         return Promise.resolve(true);
     }
