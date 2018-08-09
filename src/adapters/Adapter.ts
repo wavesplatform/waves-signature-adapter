@@ -5,6 +5,10 @@ export abstract class Adapter {
 
     protected static _code: number;
 
+    public isAvailable(): Promise<void> {
+        return Promise.resolve();
+    }
+
     public abstract getPublicKey(): Promise<string>;
 
     public abstract getAddress(): Promise<string>;
