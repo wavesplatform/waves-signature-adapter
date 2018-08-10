@@ -97,5 +97,6 @@ interface IWavesLedger  {
     debug?: boolean;
     openTimeout?: number;
     listenTimeout?: number;
+    exchangeTimeout?: number;
     transport?;
 }
