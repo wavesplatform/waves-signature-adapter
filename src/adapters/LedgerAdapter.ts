@@ -72,7 +72,7 @@ export class LedgerAdapter extends Adapter {
         return LedgerAdapter._ledger.getPaginationUsersData(from, to);
     }
 
-    public static initOptions(options: { networkCode: number, debug?: boolean, isNative?: boolean, timeout?: number }) {
+    public static initOptions(options: IWavesLedger) {
         Adapter.initOptions(options);
         this._ledger = new WavesLedger( options );
     }
@@ -90,4 +90,12 @@ export class LedgerAdapter extends Adapter {
             return false;
         });
     }
+}
+
+interface IWavesLedger  {
+    networkCode: number;
+    debug?: boolean;
+    openTimeout?: number;
+    listenTimeout?: number;
+    transport?;
 }
