@@ -20,6 +20,10 @@ export class Signable {
         this._adapter = adapter;
         this._prepare = getSchemaByType(forSign.type);
 
+        if (!this._prepare) {
+            throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
+        }
+
         const dataForSign = this._prepare.sign(forSign.data);
         const generator: ISignatureGeneratorConstructor<any> = SIGN_TYPES[forSign.type].signatureGenerator;
 
@@ -29,8 +33,11 @@ export class Signable {
             throw new Error(`Unknown data type ${forSign.type}!`);
         }
 
-        this._bytePromise = this._adapter.getPublicKey().then(senderPublicKey => {
-            return new generator({ ...dataForSign, senderPublicKey }).getBytes();
+        this._bytePromise = Promise.all([
+            this._adapter.getPublicKey(),
+            this._adapter.getAddress()
+        ]).then(([senderPublicKey, sender]) => {
+            return new generator({ sender, senderPublicKey, ...dataForSign }).getBytes();
         });
     }
 
@@ -63,10 +70,11 @@ export class Signable {
     public getDataForApi(): Promise<object> {
         return Promise.all([
             this.getSignature(),
-            this._adapter.getPublicKey()
-        ]).then(([signature, senderPublicKey]) => {
+            this._adapter.getPublicKey(),
+            this._adapter.getAddress()
+        ]).then(([signature, senderPublicKey, sender]) => {
             const proofs = [...this._proofs, signature];
-            return this._prepare.api({ ...this._forSign.data, senderPublicKey, signature, proofs });
+            return this._prepare.api({ senderPublicKey, sender, signature, proofs, ...this._forSign.data });
         });
     }
 
