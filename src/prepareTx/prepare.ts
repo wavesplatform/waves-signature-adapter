@@ -14,8 +14,8 @@ export module prepare {
             return idToNode(money.asset.id);
         }
 
-        export function moneyToNumber(money: Money): number { // TODO Remove!
-            return Number(money.toCoins());
+        export function moneyToBigNumber(money: Money): BigNumber {
+            return money.getCoins();
         }
 
         export function moneyToBigNumberCoins(money: Money): BigNumber {
@@ -44,10 +44,6 @@ export module prepare {
             return libs.base58.encode(Uint8Array.from(value));
         }
 
-        export function bigNumberToNumber(num: BigNumber): number { // TODO Remove!
-            return Number(num);
-        }
-
         export function addValue(value: any) {
             return () => value;
         }
@@ -63,8 +59,8 @@ export module prepare {
             }));
         }
 
-        export function quantity(data) {
-            return bigNumberToNumber(new BigNumber(data.quantity).times(new BigNumber(10).pow(data.precision)));
+        export function quantity(data): BigNumber {
+            return new BigNumber(data.quantity).times(new BigNumber(10).pow(data.precision));
         }
     }
 
