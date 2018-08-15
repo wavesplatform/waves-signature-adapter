@@ -1,13 +1,10 @@
 import { find } from './utils';
 
-export * from './adapters/Adapter';
-export * from './adapters/SeedAdapter';
-export * from './adapters/MetaMaskAdapter';
-export * from './adapters/LedgerAdapter';
-export * from './adapters/TresorAdapter';
+export * from './adapters';
+export * from './prepareTx';
 export * from './config';
 
-import { Adapter } from './adapters/Adapter';
+import { Adapter } from './adapters';
 import { adapterPriorityList, adapterList, AdapterType } from './config';
 
 

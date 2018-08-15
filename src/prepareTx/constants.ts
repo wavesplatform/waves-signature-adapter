@@ -6,6 +6,7 @@ import {
     StringWithLength,
     generate
 } from '@waves/waves-signature-generator';
+import { IAuthData } from "./interfaces";
 
 export const enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -41,7 +42,7 @@ export const enum SIGN_TYPE {
 export const SIGN_TYPES = {
 
     [SIGN_TYPE.AUTH]: {
-        signatureGenerator: generate([
+        signatureGenerator: generate<IAuthData>([
             new StringWithLength('prefix'),
             new StringWithLength('host'),
             new StringWithLength('data')

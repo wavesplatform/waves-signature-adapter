@@ -1,9 +1,33 @@
 import { AdapterType } from '../config';
 import { Seed, config, utils } from '@waves/waves-signature-generator';
+import { getSchemaByType, SIGN_TYPES, TSignData } from '../prepareTx';
+import { ISignatureGeneratorConstructor } from '@waves/waves-signature-generator/src/index';
 
 export abstract class Adapter {
 
     protected static _code: number;
+
+    public getBytes(forSign: TSignData): Promise<Uint8Array> {
+        const prepare = getSchemaByType(forSign.type).sign;
+        const dataForSign = prepare(forSign.data);
+        const signatureGenerator = new (SIGN_TYPES[forSign.type].signatureGenerator as ISignatureGeneratorConstructor<any>)(dataForSign);
+
+        return signatureGenerator.getBytes();
+    }
+
+    public signJSON(forSign: TSignData): Promise<string> {
+        const method = SIGN_TYPES[forSign.type].adapter;
+
+        return this.getBytes(forSign).then(bytes => this[method](bytes));
+    }
+
+    public getTxIdJSON(forSign: TSignData): Promise<string> {
+        return this.getBytes(forSign).then(bytes => utils.crypto.buildTransactionId(bytes));
+    }
+
+    public getTxId(bytes: Uint8Array): Promise<string> {
+        return Promise.resolve(utils.crypto.buildTransactionId(bytes));
+    }
 
     public isAvailable(): Promise<void> {
         return Promise.resolve();

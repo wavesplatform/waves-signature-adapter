@@ -24,19 +24,19 @@ export class SeedAdapter extends Adapter {
         this.seed = new Seed(seed);
     }
 
-    public getPublicKey() {
+    public getPublicKey(): Promise<string> {
         return Promise.resolve(this.seed.keyPair.publicKey);
     }
 
-    public getPrivateKey() {
+    public getPrivateKey(): Promise<string> {
         return Promise.resolve(this.seed.keyPair.privateKey);
     }
 
-    public getAddress() {
+    public getAddress(): Promise<string> {
         return Promise.resolve(this.seed.address);
     }
 
-    public getSeed() {
+    public getSeed(): Promise<string> {
         return Promise.resolve(this.seed.phrase);
     }
 
@@ -56,7 +56,7 @@ export class SeedAdapter extends Adapter {
         return this._sign(bytes);
     }
 
-    private _sign(bytes: Uint8Array) {
+    private _sign(bytes: Uint8Array): Promise<string> {
         return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
     }
 
