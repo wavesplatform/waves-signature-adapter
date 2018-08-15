@@ -29,7 +29,9 @@ export class Signable {
             throw new Error(`Unknown data type ${forSign.type}!`);
         }
 
-        this._bytePromise = new generator(dataForSign).getBytes();
+        this._bytePromise = this._adapter.getPublicKey().then(senderPublicKey => {
+            return new generator({ ...dataForSign, senderPublicKey }).getBytes();
+        });
     }
 
     public addProof(signature: string): Signable {

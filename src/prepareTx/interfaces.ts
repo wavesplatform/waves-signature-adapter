@@ -93,12 +93,10 @@ export interface ICreateOrder {
     amount: string;
     expiration: number;
     matcherFee: string;
-    senderPublicKey: string;
     timestamp: number;
 }
 
 export interface ICancelOrder {
-    senderPublicKey: string;
     orderId: string;
 }
 
@@ -106,7 +104,6 @@ export interface ICreateTxData {
     fee: string;
     sender: string;
     timestamp: number;
-    senderPublicKey: string;
 }
 
 export interface ITransferData extends ICreateTxData {
