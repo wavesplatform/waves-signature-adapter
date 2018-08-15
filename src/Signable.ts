@@ -24,7 +24,6 @@ export class Signable {
             throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
         }
 
-        const dataForSign = this._prepare.sign(forSign.data);
         const generator: ISignatureGeneratorConstructor<any> = SIGN_TYPES[forSign.type].signatureGenerator;
 
         this._signMethod = SIGN_TYPES[forSign.type].adapter;
@@ -37,7 +36,8 @@ export class Signable {
             this._adapter.getPublicKey(),
             this._adapter.getAddress()
         ]).then(([senderPublicKey, sender]) => {
-            return new generator({ sender, senderPublicKey, ...dataForSign }).getBytes();
+            const dataForSign = this._prepare.sign({ sender, senderPublicKey, ...forSign.data });
+            return new generator(dataForSign).getBytes();
         });
     }
 
