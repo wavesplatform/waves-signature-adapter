@@ -82,7 +82,6 @@ export interface IAuthData {
 
 export interface IGetOrders {
     timestamp: number;
-    senderPublicKey: string;
 }
 
 export interface ICreateOrder {
