@@ -1,7 +1,7 @@
 import { AdapterType } from '../config';
-import { Seed, config, utils } from '@waves/waves-signature-generator';
-import { getSchemaByType, SIGN_TYPES, TSignData } from '../prepareTx';
-import { ISignatureGeneratorConstructor } from '@waves/waves-signature-generator/src/index';
+import { config } from '@waves/waves-signature-generator';
+import { TSignData } from '../prepareTx';
+import { Signable } from "../Signable";
 
 
 export abstract class Adapter {
@@ -13,32 +13,8 @@ export abstract class Adapter {
         this.type = (this as any).constructor.type;
     }
 
-    public getBytes(forSign: TSignData): Promise<Uint8Array> {
-        const prepare = getSchemaByType(forSign.type).sign;
-        const dataForSign = prepare(forSign.data);
-        const signatureGenerator = new (SIGN_TYPES[forSign.type].signatureGenerator as ISignatureGeneratorConstructor<any>)(dataForSign);
-
-        return signatureGenerator.getBytes();
-    }
-
-    public signJSON(forSign: TSignData): Promise<string> {
-        const method = SIGN_TYPES[forSign.type].adapter;
-
-        return this.getBytes(forSign).then(bytes => this[method](bytes));
-    }
-
-    public getTxIdJSON(forSign: TSignData): Promise<string> {
-        return this.getBytes(forSign).then(bytes => utils.crypto.buildTransactionId(bytes));
-    }
-
-    public getTxId(bytes: Uint8Array): Promise<string> {
-        return Promise.resolve(utils.crypto.buildTransactionId(bytes));
-    }
-
-    public prepareDataForApi(forSign: TSignData, profData: IProofData): any {
-        const prepare = getSchemaByType(forSign.type).api;
-
-        return prepare({ ...forSign.data, ...profData });
+    public makeSignable(forSign: TSignData): Signable {
+        return new Signable(forSign, this);
     }
 
     public isAvailable(): Promise<void> {
