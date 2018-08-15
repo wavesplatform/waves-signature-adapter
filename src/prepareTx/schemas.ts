@@ -120,6 +120,11 @@ module schemas {
 
     export module sign {
 
+        export const matcherOrders = schema(
+            'senderPublicKey',
+            'timestamp'
+        );
+
         export const auth = schema(
             'prefix',
             'host',
@@ -226,6 +231,8 @@ const hasNoApiMethod = schemaType => () => {
 
 export function getSchemaByType(type: SIGN_TYPE) {
     switch (type) {
+        case SIGN_TYPE.MATCHER_ORDERS:
+            return { api: hasNoApiMethod('api, get orders'), sign: schemas.sign.matcherOrders };
         case SIGN_TYPE.AUTH:
             return { api: hasNoApiMethod('api auth'), sign: schemas.sign.auth };
         case SIGN_TYPE.CREATE_ORDER:
