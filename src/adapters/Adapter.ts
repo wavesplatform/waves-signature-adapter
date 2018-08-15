@@ -6,7 +6,12 @@ import { ISignatureGeneratorConstructor } from '@waves/waves-signature-generator
 
 export abstract class Adapter {
 
+    public type: string;
     protected static _code: number;
+
+    protected constructor() {
+        this.type = (this as any).constructor.type;
+    }
 
     public getBytes(forSign: TSignData): Promise<Uint8Array> {
         const prepare = getSchemaByType(forSign.type).sign;
