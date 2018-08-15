@@ -3,6 +3,7 @@ import { Seed, config, utils } from '@waves/waves-signature-generator';
 import { getSchemaByType, SIGN_TYPES, TSignData } from '../prepareTx';
 import { ISignatureGeneratorConstructor } from '@waves/waves-signature-generator/src/index';
 
+
 export abstract class Adapter {
 
     protected static _code: number;
@@ -27,6 +28,12 @@ export abstract class Adapter {
 
     public getTxId(bytes: Uint8Array): Promise<string> {
         return Promise.resolve(utils.crypto.buildTransactionId(bytes));
+    }
+
+    public prepareDataForApi(forSign: TSignData, profData: IProofData): any {
+        const prepare = getSchemaByType(forSign.type).api;
+
+        return prepare({ ...forSign.data, ...profData });
     }
 
     public isAvailable(): Promise<void> {
@@ -80,4 +87,9 @@ export interface IUser {
     password: string;
     encryptionRounds: number;
     networkCode: string;
+}
+
+export interface IProofData {
+    profs?: Array<string>;
+    signature?: string;
 }
