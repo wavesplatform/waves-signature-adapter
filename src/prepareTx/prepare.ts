@@ -6,20 +6,26 @@ export module prepare {
 
     export module processors {
 
+        export function toBigNumber(some: string | number | BigNumber | Money): BigNumber {
+            switch (typeof some) {
+                case 'string':
+                case 'number':
+                    return new BigNumber(some as string);
+                case 'object':
+                    if (some instanceof BigNumber) {
+                        return some;
+                    } else {
+                        return (some as Money).getCoins();
+                    }
+            }
+        }
+
         export function moneyToAssetId(money: Money): string {
             return money.asset.id;
         }
 
         export function moneyToNodeAssetId(money: Money): string {
             return idToNode(money.asset.id);
-        }
-
-        export function moneyToBigNumber(money: Money): BigNumber {
-            return money.getCoins();
-        }
-
-        export function moneyToBigNumberCoins(money: Money): BigNumber {
-            return money.getCoins();
         }
 
         export function timestamp(time) {

@@ -11,9 +11,9 @@ module schemas {
         export const createOrder = schema(
             'matcherPublicKey',
             'orderType',
-            'price',
-            'amount',
-            'matcherFee',
+            wrap('price', 'price', processors.toBigNumber),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('matcherFee', 'matcherFee', processors.toBigNumber),
             wrap('expiration', 'expiration', processors.expiration),
             'senderPublicKey',
             'timestamp',
@@ -33,7 +33,7 @@ module schemas {
             wrap(null, 'quantity', processors.quantity),
             wrap('precision', 'decimals', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.ISSUE)),
             'signature'
@@ -41,9 +41,9 @@ module schemas {
 
         export const transfer = schema(
             wrap('amount', 'assetId', processors.moneyToNodeAssetId),
-            wrap('amount', 'amount', processors.moneyToBigNumber),
+            wrap('amount', 'amount', processors.toBigNumber),
             wrap('fee', 'feeAssetId', processors.moneyToNodeAssetId),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('recipient', 'recipient', processors.recipient),
             wrap('attachment', 'attachment', processors.attachment),
             wrap('timestamp', 'timestamp', processors.timestamp),
@@ -55,9 +55,9 @@ module schemas {
         export const reissue = schema(
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.moneyToBigNumber),
+            wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'signature',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.REISSUE))
@@ -66,8 +66,8 @@ module schemas {
         export const burn = schema(
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.moneyToBigNumber),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('quantity', 'quantity', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'signature',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
@@ -76,8 +76,8 @@ module schemas {
         export const lease = schema(
             'senderPublicKey',
             wrap('recipient', 'recipient', processors.recipient),
-            wrap('amount', 'amount', processors.moneyToBigNumber),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'signature',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.LEASE))
@@ -85,7 +85,7 @@ module schemas {
 
         export const cancelLeasing = schema(
             'senderPublicKey',
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('leaseId', 'leaseId', processors.noProcess),
             'signature',
@@ -95,7 +95,7 @@ module schemas {
         export const alias = schema(
             'senderPublicKey',
             wrap('alias', 'alias', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'signature',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.CREATE_ALIAS))
@@ -107,10 +107,10 @@ module schemas {
             wrap('totalAmount', 'assetId', processors.moneyToNodeAssetId),
             wrap('transfers', 'transfers', processors.transfers(
                 processors.recipient,
-                processors.moneyToBigNumber
+                processors.toBigNumber
             )),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('attachment', 'attachment', processors.attachment),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.MASS_TRANSFER)),
             'proofs'
@@ -156,7 +156,7 @@ module schemas {
             wrap(null, 'quantity', processors.quantity),
             wrap('precision', 'precision', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
@@ -165,8 +165,8 @@ module schemas {
             wrap('amount', 'assetId', processors.moneyToAssetId),
             wrap('fee', 'feeAssetId', processors.moneyToAssetId),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('amount', 'amount', processors.moneyToBigNumber),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('recipient', 'recipient', processors.noProcess),
             wrap('attachment', 'attachment', processors.orString)
         );
@@ -174,31 +174,31 @@ module schemas {
         export const reissue = schema(
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.moneyToBigNumber),
+            wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
         export const burn = schema(
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.moneyToBigNumber),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('quantity', 'quantity', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
         export const lease = schema(
             'senderPublicKey',
             wrap('recipient', 'recipient', processors.noProcess),
-            wrap('amount', 'amount', processors.moneyToBigNumber),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
         export const cancelLeasing = schema(
             'senderPublicKey',
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('leaseId', 'transactionId', processors.noProcess)
         );
@@ -206,7 +206,7 @@ module schemas {
         export const alias = schema(
             'senderPublicKey',
             wrap('alias', 'alias', processors.noProcess),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
         );
 
@@ -215,10 +215,10 @@ module schemas {
             wrap('totalAmount', 'assetId', processors.moneyToAssetId),
             wrap('transfers', 'transfers', processors.transfers(
                 processors.noProcess,
-                processors.moneyToBigNumber
+                processors.toBigNumber
             )),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('fee', 'fee', processors.moneyToBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
             wrap('attachment', 'attachment', processors.noProcess),
             'proofs'
         );
