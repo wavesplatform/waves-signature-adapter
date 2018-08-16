@@ -35,7 +35,7 @@ export module prepare {
         }
 
         export function recipient(data) {
-            const code = config.get('networkByte');
+            const code = String.fromCharCode(config.get('networkByte'));
             return data.length < 30 ? `alias:${code}:${data}` : data;
         }
 
