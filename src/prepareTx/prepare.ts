@@ -1,5 +1,5 @@
 import { Money, BigNumber } from '@waves/data-entities';
-import { WAVES_ID, libs } from '@waves/waves-signature-generator';
+import { WAVES_ID, libs, config } from '@waves/waves-signature-generator';
 
 
 export module prepare {
@@ -34,7 +34,8 @@ export module prepare {
             return data;
         }
 
-        export function recipient(data, code) {
+        export function recipient(data) {
+            const code = config.get('networkByte');
             return data.length < 30 ? `alias:${code}:${data}` : data;
         }
 
