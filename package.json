@@ -1,18 +1,25 @@
 {
-  "name": "@waves/waves-signature-adapter",
-  "version": "0.0.29",
+  "name": "@waves/signature-adapter",
+  "version": "0.2.5",
   "types": "src/index.ts",
   "main": "dist/waves-signature-adapter.js",
   "dependencies": {
+    "@waves/data-entities": "^1.6.0",
     "@waves/ledger": "0.0.22",
     "@waves/waves-signature-generator": "0.14.0"
   },
   "scripts": {
-    "build": "tsc && node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-signature-generator -u @waves/ledger -o dist/waves-signature-adapter.js",
+    "compile": "tsc",
+    "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-signature-generator -u @waves/ledger -o dist/signature-adapter.js",
+    "build": "npm run compile && npm run browserify && npm run uglify",
+    "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
+    "postpublish": "git push",
+    "postversion": "npm publish",
     "prepare": "npm run build"
   },
   "devDependencies": {
     "browserify": "^16.2.2",
-    "typescript": "^2.9.2"
+    "typescript": "^2.9.2",
+    "uglify-js": "^3.4.7"
   }
 }

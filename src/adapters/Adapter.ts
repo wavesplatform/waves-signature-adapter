@@ -1,9 +1,21 @@
 import { AdapterType } from '../config';
-import { Seed, config, utils } from '@waves/waves-signature-generator';
+import { config } from '@waves/waves-signature-generator';
+import { TSignData } from '../prepareTx';
+import { Signable } from "../Signable";
+
 
 export abstract class Adapter {
 
+    public type: string;
     protected static _code: number;
+
+    protected constructor() {
+        this.type = (this as any).constructor.type;
+    }
+
+    public makeSignable(forSign: TSignData): Signable {
+        return new Signable(forSign, this);
+    }
 
     public isAvailable(): Promise<void> {
         return Promise.resolve();
@@ -56,4 +68,9 @@ export interface IUser {
     password: string;
     encryptionRounds: number;
     networkCode: string;
+}
+
+export interface IProofData {
+    profs?: Array<string>;
+    signature?: string;
 }
