@@ -8,7 +8,7 @@ import {
 } from '@waves/waves-signature-generator';
 import { IAuthData } from "./interfaces";
 
-export const enum TRANSACTION_TYPE_NUMBER {
+export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
     ISSUE = 3,
     TRANSFER = 4,
@@ -24,7 +24,7 @@ export const enum TRANSACTION_TYPE_NUMBER {
     SPONSORSHIP = 14
 }
 
-export const enum SIGN_TYPE {
+export enum SIGN_TYPE {
     AUTH = 1000,
     MATCHER_ORDERS = 1001,
     CREATE_ORDER = 1002,
