@@ -5,7 +5,7 @@
   "main": "dist/waves-signature-adapter.js",
   "dependencies": {
     "@waves/data-entities": "^1.6.0",
-    "@waves/ledger": "0.0.22",
+    "@waves/ledger": "0.0.24",
     "@waves/waves-signature-generator": "0.14.0"
   },
   "scripts": {
