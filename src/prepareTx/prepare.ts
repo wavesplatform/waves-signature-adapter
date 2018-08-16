@@ -2,9 +2,18 @@ import { Money, BigNumber } from '@waves/data-entities';
 import { WAVES_ID, libs, config } from '@waves/waves-signature-generator';
 
 
+const normalizeAssetId = id => id === WAVES_ID ? '' : id;
+
 export module prepare {
 
     export module processors {
+
+        export function assetPair(data) {
+            return {
+                amountAsset: normalizeAssetId(data.amountAsset),
+                priceAsset: normalizeAssetId(data.priceAsset)
+            };
+        }
 
         export function toBigNumber(some: string | number | BigNumber | Money): BigNumber {
             switch (typeof some) {

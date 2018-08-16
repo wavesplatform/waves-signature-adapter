@@ -11,6 +11,7 @@ module schemas {
         export const createOrder = schema(
             'matcherPublicKey',
             'orderType',
+            wrap(null, 'assetPair', processors.assetPair),
             wrap('price', 'price', processors.toBigNumber),
             wrap('amount', 'amount', processors.toBigNumber),
             wrap('matcherFee', 'matcherFee', processors.toBigNumber),
@@ -21,7 +22,7 @@ module schemas {
         );
 
         export const cancelOrder = schema(
-            'orderId',
+            wrap('id', 'orderId', processors.noProcess),
             wrap('senderPublicKey', 'sender', processors.noProcess),
             'signature'
         );
@@ -146,7 +147,7 @@ module schemas {
 
         export const cancelOrder = schema(
             'senderPublicKey',
-            'orderId'
+            wrap('id', 'orderId', processors.noProcess)
         );
 
         export const issue = schema(
