@@ -89,7 +89,7 @@ export class Signable {
 
     private _getAmountPrecision() {
         const data = this._forSign.data as any;
-        return data.amount && data.amount.asset && data.amount.asset.precision ? data.amount.precision : 0;
+        return data.amount && data.amount.asset && data.amount.asset.precision ? data.asset.amount.precision : 0;
     }
 
 }
