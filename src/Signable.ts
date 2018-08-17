@@ -81,10 +81,15 @@ export class Signable {
     private _makeSignPromise(): Signable {
         if (!this._signPromise) {
             this._signPromise = this._bytePromise.then(bytes => {
-                return this._adapter[this._signMethod](bytes);
+                return this._adapter[this._signMethod](bytes, this._getAmountPrecision());
             });
         }
         return this;
+    }
+
+    private _getAmountPrecision() {
+        const data = this._forSign.data as any;
+        return data.amount && data.amount.precision ? data.amount.precision : 0;
     }
 
 }
