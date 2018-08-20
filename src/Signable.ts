@@ -1,7 +1,7 @@
 import { getSchemaByType, SIGN_TYPES, TSignData } from './prepareTx';
 import { Adapter } from './adapters';
-import { ISignatureGeneratorConstructor } from '@waves/waves-signature-generator/src/signatureFactory/interface';
-import { utils } from '@waves/waves-signature-generator';
+import { ISignatureGeneratorConstructor } from '@waves/signature-generator';
+import { utils } from '@waves/signature-generator';
 
 
 export class Signable {

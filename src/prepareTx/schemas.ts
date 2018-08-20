@@ -1,6 +1,6 @@
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
-import { TRANSACTION_TYPE_VERSION } from '@waves/waves-signature-generator';
+import { TRANSACTION_TYPE_VERSION } from '@waves/signature-generator';
 
 const { wrap, schema, processors } = prepare;
 

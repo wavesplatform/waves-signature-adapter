@@ -1,5 +1,5 @@
 import { AdapterType } from '../config';
-import { config } from '@waves/waves-signature-generator';
+import { config } from '@waves/signature-generator';
 import { TSignData } from '../prepareTx';
 import { Signable } from "../Signable";
 

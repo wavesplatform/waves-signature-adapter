@@ -1,5 +1,5 @@
 import { Money, BigNumber } from '@waves/data-entities';
-import { WAVES_ID, libs, config } from '@waves/waves-signature-generator';
+import { WAVES_ID, libs, config } from '@waves/signature-generator';
 
 
 const normalizeAssetId = id => id === WAVES_ID ? '' : id;

@@ -5,7 +5,7 @@ import {
     TX_NUMBER_MAP,
     StringWithLength,
     generate
-} from '@waves/waves-signature-generator';
+} from '@waves/signature-generator';
 import { IAuthData } from "./interfaces";
 
 export enum TRANSACTION_TYPE_NUMBER {
