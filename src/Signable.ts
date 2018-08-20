@@ -41,6 +41,24 @@ export class Signable {
         });
     }
 
+    public sign2fa(options: ISign2faOptions): Promise<Signable> {
+        const code = options.code;
+
+        return this._adapter.getAddress()
+            .then(address => {
+                return options.request({
+                    address,
+                    code,
+                    signData: this._forSign
+                });
+            })
+            .then(signature => {
+                this._proofs.push(signature);
+
+                return this;
+            });
+    }
+
     public addProof(signature: string): Signable {
         if (this._proofs.indexOf(signature) !== -1) {
             this._proofs.push(signature);
@@ -87,4 +105,10 @@ export class Signable {
         return this;
     }
 
+}
+
+export interface ISign2faOptions {
+    code: string;
+
+    request(data: any): Promise<string>;
 }
