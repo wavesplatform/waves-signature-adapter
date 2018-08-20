@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "types": "src/index.ts",
   "main": "dist/signature-adapter.js",
   "dependencies": {
