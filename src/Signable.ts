@@ -100,7 +100,9 @@ export class Signable {
         if (!this._signPromise) {
             this._signPromise = this._bytePromise.then(bytes => {
                 return this._adapter[this._signMethod](bytes, this._getAmountPrecision());
-            }).catch(() => {
+            });
+
+            this._signPromise.catch(() => {
                 this._signPromise = null;
             });
         }
