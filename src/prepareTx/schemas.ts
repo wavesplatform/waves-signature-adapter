@@ -1,6 +1,6 @@
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
-import { TRANSACTION_TYPE_VERSION, config } from '@waves/signature-generator';
+import { config, TRANSACTION_TYPE_VERSION } from '@waves/signature-generator';
 
 const { wrap, schema, processors } = prepare;
 
@@ -303,5 +303,11 @@ export function getSchemaByType(type: SIGN_TYPE) {
             return { api: schemas.api.alias, sign: schemas.sign.alias };
         case SIGN_TYPE.MASS_TRANSFER:
             return { api: schemas.api.massTransfer, sign: schemas.sign.massTransfer };
+        case SIGN_TYPE.DATA:
+            return { api: schemas.api.data, sign: schemas.sign.data };
+        case SIGN_TYPE.SET_SCRIPT:
+            return { api: schemas.api.setScript, sign: schemas.sign.setScript };
+        case SIGN_TYPE.SPONSORSHIP:
+            return { api: schemas.api.sponsorship, sign: schemas.sign.sponsorship };
     }
 }
