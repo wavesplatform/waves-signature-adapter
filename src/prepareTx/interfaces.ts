@@ -1,4 +1,6 @@
 import { SIGN_TYPE } from './constants';
+import { IDATA_ENTRY } from "@waves/signature-generator/src/signatureFactory/interface";
+import { Money } from "@waves/data-entities";
 
 export type TSignData =
     ISignAuthData |
@@ -12,7 +14,10 @@ export type TSignData =
     ISignLease |
     ISignCancelLeasing |
     ISignCreateAlias |
-    ISignMassTransfer;
+    ISignMassTransfer |
+    IDataTxData |
+    ISetScriptData |
+    ISponsorshipData;
 
 export interface ISignAuthData {
     data: IAuthData;
@@ -74,6 +79,22 @@ export interface ISignMassTransfer {
     type: SIGN_TYPE.MASS_TRANSFER;
 }
 
+export interface IDataTxData {
+    data: IData;
+    type: SIGN_TYPE.DATA;
+}
+
+export interface ISetScriptData {
+    data: ISetScript;
+    type: SIGN_TYPE.SET_SCRIPT;
+}
+
+export interface ISponsorshipData {
+    data: ISponsorship;
+    type: SIGN_TYPE.SPONSORSHIP;
+}
+
+
 export interface IAuthData {
     prefix: string;
     host: string;
@@ -101,7 +122,7 @@ export interface ICancelOrder {
 }
 
 export interface ICreateTxData {
-    fee: string;
+    fee: Money;
     sender: string;
     timestamp: number;
 }
@@ -153,4 +174,18 @@ export interface IMassTransfer extends ICreateTxData {
     assetId: string;
     transfers: Array<{ recipient: string; amount: string; }>;
     attachment: string;
+}
+
+export interface IData extends ICreateTxData {
+    data: Array<IDATA_ENTRY>;
+    fee: Money;
+}
+
+export interface ISetScript extends ICreateTxData {
+    script: string;
+    chainId: number;
+}
+
+export interface ISponsorship extends ICreateTxData {
+    minSponsoredAssetFee: Money;
 }

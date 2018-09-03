@@ -1,6 +1,6 @@
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
-import { TRANSACTION_TYPE_VERSION } from '@waves/signature-generator';
+import { TRANSACTION_TYPE_VERSION, config } from '@waves/signature-generator';
 
 const { wrap, schema, processors } = prepare;
 
@@ -117,6 +117,34 @@ module schemas {
             'proofs'
         );
 
+        export const data = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.DATA)),
+            'senderPublicKey',
+            'data',
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.DATA)),
+            'proofs'
+        );
+
+        export const setScript = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
+            'senderPublicKey',
+            'script',
+            wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            'proofs'
+        );
+
+        export const sponsorship = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SPONSORSHIP)),
+            'senderPublicKey',
+            wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
+            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            'proofs'
+        );
     }
 
     export module sign {
@@ -221,7 +249,26 @@ module schemas {
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('attachment', 'attachment', processors.noProcess),
-            'proofs'
+        );
+
+        export const data = schema(
+            'senderPublicKey',
+            'data',
+            wrap('fee', 'fee', processors.toBigNumber),
+        );
+
+        export const setScript = schema(
+            'senderPublicKey',
+            'script',
+            wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+        );
+
+        export const sponsorship = schema(
+            'senderPublicKey',
+            wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
+            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
         );
     }
 }

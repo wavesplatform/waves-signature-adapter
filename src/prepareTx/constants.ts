@@ -36,7 +36,10 @@ export enum SIGN_TYPE {
     LEASE = 8,
     CANCEL_LEASING = 9,
     CREATE_ALIAS = 10,
-    MASS_TRANSFER = 11
+    MASS_TRANSFER = 11,
+    DATA = 12,
+    SET_SCRIPT = 13,
+    SPONSORSHIP = 14
 }
 
 export const SIGN_TYPES = {
@@ -92,5 +95,17 @@ export const SIGN_TYPES = {
     [SIGN_TYPE.MASS_TRANSFER]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.MASS_TRANSFER],
         adapter: 'signRequest'
+    },
+    [SIGN_TYPE.DATA]: {
+        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DATA],
+        adapter: 'signTransaction'
+    },
+    [SIGN_TYPE.SET_SCRIPT]: {
+        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
+        adapter: 'signTransaction'
+    },
+    [SIGN_TYPE.SPONSORSHIP]: {
+        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
+        adapter: 'signTransaction'
     }
 };
