@@ -98,14 +98,14 @@ export const SIGN_TYPES = {
     },
     [SIGN_TYPE.DATA]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DATA],
-        adapter: 'signTransaction'
+        adapter: 'signRequest'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
-        adapter: 'signTransaction'
+        adapter: 'signRequest'
     },
     [SIGN_TYPE.SPONSORSHIP]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
-        adapter: 'signTransaction'
+        adapter: 'signRequest'
     }
 };
