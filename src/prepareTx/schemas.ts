@@ -123,6 +123,7 @@ module schemas {
             'data',
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.DATA)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
 
@@ -133,6 +134,7 @@ module schemas {
             wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
 
@@ -142,7 +144,8 @@ module schemas {
             wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
             wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
-            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SPONSORSHIP)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
     }
@@ -255,6 +258,7 @@ module schemas {
             'senderPublicKey',
             'data',
             wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
         export const setScript = schema(
@@ -262,6 +266,7 @@ module schemas {
             'script',
             wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
         export const sponsorship = schema(
@@ -269,6 +274,7 @@ module schemas {
             wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
             wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp)
         );
     }
 }
