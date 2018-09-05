@@ -142,7 +142,7 @@ module schemas {
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SPONSORSHIP)),
             'senderPublicKey',
             wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
-            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
+            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toSponsorshipFee),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SPONSORSHIP)),
             wrap('timestamp', 'timestamp', processors.timestamp),

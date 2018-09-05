@@ -29,6 +29,15 @@ export module prepare {
             }
         }
 
+        export function toSponsorshipFee(moeny: Money): BigNumber {
+            const coins = moeny.getCoins();
+            if (coins.eq(0)) {
+                return null;
+            } else {
+                return coins;
+            }
+        }
+
         export function moneyToAssetId(money: Money): string {
             return money.asset.id;
         }
