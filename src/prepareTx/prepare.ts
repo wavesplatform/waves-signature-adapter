@@ -70,7 +70,7 @@ export module prepare {
         }
 
         export function addValue(value: any) {
-            return () => value;
+            return typeof value === 'function' ? value : () => value;
         }
 
         export function expiration(date?) {
@@ -86,6 +86,10 @@ export module prepare {
 
         export function quantity(data): BigNumber {
             return new BigNumber(data.quantity).times(new BigNumber(10).pow(data.precision));
+        }
+
+        export function base64(str): string {
+            return (str || '').replace('base64:', '');
         }
     }
 

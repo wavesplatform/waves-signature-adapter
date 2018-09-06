@@ -130,8 +130,8 @@ module schemas {
         export const setScript = schema(
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
             'senderPublicKey',
-            'script',
-            wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
+            wrap('script', 'script', processors.base64),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
             wrap('timestamp', 'timestamp', processors.timestamp),
@@ -264,7 +264,7 @@ module schemas {
         export const setScript = schema(
             'senderPublicKey',
             'script',
-            wrap('chainId', 'chainId', processors.addValue(config.get('networkByte'))),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
