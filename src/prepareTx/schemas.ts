@@ -28,6 +28,8 @@ module schemas {
         );
 
         export const issue = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.ISSUE)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             'senderPublicKey',
             'name',
             'description',
@@ -41,6 +43,7 @@ module schemas {
         );
 
         export const transfer = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.TRANSFER)),
             wrap('amount', 'assetId', processors.moneyToNodeAssetId),
             wrap('amount', 'amount', processors.toBigNumber),
             wrap('fee', 'feeAssetId', processors.moneyToNodeAssetId),
@@ -54,7 +57,9 @@ module schemas {
         );
 
         export const reissue = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.REISSUE)),
             'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap('assetId', 'assetId', processors.noProcess),
             wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('reissuable', 'reissuable', processors.noProcess),
@@ -65,6 +70,8 @@ module schemas {
         );
 
         export const burn = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.BURN)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
             wrap('quantity', 'quantity', processors.toBigNumber),
@@ -75,6 +82,8 @@ module schemas {
         );
 
         export const lease = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.LEASE)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             'senderPublicKey',
             wrap('recipient', 'recipient', processors.recipient),
             wrap('amount', 'amount', processors.toBigNumber),
@@ -85,6 +94,8 @@ module schemas {
         );
 
         export const cancelLeasing = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.CANCEL_LEASING)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             'senderPublicKey',
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
@@ -94,6 +105,7 @@ module schemas {
         );
 
         export const alias = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.CREATE_ALIAS)),
             'senderPublicKey',
             wrap('alias', 'alias', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
@@ -185,6 +197,7 @@ module schemas {
             'senderPublicKey',
             'name',
             'description',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap(null, 'quantity', processors.quantity),
             wrap('precision', 'precision', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
@@ -205,6 +218,7 @@ module schemas {
 
         export const reissue = schema(
             'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap('assetId', 'assetId', processors.noProcess),
             wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('reissuable', 'reissuable', processors.noProcess),
@@ -214,6 +228,7 @@ module schemas {
 
         export const burn = schema(
             'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap('assetId', 'assetId', processors.noProcess),
             wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
@@ -222,6 +237,7 @@ module schemas {
 
         export const lease = schema(
             'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap('recipient', 'recipient', processors.noProcess),
             wrap('amount', 'amount', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
@@ -230,6 +246,7 @@ module schemas {
 
         export const cancelLeasing = schema(
             'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('leaseId', 'transactionId', processors.noProcess)
