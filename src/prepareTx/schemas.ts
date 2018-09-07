@@ -37,7 +37,7 @@ module schemas {
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.ISSUE)),
-            'signature'
+            'proofs'
         );
 
         export const transfer = schema(
@@ -49,7 +49,7 @@ module schemas {
             wrap('attachment', 'attachment', processors.attachment),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'senderPublicKey',
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.TRANSFER))
         );
 
@@ -60,7 +60,7 @@ module schemas {
             wrap('reissuable', 'reissuable', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.REISSUE))
         );
 
@@ -70,7 +70,7 @@ module schemas {
             wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
         );
 
@@ -80,7 +80,7 @@ module schemas {
             wrap('amount', 'amount', processors.toBigNumber),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.LEASE))
         );
 
@@ -89,7 +89,7 @@ module schemas {
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('leaseId', 'leaseId', processors.noProcess),
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.CANCEL_LEASING))
         );
 
@@ -98,7 +98,7 @@ module schemas {
             wrap('alias', 'alias', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
-            'signature',
+            'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.CREATE_ALIAS))
         );
 
