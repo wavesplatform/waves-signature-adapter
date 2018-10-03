@@ -4,3 +4,4 @@ src/**/*.js.map
 dist
 !dist/waves-signature-adapter.js
 .idea
+coverage/

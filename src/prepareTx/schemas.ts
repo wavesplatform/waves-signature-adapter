@@ -8,6 +8,11 @@ module schemas {
 
     export module api {
 
+        export const coinomatConfirmation = schema(
+            wrap('prefix', 'prefix', processors.addValue('Coinomat')),
+            'timestamp'
+        );
+
         export const createOrder = schema(
             'matcherPublicKey',
             'orderType',
@@ -175,6 +180,11 @@ module schemas {
             'data'
         );
 
+        export const coinomatConfirmation = schema(
+            wrap('prefix', 'prefix', processors.addValue('Coinomat')),
+            'timestamp'
+        );
+
         export const createOrder = schema(
             'matcherPublicKey',
             'amountAsset',
@@ -306,6 +316,8 @@ export function getSchemaByType(type: SIGN_TYPE) {
             return { api: hasNoApiMethod('api, get orders'), sign: schemas.sign.matcherOrders };
         case SIGN_TYPE.AUTH:
             return { api: hasNoApiMethod('api auth'), sign: schemas.sign.auth };
+        case SIGN_TYPE.COINOMAT_CONFIRMATION:
+            return { api: schemas.api.coinomatConfirmation, sign: schemas.sign.coinomatConfirmation };
         case SIGN_TYPE.CREATE_ORDER:
             return { api: schemas.api.createOrder, sign: schemas.sign.createOrder };
         case SIGN_TYPE.CANCEL_ORDER:

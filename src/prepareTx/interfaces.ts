@@ -1,9 +1,11 @@
 import { SIGN_TYPE } from './constants';
-import { IDATA_ENTRY } from "@waves/signature-generator/src/signatureFactory/interface";
-import { Money } from "@waves/data-entities";
+import { IDATA_ENTRY, ISignatureGeneratorConstructor } from '@waves/signature-generator/src/signatureFactory/interface';
+import { Money } from '@waves/data-entities';
 
 export type TSignData =
     ISignAuthData |
+    ISignCoinomatConfirmation |
+    ISignCustom |
     ISignGetOrders |
     ISignCreateOrder |
     ISignCancelOrder |
@@ -22,6 +24,19 @@ export type TSignData =
 export interface ISignAuthData {
     data: IAuthData;
     type: SIGN_TYPE.AUTH;
+}
+
+export interface ISignCoinomatConfirmation {
+    data: ICoinomatData;
+    type: SIGN_TYPE.COINOMAT_CONFIRMATION;
+}
+
+export interface ISignCustom {
+    data: any;
+    type: SIGN_TYPE.CUSTOM;
+    generator: ISignatureGeneratorConstructor<any>;
+    apiProcessor?: Function;
+    signProcessor?: Function;
 }
 
 export interface ISignGetOrders {
@@ -101,6 +116,10 @@ export interface IAuthData {
     data: string;
 }
 
+export interface ICoinomatData {
+    timestamp: number;
+}
+
 export interface IGetOrders {
     timestamp: number;
 }
@@ -123,16 +142,15 @@ export interface ICancelOrder {
 
 export interface ICreateTxData {
     fee: Money;
-    sender: string;
     timestamp: number;
+    sender?: string;
 }
 
 export interface ITransferData extends ICreateTxData {
-    assetId: string;
-    feeAssetId: string;
-    amount: string;
-    attachment: string;
+    amount: Money;
     recipient: string;
+    attachment?: string;
+    senderPublicKey?: string;
 }
 
 export interface IIssue extends ICreateTxData {
