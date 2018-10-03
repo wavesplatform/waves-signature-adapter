@@ -18,8 +18,30 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.2",
     "browserify": "^16.2.2",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.3",
     "typescript": "^2.9.2",
     "uglify-js": "^3.4.7"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "testEnvironment": "jest-environment-node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/test/*.+(ts|tsx|js)"
+    ]
   }
 }

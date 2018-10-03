@@ -1,7 +1,6 @@
-import { getSchemaByType, SIGN_TYPES, TSignData } from './prepareTx';
+import { getSchemaByType, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
 import { Adapter } from './adapters';
-import { ISignatureGeneratorConstructor } from '@waves/signature-generator';
-import { utils } from '@waves/signature-generator';
+import { ISignatureGeneratorConstructor, utils } from '@waves/signature-generator';
 
 
 export class Signable {
@@ -21,12 +20,24 @@ export class Signable {
         this._prepare = getSchemaByType(forSign.type);
 
         if (!this._prepare) {
-            throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
+            if (forSign.type !== SIGN_TYPE.CUSTOM) {
+                throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
+            } else {
+                this._prepare = {
+                    sign: forSign.signProcessor || (data => data),
+                    api: forSign.apiProcessor || (data => data)
+                };
+            }
         }
 
-        const generator: ISignatureGeneratorConstructor<any> = SIGN_TYPES[forSign.type].signatureGenerator;
-
-        this._signMethod = SIGN_TYPES[forSign.type].adapter;
+        let generator: ISignatureGeneratorConstructor<any>;
+        if (forSign.type === SIGN_TYPE.CUSTOM) {
+            generator = forSign.generator;
+            this._signMethod = 'signRequest';
+        } else {
+            generator = SIGN_TYPES[forSign.type].signatureGenerator;
+            this._signMethod = SIGN_TYPES[forSign.type].adapter;
+        }
 
         if (!generator) {
             throw new Error(`Unknown data type ${forSign.type}!`);

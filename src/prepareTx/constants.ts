@@ -29,6 +29,8 @@ export enum SIGN_TYPE {
     MATCHER_ORDERS = 1001,
     CREATE_ORDER = 1002,
     CANCEL_ORDER = 1003,
+    COINOMAT_CONFIRMATION = 1004,
+    CUSTOM = 1005,
     ISSUE = 3,
     TRANSFER = 4,
     REISSUE = 5,
@@ -86,26 +88,26 @@ export const SIGN_TYPES = {
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.CANCEL_LEASING],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.CREATE_ALIAS],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.MASS_TRANSFER],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.DATA]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DATA],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.SPONSORSHIP]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
-        adapter: 'signRequest'
+        adapter: 'signTransaction'
     }
 };
