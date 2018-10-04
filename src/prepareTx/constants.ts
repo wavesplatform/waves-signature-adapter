@@ -4,9 +4,10 @@ import {
     CANCEL_ORDER_SIGNATURE,
     TX_NUMBER_MAP,
     StringWithLength,
+    Long,
     generate
 } from '@waves/signature-generator';
-import { IAuthData } from "./interfaces";
+import { IAuthData } from './interfaces';
 
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -51,6 +52,13 @@ export const SIGN_TYPES = {
             new StringWithLength('prefix'),
             new StringWithLength('host'),
             new StringWithLength('data')
+        ]),
+        adapter: 'signRequest'
+    },
+    [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
+        signatureGenerator: generate([
+            new StringWithLength('prefix'),
+            new Long('timestamp')
         ]),
         adapter: 'signRequest'
     },
