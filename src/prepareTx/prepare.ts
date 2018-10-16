@@ -8,6 +8,10 @@ export module prepare {
 
     export module processors {
 
+        export function scriptProcessor(code: string): string | null {
+            return !!(code || '').replace('base64:', '') ? code : null
+        }
+
         export function assetPair(data) {
             return {
                 amountAsset: normalizeAssetId(data.amountAsset),

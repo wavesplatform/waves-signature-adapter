@@ -147,7 +147,7 @@ module schemas {
         export const setScript = schema(
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
             'senderPublicKey',
-            wrap('script', 'script', processors.base64),
+            wrap('script', 'script', processors.scriptProcessor),
             wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
