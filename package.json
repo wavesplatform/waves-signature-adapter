@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "dependencies": {
     "@waves/data-entities": "^1.6.3",
-    "@waves/ledger": "^0.0.26",
+    "@waves/ledger": "^0.0.27",
     "@waves/signature-generator": "^1.0.1"
   },
   "scripts": {
