@@ -45,10 +45,6 @@ export class LedgerAdapter extends Adapter {
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        if (bytes[0] === 4) {
-            return this.signData(bytes);
-        }
-        
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
