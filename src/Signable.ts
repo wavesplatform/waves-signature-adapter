@@ -52,6 +52,16 @@ export class Signable {
         });
     }
 
+    public getTxData() {
+        return { ...this._forSign.data };
+    }
+
+    public async getSignData() {
+        const senderPublicKey = await this._adapter.getPublicKey();
+        const sender = await this._adapter.getAddress();
+        return this._prepare.sign({ sender, senderPublicKey, ...this._forSign.data });
+    }
+
     public sign2fa(options: ISign2faOptions): Promise<Signable> {
         const code = options.code;
 

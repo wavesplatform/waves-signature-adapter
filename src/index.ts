@@ -3,6 +3,7 @@ import { find } from './utils';
 export * from './adapters';
 export * from './prepareTx';
 export * from './config';
+export * from './Signable';
 
 import { Adapter } from './adapters';
 import { adapterPriorityList, adapterList, AdapterType } from './config';
