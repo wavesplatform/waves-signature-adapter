@@ -35,16 +35,16 @@ export class LedgerAdapter extends Adapter {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
 
+    public getAdapterVersion() {
+        return LedgerAdapter._ledger.getVersion();
+    }
+    
     public signRequest(bytes: Uint8Array): Promise<string> {
         return  this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes));
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        if (bytes[0] === 4) {
-            return this.signData(bytes);
-        }
-        
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }

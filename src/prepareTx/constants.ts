@@ -76,7 +76,7 @@ export const SIGN_TYPES = {
     },
     [SIGN_TYPE.TRANSFER]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.TRANSFER],
-        adapter: 'signData'
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.ISSUE]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE],
