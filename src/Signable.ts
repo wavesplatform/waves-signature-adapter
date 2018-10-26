@@ -115,7 +115,13 @@ export class Signable {
             this.getBytes(),
             this._adapter.getPublicKey()
         ]).then(([bytes, publicKey]) => {
-            return this._proofs.filter(signature => utils.crypto.isValidSignature(bytes, signature, publicKey));
+            return this._proofs.filter(signature => {
+                try {
+                    return utils.crypto.isValidSignature(bytes, signature, publicKey);
+                } catch (e) {
+                    return false;
+                }
+            });
         });
     }
 
