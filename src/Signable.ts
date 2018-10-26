@@ -146,7 +146,7 @@ export class Signable {
             this.addMyProof()
         ]).then(([senderPublicKey, sender]) => {
             const proofs = this._proofs.slice();
-            return this._prepare.api({ senderPublicKey, sender, proofs, ...this._forSign.data });
+            return this._prepare.api({ senderPublicKey, sender, ...this._forSign.data, proofs });
         });
     }
 
