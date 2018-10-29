@@ -9,7 +9,7 @@ export module prepare {
     export module processors {
 
         export function scriptProcessor(code: string): string | null {
-            return !!(code || '').replace('base64:', '') ? code : null
+            return !!(code || '').replace('base64:', '') ? code : null;
         }
 
         export function assetPair(data) {
@@ -17,6 +17,10 @@ export module prepare {
                 amountAsset: normalizeAssetId(data.amountAsset),
                 priceAsset: normalizeAssetId(data.priceAsset)
             };
+        }
+
+        export function signatureFromProof(proofs) {
+            return proofs[0];
         }
 
         export function toBigNumber(some: string | number | BigNumber | Money): BigNumber {

@@ -23,13 +23,13 @@ module schemas {
             wrap('expiration', 'expiration', processors.expiration),
             'senderPublicKey',
             'timestamp',
-            'signature'
+            wrap('proofs', 'signature', processors.signatureFromProof)
         );
 
         export const cancelOrder = schema(
             wrap('id', 'orderId', processors.noProcess),
             wrap('senderPublicKey', 'sender', processors.noProcess),
-            'signature'
+            wrap('proofs', 'signature', processors.signatureFromProof)
         );
 
         export const issue = schema(
