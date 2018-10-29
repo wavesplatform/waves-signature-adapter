@@ -19,6 +19,10 @@ export class Signable {
         this._adapter = adapter;
         this._prepare = getSchemaByType(forSign.type);
 
+        if (this._forSign.data.proofs) {
+            this._proofs = this._forSign.data.proofs.slice();
+        }
+
         if (!this._prepare) {
             if (forSign.type !== SIGN_TYPE.CUSTOM) {
                 throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
@@ -106,14 +110,43 @@ export class Signable {
         return this._bytePromise;
     }
 
+    public getMyProofs(): Promise<Array<string>> {
+        return Promise.all([
+            this.getBytes(),
+            this._adapter.getPublicKey()
+        ]).then(([bytes, publicKey]) => {
+            return this._proofs.filter(signature => {
+                try {
+                    return utils.crypto.isValidSignature(bytes, signature, publicKey);
+                } catch (e) {
+                    return false;
+                }
+            });
+        });
+    }
+
+    public hasMySignature(): Promise<boolean> {
+        return this.getMyProofs().then(proofs => !!proofs.length);
+    }
+
+    public addMyProof(): Promise<void> {
+        return this.hasMySignature().then(hasMySignature => {
+            if (!hasMySignature) {
+                return this.getSignature().then(signature => {
+                    this._proofs.push(signature);
+                });
+            }
+        });
+    }
+
     public getDataForApi(): Promise<object> {
         return Promise.all([
-            this.getSignature(),
             this._adapter.getPublicKey(),
-            this._adapter.getAddress()
-        ]).then(([signature, senderPublicKey, sender]) => {
-            const proofs = [...this._proofs, signature];
-            return this._prepare.api({ senderPublicKey, sender, signature, proofs, ...this._forSign.data });
+            this._adapter.getAddress(),
+            this.addMyProof()
+        ]).then(([senderPublicKey, sender]) => {
+            const proofs = this._proofs.slice();
+            return this._prepare.api({ senderPublicKey, sender, ...this._forSign.data, proofs });
         });
     }
 

@@ -134,6 +134,7 @@ export interface ICreateOrder {
     expiration: number;
     matcherFee: string;
     timestamp: number;
+    proofs?: Array<string>;
 }
 
 export interface ICancelOrder {
@@ -144,6 +145,7 @@ export interface ICreateTxData {
     fee: Money;
     timestamp: number;
     sender?: string;
+    proofs?: Array<string>;
 }
 
 export interface ITransferData extends ICreateTxData {
