@@ -1,8 +1,132 @@
 import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
 import { config, TRANSACTION_TYPE_VERSION } from '@waves/signature-generator';
+import * as fieldsType from './fieldTypes';
+const { schema, wrap, signSchema, processors } = prepare;
 
-const { wrap, schema, processors } = prepare;
+const SIGN_SCHEMA = {
+    [SIGN_TYPE.MATCHER_ORDERS]: [
+        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.AUTH]: [
+        fieldsType.string('prefix', null, processors.addValue('WavesWalletAuthentication'), true),
+        fieldsType.httpsUrl('host'),
+        fieldsType.string('data'),
+    ],
+    [SIGN_TYPE.COINOMAT_CONFIRMATION]: [
+        fieldsType.string('prefix', null, processors.addValue('Coinomat'), true),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.CREATE_ORDER]: [
+        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('matcherPublicKey'),
+        fieldsType.asset('amountAsset'),
+        fieldsType.asset('priceAsset'),
+        fieldsType.orderType('orderType'),
+        fieldsType.numberLike('price'),
+        fieldsType.numberLike('amount'),
+        fieldsType.numberLike('matcherFee'),
+        fieldsType.timestamp('expiration', null, processors.expiration),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.CANCEL_ORDER]: [
+        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('id', 'orderId'),
+    ],
+    [SIGN_TYPE.ISSUE]: [
+        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.assetName('name'),
+        fieldsType.assetDescription('description'),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.numberLike('quantity'),
+        fieldsType.numberLike('precision'),
+        fieldsType.fromData(null, 'quantity', processors.quantity),
+        fieldsType.boolean('reissuable'),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.REISSUE]: [
+        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.asset('assetId'),
+        fieldsType.numberLike('quantity', null, processors.toBigNumber),
+        fieldsType.boolean('reissuable'),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.BURN]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.asset('assetId'),
+        fieldsType.numberLike('quantity', null, processors.toBigNumber),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.SPONSORSHIP]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.money('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
+        fieldsType.money('minSponsoredAssetFee', null, processors.toBigNumber),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.TRANSFER]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.money('amount', 'assetId', processors.moneyToAssetId),
+        fieldsType.money('amount', null, processors.toBigNumber),
+        fieldsType.money('fee', 'feeAssetId', processors.moneyToAssetId),
+        fieldsType.money('fee', 'fee', processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.aliasOrAddress('recipient'),
+        fieldsType.attachment('attachment', null, processors.orString, true),
+    ],
+    [SIGN_TYPE.LEASE]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.address('recipient'),
+        fieldsType.numberLike('amount', null, processors.toBigNumber),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.CANCEL_LEASING]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.string('leaseId', 'transactionId'),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.CREATE_ALIAS]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.aliasName('alias'),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.MASS_TRANSFER]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.money('totalAmount', 'assetId', processors.moneyToAssetId),
+        fieldsType.transfers('transfers', null, processors.transfers(
+            processors.noProcess,
+            processors.toBigNumber
+        )),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.attachment('attachment', null, processors.orString, true),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+    ],
+    [SIGN_TYPE.DATA]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.data('data')
+    ],
+    [SIGN_TYPE.SET_SCRIPT]: [
+        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte())),
+        fieldsType.script('script')
+    ],
+};
+
 
 module schemas {
 
@@ -168,141 +292,26 @@ module schemas {
     }
 
     export module sign {
-
-        export const matcherOrders = schema(
-            'senderPublicKey',
-            'timestamp'
-        );
-
-        export const auth = schema(
-            'prefix',
-            'host',
-            'data'
-        );
-
-        export const coinomatConfirmation = schema(
-            wrap('prefix', 'prefix', processors.addValue('Coinomat')),
-            'timestamp'
-        );
-
-        export const createOrder = schema(
-            'matcherPublicKey',
-            'amountAsset',
-            'priceAsset',
-            'orderType',
-            'price',
-            'amount',
-            'matcherFee',
-            wrap('expiration', 'expiration', processors.expiration),
-            'senderPublicKey',
-            'timestamp'
-        );
-
-        export const cancelOrder = schema(
-            'senderPublicKey',
-            wrap('id', 'orderId', processors.noProcess)
-        );
-
-        export const issue = schema(
-            'senderPublicKey',
-            'name',
-            'description',
-            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap(null, 'quantity', processors.quantity),
-            wrap('precision', 'precision', processors.noProcess),
-            wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const transfer = schema(
-            'senderPublicKey',
-            wrap('amount', 'assetId', processors.moneyToAssetId),
-            wrap('fee', 'feeAssetId', processors.moneyToAssetId),
-            wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('amount', 'amount', processors.toBigNumber),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('recipient', 'recipient', processors.noProcess),
-            wrap('attachment', 'attachment', processors.orString)
-        );
-
-        export const reissue = schema(
-            'senderPublicKey',
-            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.toBigNumber),
-            wrap('reissuable', 'reissuable', processors.noProcess),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const burn = schema(
-            'senderPublicKey',
-            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap('assetId', 'assetId', processors.noProcess),
-            wrap('quantity', 'quantity', processors.toBigNumber),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const lease = schema(
-            'senderPublicKey',
-            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap('recipient', 'recipient', processors.noProcess),
-            wrap('amount', 'amount', processors.toBigNumber),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const cancelLeasing = schema(
-            'senderPublicKey',
-            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('leaseId', 'transactionId', processors.noProcess)
-        );
-
-        export const alias = schema(
-            'senderPublicKey',
-            wrap('alias', 'alias', processors.noProcess),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp),
-        );
-
-        export const massTransfer = schema(
-            'senderPublicKey',
-            wrap('totalAmount', 'assetId', processors.moneyToAssetId),
-            wrap('transfers', 'transfers', processors.transfers(
-                processors.noProcess,
-                processors.toBigNumber
-            )),
-            wrap('timestamp', 'timestamp', processors.timestamp),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('attachment', 'attachment', processors.noProcess),
-        );
-
-        export const data = schema(
-            'senderPublicKey',
-            'data',
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const setScript = schema(
-            'senderPublicKey',
-            'script',
-            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
-
-        export const sponsorship = schema(
-            'senderPublicKey',
-            wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
-            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toBigNumber),
-            wrap('fee', 'fee', processors.toBigNumber),
-            wrap('timestamp', 'timestamp', processors.timestamp)
-        );
+        export const matcherOrders = signSchema(SIGN_SCHEMA[SIGN_TYPE.MATCHER_ORDERS]);
+        export const auth = signSchema(SIGN_SCHEMA[SIGN_TYPE.AUTH]);
+        export const coinomatConfirmation = signSchema(SIGN_SCHEMA[SIGN_TYPE.COINOMAT_CONFIRMATION]);
+        export const createOrder = signSchema(SIGN_SCHEMA[SIGN_TYPE.CREATE_ORDER]);
+        export const cancelOrder = signSchema(SIGN_SCHEMA[SIGN_TYPE.CANCEL_ORDER]);
+        export const issue = signSchema(SIGN_SCHEMA[SIGN_TYPE.ISSUE]);
+        export const transfer = signSchema(SIGN_SCHEMA[SIGN_TYPE.TRANSFER]);
+        export const reissue = signSchema(SIGN_SCHEMA[SIGN_TYPE.REISSUE]);
+        export const burn = signSchema(SIGN_SCHEMA[SIGN_TYPE.BURN]);
+        export const lease = signSchema(SIGN_SCHEMA[SIGN_TYPE.LEASE]);
+        export const cancelLeasing = signSchema(SIGN_SCHEMA[SIGN_TYPE.CANCEL_LEASING]);
+        export const alias = signSchema(SIGN_SCHEMA[SIGN_TYPE.CREATE_ALIAS]);
+        export const massTransfer = signSchema(SIGN_SCHEMA[SIGN_TYPE.MASS_TRANSFER]);
+        export const data = signSchema(SIGN_SCHEMA[SIGN_TYPE.DATA]);
+        export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
+        export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
+    }
+    
+    export module validate {
+        
     }
 }
 

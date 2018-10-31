@@ -1,6 +1,6 @@
 import { Money, BigNumber } from '@waves/data-entities';
 import { WAVES_ID, libs, config } from '@waves/signature-generator';
-
+import { VALIDATORS } from './fieldValidator';
 
 const normalizeAssetId = id => id === WAVES_ID ? '' : id;
 
@@ -55,7 +55,7 @@ export module prepare {
         }
 
         export function timestamp(time) {
-            return (time && time instanceof Date ? time.getTime() : time) || Date.now();
+            return time && time instanceof Date ? time.getTime() : time;
         }
 
         export function orString(data) {
@@ -129,7 +129,36 @@ export module prepare {
                 return result;
             }, Object.create(null));
     }
-
+    
+    export function signSchema(args: Array<{ name, field, processor, optional, type } >) {
+        return (data, validate = false) => args.map((item) => {
+                const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
+                const validateOptions = {
+                    key: wrapped.to,
+                    value: wrapped.from ? data[wrapped.from] : data,
+                    optional: item.optional,
+                    type: item.type,
+                    name: item.name,
+                };
+                
+                if (validate) {
+                    const validator = VALIDATORS[validateOptions.type];
+                    if (validator) {
+                        validator(validateOptions);
+                    }
+                }
+                
+                return {
+                    key: validateOptions.key,
+                    value: wrapped.cb(validateOptions.value),
+                };
+            })
+            .reduce((result, item) => {
+                result[item.key] = item.value;
+                return result;
+            }, Object.create(null));
+    }
+    
     export function idToNode(id: string): string {
         return id === WAVES_ID ? '' : id;
     }

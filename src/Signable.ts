@@ -35,6 +35,7 @@ export class Signable {
         }
 
         let generator: ISignatureGeneratorConstructor<any>;
+        
         if (forSign.type === SIGN_TYPE.CUSTOM) {
             generator = forSign.generator;
             this._signMethod = 'signRequest';
