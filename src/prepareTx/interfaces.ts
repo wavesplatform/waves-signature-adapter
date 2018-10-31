@@ -159,7 +159,7 @@ export interface IIssue extends ICreateTxData {
     name: string;
     description: string;
     precision: number;
-    quantity: string | BigNumber;
+    quantity: string | number | BigNumber;
     reissuable: boolean;
 }
 
