@@ -1,6 +1,6 @@
 import { SIGN_TYPE } from './constants';
 import { IDATA_ENTRY, ISignatureGeneratorConstructor } from '@waves/signature-generator/src/signatureFactory/interface';
-import { Money } from '@waves/data-entities';
+import { Money, BigNumber } from '@waves/data-entities';
 
 export type TSignData =
     ISignAuthData |
@@ -159,8 +159,7 @@ export interface IIssue extends ICreateTxData {
     name: string;
     description: string;
     precision: number;
-    quantity: string;
-    decimals: number;
+    quantity: string | number | BigNumber;
     reissuable: boolean;
 }
 
