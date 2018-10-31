@@ -1,6 +1,6 @@
 import { SIGN_TYPE } from './constants';
 import { IDATA_ENTRY, ISignatureGeneratorConstructor } from '@waves/signature-generator/src/signatureFactory/interface';
-import { Money } from '@waves/data-entities';
+import { Money, BigNumber } from '@waves/data-entities';
 
 export type TSignData =
     ISignAuthData |
@@ -134,6 +134,7 @@ export interface ICreateOrder {
     expiration: number;
     matcherFee: string;
     timestamp: number;
+    proofs?: Array<string>;
 }
 
 export interface ICancelOrder {
@@ -144,6 +145,7 @@ export interface ICreateTxData {
     fee: Money;
     timestamp: number;
     sender?: string;
+    proofs?: Array<string>;
 }
 
 export interface ITransferData extends ICreateTxData {
@@ -157,8 +159,7 @@ export interface IIssue extends ICreateTxData {
     name: string;
     description: string;
     precision: number;
-    quantity: string;
-    decimals: number;
+    quantity: string | number | BigNumber;
     reissuable: boolean;
 }
 

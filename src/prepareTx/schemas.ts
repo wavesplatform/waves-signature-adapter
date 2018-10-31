@@ -23,13 +23,13 @@ module schemas {
             wrap('expiration', 'expiration', processors.expiration),
             'senderPublicKey',
             'timestamp',
-            'signature'
+            wrap('proofs', 'signature', processors.signatureFromProof)
         );
 
         export const cancelOrder = schema(
             wrap('id', 'orderId', processors.noProcess),
             wrap('senderPublicKey', 'sender', processors.noProcess),
-            'signature'
+            wrap('proofs', 'signature', processors.signatureFromProof)
         );
 
         export const issue = schema(
@@ -38,7 +38,7 @@ module schemas {
             'senderPublicKey',
             'name',
             'description',
-            wrap(null, 'quantity', processors.quantity),
+            wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('precision', 'decimals', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
@@ -147,7 +147,7 @@ module schemas {
         export const setScript = schema(
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
             'senderPublicKey',
-            wrap('script', 'script', processors.base64),
+            wrap('script', 'script', processors.scriptProcessor),
             wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
@@ -208,7 +208,7 @@ module schemas {
             'name',
             'description',
             wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
-            wrap(null, 'quantity', processors.quantity),
+            wrap('quantity', 'quantity', processors.toBigNumber),
             wrap('precision', 'precision', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
