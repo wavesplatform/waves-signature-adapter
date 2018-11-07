@@ -116,11 +116,9 @@ describe('Check validators', () => {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
             } catch (e) {
-                expect(e.length).toEqual(2);
+                expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('amount');
-                expect(e[1].message).toEqual(ERROR_MSG.WRONG_NUMBER);
-                expect(e[1].field).toEqual('amount');
             }
         });
         
@@ -134,11 +132,9 @@ describe('Check validators', () => {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
             } catch (e) {
-                expect(e.length).toEqual(2);
+                expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('fee');
-                expect(e[1].message).toEqual(ERROR_MSG.WRONG_NUMBER);
-                expect(e[1].field).toEqual('fee');
             }
         });
         
