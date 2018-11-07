@@ -39,7 +39,7 @@ const SIGN_SCHEMA = {
         fieldsType.assetName('name'),
         fieldsType.assetDescription('description'),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
-        fieldsType.numberLike('quantity'),
+        fieldsType.numberLike('quantity', null, processors.toBigNumber),
         fieldsType.precision('precision'),
         fieldsType.fromData(null, 'quantity', processors.quantity),
         fieldsType.boolean('reissuable'),
@@ -162,7 +162,7 @@ module schemas {
             'senderPublicKey',
             'name',
             'description',
-            wrap(null, 'quantity', processors.quantity),
+            wrap(null, 'quantity', processors.toBigNumber),
             wrap('precision', 'decimals', processors.noProcess),
             wrap('reissuable', 'reissuable', processors.noProcess),
             wrap('fee', 'fee', processors.toBigNumber),
@@ -311,7 +311,7 @@ module schemas {
     }
     
     export module validate {
-        
+    
     }
 }
 
