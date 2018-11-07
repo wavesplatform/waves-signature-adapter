@@ -20,7 +20,12 @@ export abstract class Adapter {
     public isAvailable(): Promise<void> {
         return Promise.resolve();
     }
-
+    
+    public onDestroy(cb?): void {
+        return;
+    }
+    
+    
     public abstract getPublicKey(): Promise<string>;
 
     public abstract getAddress(): Promise<string>;

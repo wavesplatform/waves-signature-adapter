@@ -259,8 +259,10 @@ const timestamp = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value && !(value instanceof Date || typeof value === 'number')) {
-        return error(options, ERROR_MSG.WRONG_TIMESTAMP);
+    if (value && !(value instanceof Date || typeof value === 'number' || +value)) {
+        if (typeof value !== 'string' || isNaN(Date.parse(value as string))) {
+            return error(options, ERROR_MSG.WRONG_TIMESTAMP);
+        }
     }
 };
 

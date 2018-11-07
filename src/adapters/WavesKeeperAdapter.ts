@@ -1,55 +1,20 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
-import { SIGN_TYPE, TSignData, getSchemaByType } from '../prepareTx';
-import { SIGN_TYPES } from '../prepareTx/constants';
+import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { utils } from '@waves/signature-generator';
-
-const { isValidSignature } = utils.crypto;
-const { sign } = getSchemaByType(SIGN_TYPE.AUTH);
-const generator = SIGN_TYPES[SIGN_TYPE.AUTH].signatureGenerator;
-
 
 export class WavesKeeperAdapter extends Adapter {
 
     public static type = AdapterType.WavesKeeper;
     public static adapter: WavesKeeperAdapter;
     
-    public static async connect({ name, icon = null, data }, extension): Promise<WavesKeeperAdapter> {
-         
-        if (typeof extension === 'undefined') {
-            return Promise.reject('No plugin api');
-        }
-        
-        if (!extension.auth) {
-            return Promise.reject('No plugin api');
-        }
-        
-        data = data || `${name} Login ${Date.now()}`;
-        const { address, publicKey, prefix, signature, host } = await extension.auth({ data, name, icon });
-        
-        const validateData = {
-            prefix,
-            host,
-            data
-        };
-        
-        const bytes = await new generator(sign(validateData)).getBytes();
-        const isValid = await isValidSignature(bytes, signature, publicKey);
-        
-        if (!isValid) {
-            return Promise.reject('Signature is invalid');
-        }
-        
-        WavesKeeperAdapter._api = extension;
-        WavesKeeperAdapter.adapter = new WavesKeeperAdapter(address, publicKey);
-        return WavesKeeperAdapter.adapter;
-    }
-
+    private _onDestoryCb = [];
+    private _needDestroy = false;
     private _address: string;
     private _pKey: string;
     private static _api: IWavesKeeper;
     
-    constructor(address, pKey) {
+    constructor( { address, publicKey }) {
         super();
         if (typeof WavesKeeperAdapter._api === 'undefined') {
             throw 'No plugin api';
@@ -60,7 +25,35 @@ export class WavesKeeperAdapter extends Adapter {
         }
         
         this._address = address;
-        this._pKey = pKey;
+        this._pKey = publicKey;
+    
+        WavesKeeperAdapter._api.on('update', (state) => {
+            if (!state.account || state.account.address !== this._address) {
+                this._needDestroy = true;
+                this._onDestoryCb.forEach(cb => cb);
+            }
+        });
+    }
+    
+    public async isAvailable(): Promise<void> {
+        try {
+            await WavesKeeperAdapter.isAvailable();
+            const data = await WavesKeeperAdapter._api.publicState();
+            if (data.account.address === this._address) {
+                return Promise.resolve();
+            }
+        } catch (e) {
+        }
+        
+        return Promise.reject();
+    }
+    
+    public onDestroy(cb) {
+        if (this._needDestroy) {
+            return cb();
+        }
+        
+        this._onDestoryCb.push(cb);
     }
     
     public getPublicKey() {
@@ -110,24 +103,28 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static async isAvailable() {
-        if (!!this._api) {
+        if (!this._api) {
             throw { code: 0, message: 'Install WavesKeeper' };
         }
         
-        const promise = this._api.publicState();
-        
+        let error, data;
         try {
-            const state = await promise;
-            
-            if (!state.account) {
-                throw { code: 2, message: 'No accounts in waveskeeper' };
-            }
-    
-            if (!utils.crypto.isValidAddress(state.account.address)) {
-                throw { code: 3, message: 'Selected network incorrect' };
-            }
+            data = await this._api.publicState();
         } catch (e) {
-            throw { code: 1, message: 'No permissions' }
+            error = { code: 1, message: 'No permissions' }
+        }
+    
+    
+        if (!error && data) {
+            if (!data.account) {
+                error = { code: 2, message: 'No accounts in waveskeeper' };
+            } else if (!data.account.address || !utils.crypto.isValidAddress(data.account.address)) {
+                error = { code: 3, message: 'Selected network incorrect' };
+            }
+        }
+        
+        if (error) {
+            throw error;
         }
         
         return true;
@@ -139,9 +136,12 @@ export class WavesKeeperAdapter extends Adapter {
     
     public static initOptions(options) {
         Adapter.initOptions(options);
-        this._api = options.extension;
+        this.setApiExtension(options.extension);
     }
     
+    public static setApiExtension(extension) {
+        this._api = extension;
+    }
 }
 
 
@@ -153,6 +153,7 @@ interface IWavesKeeper {
     signRequest: (data) => Promise<string>;
     signBytes: (data) => Promise<string>;
     publicState: () => Promise<any>;
+    on: (name: string, cb) => Promise<any>;
 }
 
 interface IAuth {

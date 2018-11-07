@@ -41,17 +41,28 @@ const keeperMock = {
         signOrder: async data => {},
         signCancelOrder: async data => {},
         signRequest: async data => {},
+        publicState: async () => ({
+            locked: true,
+            account: {
+                address:"3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj",
+                publicKey:"2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr"
+            }
+        }),
+        on: (key: string, cb) => {},
     };
                                                                                 
 
 describe('WavesKeeper adapter test', () => {
     
     it('Test connect to extension', async () => {
+        WavesKeeperAdapter.setApiExtension(keeperMock);
         try {
-            const adapter = await WavesKeeperAdapter.connect({ data: 'test', name: 'test' }, keeperMock);
-            expect(adapter).toBeInstanceOf(WavesKeeperAdapter);
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            await adapter.isAvailable();
+            
         } catch (e) {
-            expect('Fail sign verify').toBe('Done')
+            expect('Fail create adapter').toBe('Done')
         }
     });
     
@@ -68,12 +79,14 @@ describe('WavesKeeper adapter test', () => {
         };
         
         try {
-            const adapter = await WavesKeeperAdapter.connect({ data: 'test', name: 'test' }, keeperMock);
+            WavesKeeperAdapter.setApiExtension(keeperMock);
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
             const signable = adapter.makeSignable(data as any);
             const result = await signable.getDataForApi() as any;
             expect(result.proofs[0]).toBe('realProof')
         } catch (e) {
-            expect('Fail sign verify').toBe('Done')
+            expect(e).toBe('Done')
         }
     });
 });

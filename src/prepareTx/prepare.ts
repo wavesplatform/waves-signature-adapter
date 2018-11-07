@@ -55,6 +55,9 @@ export module prepare {
         }
 
         export function timestamp(time) {
+            if (!(+time) && typeof time === 'string') {
+                return Date.parse(time);
+            }
             return time && time instanceof Date ? time.getTime() : time;
         }
 
