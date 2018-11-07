@@ -1,6 +1,5 @@
 import { Money, BigNumber } from '@waves/data-entities';
 import { utils, libs } from '@waves/signature-generator';
-import { numberLike } from './fieldTypes';
 
 const TRANSFERS = {
     ATTACHMENT: 140
@@ -22,12 +21,7 @@ const ASSETS = {
     DESCRIPTION_MAX_BYTES: 1000,
 };
 
-const DATA = {
-    DATA_TX_SIZE_WITHOUT_ENTRIES: 52,
-    DATA_ENTRIES_BYTE_LIMIT: 140 * 1024 - 52,
-};
-
-const ERROR_MSG = {
+export const ERROR_MSG = {
     REQUIRED: 'field is required',
     WRONG_TYPE: 'field is wrong type',
     WRONG_NUMBER: 'field is not number',
@@ -40,7 +34,7 @@ const ERROR_MSG = {
     WRONG_ASSET_ID: 'field is wrong assetId',
     WRONG_ORDER_TYPE: 'field is wrong order type. Field can be "buy" or "sell"',
     NOT_HTTPS_URL: 'field can be url with https protocol',
-    BASE64: 'field can be base64 string',
+    BASE64: 'field can be base64 string with prefix "base64:"',
 };
 
 const isBase64 = (value) => {
@@ -48,9 +42,11 @@ const isBase64 = (value) => {
     return regExp.test(value);
 };
 
-const getBytesFromString = value => new Blob([value], { type: 'text/html' }).size;
+const getBytesFromString = value => {
+    return unescape(encodeURIComponent(value));
+};
 
-const numberToString = (num) => typeof num === 'number' ? num.toString() : num;
+const numberToString = (num) => num && typeof num === 'number' ? num.toString() : num;
 
 const error = ({ value, ...options }: IFieldOptions, message: string) => {
     const { name: field, type } = options;
@@ -70,21 +66,27 @@ const string = (options: IFieldOptions) => {
     required(options);
     const { value, optional } = options;
     
-    switch (true) {
-        case !optional && !value:
-            return error(options, ERROR_MSG.REQUIRED);
-        case value && typeof value === 'string':
-            return error(options, ERROR_MSG.WRONG_TYPE);
+    if ((!optional && value == null) && (value != null && typeof value !== 'string')) {
+        return error(options, ERROR_MSG.WRONG_TYPE);
     }
 };
 
 const attachment = (options: IFieldOptions) => {
-    options = { ...options, value: numberToString(options.value) };
+    const value = numberToString(options.value);
+    options = { ...options, value };
     string(options);
-    const { value } = options;
     
-   if (value && getBytesFromString(value) > TRANSFERS.ATTACHMENT) {
-      return error(options, ERROR_MSG.LARGE_FIELD);
+    if (value == null) {
+        return;
+    }
+    
+    switch (true) {
+        case typeof value != 'string':
+            error(options, ERROR_MSG.WRONG_TYPE);
+            break;
+        case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:
+            error(options, ERROR_MSG.LARGE_FIELD);
+            break;
     }
 };
 
@@ -92,7 +94,7 @@ const number = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value && new BigNumber(value).isNaN()) {
+    if (value != null && new BigNumber(value).isNaN()) {
         return error(options, ERROR_MSG.WRONG_NUMBER);
     }
 };
@@ -101,7 +103,7 @@ const boolean = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value && typeof value !== 'boolean') {
+    if (value != null && typeof value !== 'boolean') {
         return error(options, ERROR_MSG.WRONG_BOOLEAN);
     }
 };
@@ -109,24 +111,64 @@ const boolean = (options: IFieldOptions) => {
 const money = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
+    
+    if (value == null) {
+        return;
+    }
+    
     switch (true) {
-        case value && !(value instanceof Money):
+        case !(value instanceof Money):
             return error(options, ERROR_MSG.WRONG_TYPE);
-        case value && value instanceof Money && (<Money>value).getCoins().isNaN():
+        case value instanceof Money && (<Money>value).getCoins().isNaN():
             return error(options, ERROR_MSG.WRONG_NUMBER);
     }
 };
 
-const numberLike = (options: IFieldOptions) => {
+const numberLike = (options: IFieldOptions, min?: string|number, max?: string|number) => {
     required(options);
     const { value } = options;
+    
+    if (value == null) {
+        return;
+    }
+    
+    const checkInterval = (bigNumber: BigNumber) => {
+        if (min != null) {
+            if(bigNumber.lt(new BigNumber(min))) {
+                error(options, ERROR_MSG.SMALL_FIELD);
+            }
+        }
+    
+        if (max != null) {
+            if(bigNumber.gt(new BigNumber(max))) {
+                error(options, ERROR_MSG.LARGE_FIELD);
+            }
+        }
+    };
+    
     switch (true) {
-        case value && value instanceof BigNumber && (<BigNumber>value).isNaN():
-            return error(options, ERROR_MSG.WRONG_TYPE);
-        case value && value instanceof Money && (<Money>value).getCoins().isNaN():
+        case value instanceof BigNumber:
+            if ((<BigNumber>value).isNaN()) {
+                error(options, ERROR_MSG.WRONG_TYPE);
+            }
+            checkInterval(value);
+            break;
+        case value instanceof Money:
+            
+            const coins = (<Money>value).getCoins();
+            
+            if(coins.isNaN()) {
+                error(options, ERROR_MSG.WRONG_NUMBER);
+            }
+            checkInterval(coins);
+            break;
+        case typeof value === 'string' && !value:
+            error(options, ERROR_MSG.WRONG_NUMBER);
+            break;
+        case new BigNumber(value).isNaN():
             return error(options, ERROR_MSG.WRONG_NUMBER);
-        case value && new BigNumber(value).isNaN():
-            return error(options, ERROR_MSG.WRONG_NUMBER);
+        default:
+            checkInterval(new BigNumber(value));
     }
 };
 
@@ -135,14 +177,18 @@ const aliasName = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
+    if (value == null) {
+        return null;
+    }
+    
     switch (true) {
-        case value && typeof value !== 'string':
+        case typeof value !== 'string':
             return error(options, ERROR_MSG.WRONG_TYPE);
-        case value && value.length < ALIAS.MIN_ALIAS_LENGTH:
+        case value.length < ALIAS.MIN_ALIAS_LENGTH:
             return error(options, ERROR_MSG.SMALL_FIELD);
-        case value && value.length > ALIAS.MAX_ALIAS_LENGTH:
+        case value.length > ALIAS.MAX_ALIAS_LENGTH:
             return error(options, ERROR_MSG.LARGE_FIELD);
-        case value && value.split('').every((char) => ALIAS.AVAILABLE_CHARS.includes(char)):
+        case !(value.split('').every((char) => ALIAS.AVAILABLE_CHARS.includes(char))):
             return error(options, ERROR_MSG.WRONG_SYMBOLS);
     }
 };
@@ -159,14 +205,17 @@ const address = (options: IFieldOptions) => {
         }
     };
     
+    if (value == null) {
+        return null;
+    }
     switch (true) {
-        case value && typeof value !== 'string':
+        case typeof value !== 'string':
             return error(options, ERROR_MSG.WRONG_TYPE);
-        case value && value.length <= ALIAS.MAX_ALIAS_LENGTH:
+        case value.length <= ALIAS.MAX_ALIAS_LENGTH:
             return error(options, ERROR_MSG.SMALL_FIELD);
-        case value && value.length > ADDRESS.MAX_ADDRESS_LENGTH:
+        case value.length > ADDRESS.MAX_ADDRESS_LENGTH:
             return error(options, ERROR_MSG.LARGE_FIELD);
-        case value && isValidAddress(value):
+        case !isValidAddress(value):
             return error(options, ERROR_MSG.WRONG_ADDRESS);
     }
 };
@@ -184,22 +233,25 @@ const assetId = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value) {
-        if (typeof value !== 'string') {
-            return error(options, ERROR_MSG.WRONG_TYPE);
-        }
-        
-        let isAssetId = false;
+    if (value == null) {
+        return null;
+    }
     
-        try {
-            isAssetId = libs.base58.decode(value).length !== 32;
-        } catch (e) {
-            isAssetId = false;
-        }
     
-        if (!isAssetId) {
-            return error(options, ERROR_MSG.WRONG_ASSET_ID);
-        }
+    if (typeof value !== 'string') {
+        return error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    let isAssetId = false;
+    
+    try {
+        isAssetId = libs.base58.decode(value.trim()).length === 32;
+    } catch (e) {
+        isAssetId =  false;
+    }
+    
+    if (!isAssetId && value !== 'WAVES') {
+        return error(options, ERROR_MSG.WRONG_ASSET_ID);
     }
 };
 
@@ -216,11 +268,15 @@ const orderType = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value && typeof value !== 'string') {
+    if (value == null) {
+        return null;
+    }
+    
+    if (typeof value !== 'string') {
         return error(options, ERROR_MSG.WRONG_TYPE);
     }
     
-    if ( value && value !== 'sell' && value !== 'buy') {
+    if (value !== 'sell' && value !== 'buy') {
         return error(options, ERROR_MSG.WRONG_ORDER_TYPE);
     }
 };
@@ -230,12 +286,12 @@ const assetName = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value) {
+    if (value != null) {
         if (typeof value !== 'string') {
             error(options, ERROR_MSG.WRONG_TYPE);
         }
     
-        const bytesLength = getBytesFromString(value);
+        const bytesLength = getBytesFromString(value).length;
         
         if (bytesLength < ASSETS.NAME_MIN_BYTES) {
             error(options, ERROR_MSG.SMALL_FIELD);
@@ -252,20 +308,24 @@ const assetDescription = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value) {
+    if (value != null) {
         if (typeof value !== 'string') {
             error(options, ERROR_MSG.WRONG_TYPE);
         }
         
-        const bytesLength = getBytesFromString(value);
-        
+        const bytesLength = getBytesFromString(value).length;
         if (bytesLength > ASSETS.DESCRIPTION_MAX_BYTES) {
             error(options, ERROR_MSG.LARGE_FIELD);
         }
     }
 };
 
-const httpsUrl = (options: IFieldOptions) => {
+const precision = (options: IFieldOptions) => {
+    required(options);
+    numberLike(options, 0, 8);
+};
+    
+    const httpsUrl = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
@@ -278,7 +338,11 @@ const httpsUrl = (options: IFieldOptions) => {
         }
     };
     
-    switch (value) {
+    if (value == null) {
+        return null;
+    }
+    
+    switch (true) {
         case typeof value !== 'string':
             error(options, ERROR_MSG.WRONG_TYPE);
             break;
@@ -308,13 +372,13 @@ const transfers = (options: IFieldOptions) => {
         const dataErrors = [];
         
         try {
-            number({ ...options, value: amount, name: `${options.name}:${index}:amount` });
+            number({ ...options, value: amount, name: `${options.name}:${index}:amount`, optional: false });
         } catch (e) {
             dataErrors.push(e);
         }
         
         try {
-            aliasOrAddress({ ...options, value: recipient, name: `${options.name}:${index}:recipient` });
+            aliasOrAddress({ ...options, value: recipient, name: `${options.name}:${index}:recipient`, optional: false });
         } catch (e) {
             dataErrors.push(e);
         }
@@ -324,56 +388,71 @@ const transfers = (options: IFieldOptions) => {
     
     if (errors.length) {
         error(options, errors);
+        error(options, errors);
     }
 };
 
 const data = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
-    
     if (!Array.isArray(value)) {
         error(options, ERROR_MSG.WRONG_TYPE);
     }
     
     const errors = value.map(({ key, type, value }, index) => {
-        const errorData = [];
-        
         try {
             string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
         } catch (e) {
-            errorData.push(e);
+            return e;
         }
 
-        const itemOptions = { ...options, name: `${options.name}:${index}: value`, optional: true };
+        const itemOptions = { ...options, name: `${options.name}:${index}:value`, optional: false, value };
         
         try {
             switch (type) {
                 case 'integer':
-                    numberLike({ ...itemOptions, });
+                    numberLike(itemOptions);
                     break;
                 case 'boolean':
+                    boolean(itemOptions);
                     break;
                 case 'binary':
+                    binary(itemOptions);
                     break;
                 case 'string':
+                    string(itemOptions);
                     break;
                 default:
                     error({ ...options, value: key, name: `${options.name}:${index}:type`}, ERROR_MSG.WRONG_TYPE);
             }
         } catch(e) {
-            errorData.push(e);
+            return e;
         }
         
-    }).filter(item => item.length);
+    }).filter(item => item);
+    
+    if (errors.length) {
+        error(options, errors);
+    }
 };
 
-const script = (options: IFieldOptions) => {
+const binary = (options: IFieldOptions) => {
     const { value = '' } = options;
+    
+    if (value && !value.includes('base64:')) {
+        error(options, ERROR_MSG.BASE64);
+    }
     
     if (value && !isBase64(value.replace('base64:', ''))) {
         error(options, ERROR_MSG.BASE64);
     }
 };
+
+
+const script = (options: IFieldOptions) => {
+    binary(options);
+};
+
 
 export const VALIDATORS = {
     string,
@@ -395,6 +474,8 @@ export const VALIDATORS = {
     aliasOrAddress,
     data,
     script,
+    binary,
+    precision
 };
 
 

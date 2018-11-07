@@ -10,6 +10,7 @@ export const string = fieldFactory('string');
 export const asset = fieldFactory('assetId');
 export const assetName = fieldFactory('assetName');
 export const assetDescription = fieldFactory('assetDescription');
+export const precision = fieldFactory('precision');
 export const number = fieldFactory('number');
 export const address = fieldFactory('address');
 export const aliasName = fieldFactory('aliasName');

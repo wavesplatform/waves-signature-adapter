@@ -131,32 +131,47 @@ export module prepare {
     }
     
     export function signSchema(args: Array<{ name, field, processor, optional, type } >) {
-        return (data, validate = false) => args.map((item) => {
-                const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
-                const validateOptions = {
-                    key: wrapped.to,
-                    value: wrapped.from ? data[wrapped.from] : data,
-                    optional: item.optional,
-                    type: item.type,
-                    name: item.name,
-                };
-                
-                if (validate) {
+        return (data, validate = false) => {
+            const errors = [];
+            const prepareData = args.map((item) => {
+                    const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
+        
+                    const validateOptions = {
+                        key: wrapped.to,
+                        value: wrapped.from ? data[wrapped.from] : data,
+                        optional: item.optional,
+                        type: item.type,
+                        name: item.name,
+                    };
                     const validator = VALIDATORS[validateOptions.type];
-                    if (validator) {
-                        validator(validateOptions);
+                    try {
+                        if (validate && validator) {
+                            validator(validateOptions);
+                        }
+                        return {
+                            key: validateOptions.key,
+                            value: wrapped.cb(validateOptions.value),
+                        };
+                    } catch (e) {
+                        errors.push(e);
                     }
-                }
-                
-                return {
-                    key: validateOptions.key,
-                    value: wrapped.cb(validateOptions.value),
-                };
-            })
-            .reduce((result, item) => {
-                result[item.key] = item.value;
-                return result;
-            }, Object.create(null));
+        
+                    return {
+                        key: validateOptions.key,
+                        value: null,
+                    };
+                })
+                .reduce((result, { key, value }) => {
+                    result[key] = value;
+                    return result;
+                }, Object.create(null));
+    
+            if (errors.length) {
+                throw errors;
+            }
+            
+            return prepareData;
+        }
     }
     
     export function idToNode(id: string): string {
