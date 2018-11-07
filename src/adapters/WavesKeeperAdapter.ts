@@ -114,7 +114,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
     
     public static getUserList() {
-        return WavesKeeperAdapter._api.publicState().then(({ accounts }) => accounts);
+        return WavesKeeperAdapter._api.publicState().then(({ account }) => [account]);
     }
     
     public static initOptions(options) {
