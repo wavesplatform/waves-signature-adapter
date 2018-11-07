@@ -4,7 +4,7 @@ import { AdapterType } from '../config';
 
 export class TresorAdapter extends Adapter {
 
-    public static type = AdapterType.MetaMask;
+    public static type = AdapterType.Tresor;
 
     public getPublicKey() {
         return Promise.resolve(''); // TODO
