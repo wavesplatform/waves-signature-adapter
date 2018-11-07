@@ -8,12 +8,12 @@ const { isValidSignature } = utils.crypto;
 const { sign } = getSchemaByType(SIGN_TYPE.AUTH);
 const generator = SIGN_TYPES[SIGN_TYPE.AUTH].signatureGenerator;
 
-declare const Waves: IWavesKeeper;
 
 export class WavesKeeperAdapter extends Adapter {
 
     public static type = AdapterType.WavesKeeper;
     public static adapter: WavesKeeperAdapter;
+    
     public static async connect({ name, icon = null, data }, extension): Promise<WavesKeeperAdapter> {
          
         if (typeof extension === 'undefined') {
@@ -40,19 +40,27 @@ export class WavesKeeperAdapter extends Adapter {
             return Promise.reject('Signature is invalid');
         }
         
-        WavesKeeperAdapter.adapter = new WavesKeeperAdapter(address, publicKey, extension);
+        WavesKeeperAdapter._api = extension;
+        WavesKeeperAdapter.adapter = new WavesKeeperAdapter(address, publicKey);
         return WavesKeeperAdapter.adapter;
     }
 
     private _address: string;
     private _pKey: string;
-    private _api: IWavesKeeper;
+    private static _api: IWavesKeeper;
     
-    constructor(address, pKey, api) {
+    constructor(address, pKey) {
         super();
+        if (typeof WavesKeeperAdapter._api === 'undefined') {
+            throw 'No plugin api';
+        }
+    
+        if (!WavesKeeperAdapter._api.auth) {
+            throw 'No plugin api';
+        }
+        
         this._address = address;
         this._pKey = pKey;
-        this._api = api;
     }
     
     public getPublicKey() {
@@ -68,12 +76,12 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public signRequest(bytes: Uint8Array, presision?, signData?): Promise<string> {
-        return this._api.signRequest(signData);
+        return WavesKeeperAdapter._api.signRequest(signData);
     
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
-        return this._api.signTransaction(signData).then(
+        return WavesKeeperAdapter._api.signTransaction(signData).then(
             ({ proofs, signature }) => signature || proofs.pop()
         );
     }
@@ -81,16 +89,16 @@ export class WavesKeeperAdapter extends Adapter {
     public signOrder(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
         switch (signData.type) {
             case SIGN_TYPE.CREATE_ORDER:
-                return this._api.signOrder(signData).then(
+                return WavesKeeperAdapter._api.signOrder(signData).then(
                     ({ proofs, signature }) => signature || proofs.pop()
                 );
             case SIGN_TYPE.CANCEL_ORDER:
-                return this._api.signCancelOrder(signData).then(
+                return WavesKeeperAdapter._api.signCancelOrder(signData).then(
                     ({ proofs, signature }) => signature || proofs.pop()
                 );
         }
         
-        return this._api.signRequest(signData);
+        return WavesKeeperAdapter._api.signRequest(signData);
     }
 
     public signData(bytes: Uint8Array): Promise<string> {
@@ -104,15 +112,27 @@ export class WavesKeeperAdapter extends Adapter {
     public static isAvailable() {
         return Promise.resolve(false);
     }
+    
+    public static getUserList() {
+        return WavesKeeperAdapter._api.publicState().then(({ accounts }) => accounts);
+    }
+    
+    public static initOptions(options) {
+        Adapter.initOptions(options);
+        this._api = options.api;
+    }
+    
 }
 
 
 interface IWavesKeeper {
-    sign: (data: IAuth) => Promise<IAuthData>;
+    auth: (data: IAuth) => Promise<IAuthData>;
     signTransaction: (data: TSignData) => Promise<any>;
     signOrder: (data) => Promise<any>;
     signCancelOrder: (data) => Promise<any>;
     signRequest: (data) => Promise<string>;
+    signBytes: (data) => Promise<string>;
+    publicState: () => Promise<any>;
 }
 
 interface IAuth {
