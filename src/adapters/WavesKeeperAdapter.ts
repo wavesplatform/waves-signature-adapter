@@ -119,7 +119,7 @@ export class WavesKeeperAdapter extends Adapter {
     
     public static initOptions(options) {
         Adapter.initOptions(options);
-        this._api = options.api;
+        this._api = options.extension;
     }
     
 }
