@@ -109,8 +109,28 @@ export class WavesKeeperAdapter extends Adapter {
         return Promise.reject('No private key');
     }
 
-    public static isAvailable() {
-        return Promise.resolve(false);
+    public static async isAvailable() {
+        if (!!this._api) {
+            throw { code: 0, message: 'Install WavesKeeper' };
+        }
+        
+        const promise = this._api.publicState();
+        
+        try {
+            const state = await promise;
+            
+            if (!state.account) {
+                throw { code: 2, message: 'No accounts in waveskeeper' };
+            }
+    
+            if (!utils.crypto.isValidAddress(state.account.address)) {
+                throw { code: 3, message: 'Selected network incorrect' };
+            }
+        } catch (e) {
+            throw { code: 1, message: 'No permissions' }
+        }
+        
+        return true;
     }
     
     public static getUserList() {
