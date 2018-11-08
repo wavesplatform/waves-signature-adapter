@@ -40,12 +40,12 @@ export class WavesKeeperAdapter extends Adapter {
             await WavesKeeperAdapter.isAvailable();
             const data = await WavesKeeperAdapter._api.publicState();
             if (data.account.address === this._address) {
-                return Promise.resolve();
+                return Promise.resolve(null);
             }
         } catch (e) {
         }
         
-        return Promise.reject();
+        return Promise.reject(null);
     }
     
     public onDestroy(cb) {
