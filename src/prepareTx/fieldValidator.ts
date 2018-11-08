@@ -374,7 +374,7 @@ const transfers = (options: IFieldOptions) => {
         const dataErrors = [];
         
         try {
-            number({ ...options, value: amount, name: `${options.name}:${index}:amount`, optional: false });
+            numberLike({ ...options, value: amount, name: `${options.name}:${index}:amount`, optional: false });
         } catch (e) {
             dataErrors.push(e);
         }

@@ -30,7 +30,7 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._api.on('update', (state) => {
             if (!state.account || state.account.address !== this._address) {
                 this._needDestroy = true;
-                this._onDestoryCb.forEach(cb => cb);
+                this._onDestoryCb.forEach(cb => cb());
             }
         });
     }
