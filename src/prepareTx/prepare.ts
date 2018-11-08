@@ -14,8 +14,8 @@ export module prepare {
 
         export function assetPair(data) {
             return {
-                amountAsset: normalizeAssetId(data.amountAsset),
-                priceAsset: normalizeAssetId(data.priceAsset)
+                amountAsset: normalizeAssetId(data.amount.asset.id),
+                priceAsset: normalizeAssetId(data.price.asset.id)
             };
         }
 
