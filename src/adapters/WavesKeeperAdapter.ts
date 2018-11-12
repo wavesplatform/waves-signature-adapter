@@ -7,7 +7,7 @@ export class WavesKeeperAdapter extends Adapter {
 
     public static type = AdapterType.WavesKeeper;
     public static adapter: WavesKeeperAdapter;
-
+    private static _onUpdateCb: Array<(...args) => any> = [];
     private _onDestoryCb = [];
     private _needDestroy = false;
     private _address: string;
@@ -27,7 +27,7 @@ export class WavesKeeperAdapter extends Adapter {
         this._address = address;
         this._pKey = publicKey;
 
-        WavesKeeperAdapter._api.on('update', (state) => {
+        WavesKeeperAdapter.onUpdate((state) => {
             if (!state.account || state.account.address !== this._address) {
                 this._needDestroy = true;
                 this._onDestoryCb.forEach(cb => cb());
@@ -143,6 +143,15 @@ export class WavesKeeperAdapter extends Adapter {
 
     public static setApiExtension(extension) {
         this._api = extension;
+        WavesKeeperAdapter._api.on('update', (state) => {
+            for (const cb of WavesKeeperAdapter._onUpdateCb) {
+                cb(state);
+            }
+        });
+    }
+    
+    public static onUpdate(cb) {
+        WavesKeeperAdapter._onUpdateCb.push(cb);
     }
 }
 
