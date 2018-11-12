@@ -6,18 +6,13 @@
 $ npm install --save @waves/signature-adapter
 ```
 
-### Library has dependency
-
- * @waves/signature-generator
- * @waves/data-entities
-
 ## Usage
 
 ```typescript
 
 import { SeedAdapter } from '@waves/signature-adapter';
 
-const adapter = new SeedAdapter('some seed phrase with 15 or more words');
+const adapter = new SeedAdapter('some seed phrase with 15 or more chars');
 const signable = adapter.makeSignable({
     type: 4, // transaction type number (from SING_TYPES)
     data: ... // data for sign
@@ -97,4 +92,12 @@ signable.getId() // Promise<string>
  ```typescript
  signable.addMyProof() // Promise<string>
  ```
+ 
+  - getDataForApi:
+  
+  ```typescript
+signable.getDataForApi().then(data => {
+    return fetch('node-url', {method: 'POST', body: JSON.stringify(data)}); 
+});
+```
  
