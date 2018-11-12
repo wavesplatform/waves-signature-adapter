@@ -68,18 +68,20 @@ export class WavesKeeperAdapter extends Adapter {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
 
-    public async signRequest(bytes: Uint8Array, presision?, signData?): Promise<string> {
-        const dataStr = await WavesKeeperAdapter._api.signRequest(signData);
-        return dataStr;
+    public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
+        await this.isAvailable();
+        return await WavesKeeperAdapter._api.signRequest(signData);
     }
 
     public async signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
+        await this.isAvailable();
         const dataStr = await WavesKeeperAdapter._api.signTransaction(signData);
         const { proofs, signature } = JSON.parse(dataStr);
         return signature || proofs.pop();
     }
 
     public async signOrder(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
+        await this.isAvailable();
         let promise;
         switch (signData.type) {
             case SIGN_TYPE.CREATE_ORDER:
@@ -97,7 +99,8 @@ export class WavesKeeperAdapter extends Adapter {
         return signature || proofs.pop();
     }
 
-    public signData(bytes: Uint8Array): Promise<string> {
+    public async signData(bytes: Uint8Array): Promise<string> {
+        await this.isAvailable();
         return Promise.resolve(''); //TODO
     }
 
