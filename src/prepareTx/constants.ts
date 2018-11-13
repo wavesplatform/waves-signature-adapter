@@ -36,6 +36,7 @@ export enum SIGN_TYPE {
     TRANSFER = 4,
     REISSUE = 5,
     BURN = 6,
+    EXCHANGE = 7,
     LEASE = 8,
     CANCEL_LEASING = 9,
     CREATE_ALIAS = 10,
@@ -89,6 +90,12 @@ export const SIGN_TYPES = {
     [SIGN_TYPE.BURN]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.BURN],
         adapter: 'signTransaction'
+    },
+    [SIGN_TYPE.EXCHANGE]: {
+        signatureGenerator: generate<IAuthData>([
+            new StringWithLength('exchange-tx')
+        ]),
+        adapter: 'signRequest'
     },
     [SIGN_TYPE.LEASE]: {
         signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.LEASE],
