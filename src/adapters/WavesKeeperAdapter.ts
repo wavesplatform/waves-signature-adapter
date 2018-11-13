@@ -19,15 +19,6 @@ export class WavesKeeperAdapter extends Adapter {
     constructor( { address, publicKey }) {
         super();
         WavesKeeperAdapter._initExtension();
-        
-        if (typeof WavesKeeperAdapter._api === 'undefined') {
-            throw 'No plugin api';
-        }
-
-        if (!WavesKeeperAdapter._api.auth) {
-            throw 'No plugin api';
-        }
-
         this._address = address;
         this._pKey = publicKey;
 
