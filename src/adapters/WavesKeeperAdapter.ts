@@ -30,13 +30,13 @@ export class WavesKeeperAdapter extends Adapter {
         });
     }
 
-    public async isAvailable(): Promise<void> {
+    public async isAvailable(ignoreLocked = false): Promise<void> {
         try {
             await WavesKeeperAdapter.isAvailable();
             const data = await WavesKeeperAdapter._api.publicState();
             
             if (data.locked) {
-                return Promise.reject({ code: 4, msg: 'Keeper is locked' });
+                return ignoreLocked ? Promise.resolve() : Promise.reject({ code: 4, msg: 'Keeper is locked' });
             }
             
             if (data.account && data.account.address === this._address) {
@@ -46,6 +46,15 @@ export class WavesKeeperAdapter extends Adapter {
         }
 
         return Promise.reject({ code: 5, msg: 'Keeper has another active account' });
+    }
+    
+    public async isLocked() {
+        await WavesKeeperAdapter.isAvailable();
+        const data = await WavesKeeperAdapter._api.publicState();
+        
+        if (data.locked) {
+            return Promise.resolve();
+        }
     }
     
     public onDestroy(cb) {
@@ -69,19 +78,19 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
-        await this.isAvailable();
+        await this.isAvailable(true);
         return await WavesKeeperAdapter._api.signRequest(signData);
     }
 
     public async signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
-        await this.isAvailable();
+        await this.isAvailable(true);
         const dataStr = await WavesKeeperAdapter._api.signTransaction(signData);
         const { proofs, signature } = JSON.parse(dataStr);
         return signature || proofs.pop();
     }
 
     public async signOrder(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
-        await this.isAvailable();
+        await this.isAvailable(true);
         let promise;
         switch (signData.type) {
             case SIGN_TYPE.CREATE_ORDER:
@@ -100,7 +109,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public async signData(bytes: Uint8Array): Promise<string> {
-        await this.isAvailable();
+        await this.isAvailable(true);
         return Promise.resolve(''); //TODO
     }
 
