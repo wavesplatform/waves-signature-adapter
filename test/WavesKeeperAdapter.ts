@@ -35,8 +35,7 @@ const keeperMock = {
                 default:
                     throw new Error('invalid transaction');
             }
-    
-            return {proofs: ['test', 'realProof']};
+            return JSON.stringify({proofs: ['test', 'realProof']});
         },
         signOrder: async data => {},
         signCancelOrder: async data => {},
@@ -86,6 +85,7 @@ describe('WavesKeeper adapter test', () => {
             const result = await signable.getDataForApi() as any;
             expect(result.proofs[0]).toBe('realProof')
         } catch (e) {
+            console.log(e);
             expect(e).toBe('Done')
         }
     });
