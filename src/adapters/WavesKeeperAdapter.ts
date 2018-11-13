@@ -132,7 +132,7 @@ export class WavesKeeperAdapter extends Adapter {
         if (!error && data) {
             if (!data.locked && !data.account) {
                 error = { code: 2, message: 'No accounts in waveskeeper' };
-            } else if (!data.locked && !data.account.address || !utils.crypto.isValidAddress(data.account.address)) {
+            } else if (!data.locked && (!data.account.address || !utils.crypto.isValidAddress(data.account.address))) {
                 error = { code: 3, message: 'Selected network incorrect' };
             }
         }
