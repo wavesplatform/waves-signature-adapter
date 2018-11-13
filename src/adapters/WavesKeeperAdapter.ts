@@ -146,11 +146,13 @@ export class WavesKeeperAdapter extends Adapter {
 
     public static setApiExtension(extension) {
         this._api = extension;
-        WavesKeeperAdapter._api.on('update', (state) => {
-            for (const cb of WavesKeeperAdapter._onUpdateCb) {
-                cb(state);
-            }
-        });
+        if (this._api) {
+            this._api.on('update', (state) => {
+                for (const cb of WavesKeeperAdapter._onUpdateCb) {
+                    cb(state);
+                }
+            });
+        }
     }
     
     public static onUpdate(cb) {
