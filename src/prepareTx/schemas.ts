@@ -245,6 +245,11 @@ module schemas {
             wrap('timestamp', 'timestamp', processors.timestamp)
         );
 
+        export const exchange = data => {
+            console.warn('Sign exchange transaction is not supported!');
+            return data;
+        };
+
         export const lease = schema(
             'senderPublicKey',
             wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
@@ -330,6 +335,8 @@ export function getSchemaByType(type: SIGN_TYPE) {
             return { api: schemas.api.reissue, sign: schemas.sign.reissue };
         case SIGN_TYPE.BURN:
             return { api: schemas.api.burn, sign: schemas.sign.burn };
+        case SIGN_TYPE.EXCHANGE:
+            return { api: hasNoApiMethod('api, exchange'), sign: schemas.sign.exchange };
         case SIGN_TYPE.LEASE:
             return { api: schemas.api.lease, sign: schemas.sign.lease };
         case SIGN_TYPE.CANCEL_LEASING:
