@@ -18,6 +18,8 @@ export class WavesKeeperAdapter extends Adapter {
 
     constructor( { address, publicKey }) {
         super();
+        WavesKeeperAdapter._initExtension();
+        
         if (typeof WavesKeeperAdapter._api === 'undefined') {
             throw 'No plugin api';
         }
@@ -30,7 +32,7 @@ export class WavesKeeperAdapter extends Adapter {
         this._pKey = publicKey;
 
         WavesKeeperAdapter.onUpdate((state) => {
-            if (!state.account || state.account.address !== this._address) {
+            if (!state.locked && (!state.account || state.account.address !== this._address)) {
                 this._needDestroy = true;
                 this._onDestoryCb.forEach(cb => cb());
             }
