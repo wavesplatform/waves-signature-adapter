@@ -12,6 +12,8 @@ export class WavesKeeperAdapter extends Adapter {
     private _needDestroy = false;
     private _address: string;
     private _pKey: string;
+    private static _getApiCb: () => IWavesKeeper;
+    
     private static _api: IWavesKeeper;
 
     constructor( { address, publicKey }) {
@@ -39,13 +41,18 @@ export class WavesKeeperAdapter extends Adapter {
         try {
             await WavesKeeperAdapter.isAvailable();
             const data = await WavesKeeperAdapter._api.publicState();
-            if (data.account.address === this._address) {
+            
+            if (data.locked) {
+                return Promise.reject({ code: 4, msg: 'Keeper is locked' });
+            }
+            
+            if (data.account && data.account.address === this._address) {
                 return Promise.resolve();
             }
         } catch (e) {
         }
 
-        return Promise.reject(null);
+        return Promise.reject({ code: 5, msg: 'Keeper has another active account' });
     }
     
     public onDestroy(cb) {
@@ -109,6 +116,8 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static async isAvailable() {
+        WavesKeeperAdapter._initExtension();
+        
         if (!this._api) {
             throw { code: 0, message: 'Install WavesKeeper' };
         }
@@ -135,7 +144,8 @@ export class WavesKeeperAdapter extends Adapter {
         return true;
     }
 
-    public static getUserList() {
+    public static async getUserList() {
+        await WavesKeeperAdapter.isAvailable();
         return WavesKeeperAdapter._api.publicState().then(({ account }) => [account]);
     }
 
@@ -145,7 +155,30 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static setApiExtension(extension) {
-        this._api = extension;
+        
+        let extensionCb;
+        
+        if (typeof extension === 'function') {
+            extensionCb = extension;
+        } else if (extension) {
+            extensionCb = () => extension;
+        }
+        
+        WavesKeeperAdapter._getApiCb = extensionCb;
+    }
+    
+    public static onUpdate(cb) {
+        WavesKeeperAdapter._onUpdateCb.push(cb);
+    }
+    
+    
+    private static _initExtension() {
+        if (WavesKeeperAdapter._api || !WavesKeeperAdapter._getApiCb) {
+            return null;
+        }
+        
+        this._api = WavesKeeperAdapter._getApiCb();
+    
         if (this._api) {
             this._api.on('update', (state) => {
                 for (const cb of WavesKeeperAdapter._onUpdateCb) {
@@ -153,10 +186,6 @@ export class WavesKeeperAdapter extends Adapter {
                 }
             });
         }
-    }
-    
-    public static onUpdate(cb) {
-        WavesKeeperAdapter._onUpdateCb.push(cb);
     }
 }
 

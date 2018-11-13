@@ -65,6 +65,29 @@ describe('WavesKeeper adapter test', () => {
         }
     });
     
+    it('Test connect to extension by cb', async () => {
+        let mock = null;
+        WavesKeeperAdapter.setApiExtension(() => mock);
+        
+        try {
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            await adapter.isAvailable();
+            expect('Fail init Adapter').toBe('Done')
+        } catch (e) {
+            mock = keeperMock;
+        }
+        
+        try {
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            await adapter.isAvailable();
+            
+        } catch (e) {
+            expect('Fail create adapter').toBe('Done')
+        }
+    });
+    
     it('Test sign transfer', async () => {
         
         const data = {
