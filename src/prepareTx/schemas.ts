@@ -124,6 +124,7 @@ const SIGN_SCHEMA = {
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.script('script')
     ],
+    [SIGN_TYPE.EXCHANGE]: []
 };
 
 
@@ -307,10 +308,10 @@ module schemas {
         export const data = signSchema(SIGN_SCHEMA[SIGN_TYPE.DATA]);
         export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
         export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
-    }
-    
-    export module validate {
-    
+        export const exchange = data => {
+            console.warn('Sign exchange transaction is not supported!');
+            return data;
+        };
     }
 }
 
@@ -338,6 +339,8 @@ export function getSchemaByType(type: SIGN_TYPE) {
             return { api: schemas.api.reissue, sign: schemas.sign.reissue };
         case SIGN_TYPE.BURN:
             return { api: schemas.api.burn, sign: schemas.sign.burn };
+        case SIGN_TYPE.EXCHANGE:
+            return { api: hasNoApiMethod('api, exchange'), sign: schemas.sign.exchange };
         case SIGN_TYPE.LEASE:
             return { api: schemas.api.lease, sign: schemas.sign.lease };
         case SIGN_TYPE.CANCEL_LEASING:

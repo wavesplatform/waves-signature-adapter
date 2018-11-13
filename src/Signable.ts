@@ -135,12 +135,15 @@ export class Signable {
         return this.getMyProofs().then(proofs => !!proofs.length);
     }
 
-    public addMyProof(): Promise<void> {
+    public addMyProof(): Promise<string> {
         return this.hasMySignature().then(hasMySignature => {
             if (!hasMySignature) {
                 return this.getSignature().then(signature => {
                     this._proofs.push(signature);
+                    return signature;
                 });
+            } else {
+                return this.getMyProofs().then(list => list[list.length - 1]);
             }
         });
     }

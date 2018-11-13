@@ -13,6 +13,7 @@ export type TSignData =
     ISignIssue |
     ISignReissue |
     ISignBurn |
+    ISignExchange |
     ISignLease |
     ISignCancelLeasing |
     ISignCreateAlias |
@@ -73,6 +74,12 @@ export interface ISignBurn {
     data: IBurn;
     type: SIGN_TYPE.BURN;
 }
+
+export interface ISignExchange {
+    data: IExchange;
+    type: SIGN_TYPE.EXCHANGE;
+}
+
 
 export interface ISignLease {
     data: ILease;
@@ -175,6 +182,13 @@ export interface IBurn extends ICreateTxData {
     quantity: string;
 }
 
+export interface IExchange extends ICreateTxData {
+    buyOrder: IOrder;
+    sellOrder: IOrder;
+    buyMatcherFee: Money;
+    sellMatcherFee: Money;
+}
+
 export interface ILease extends ICreateTxData {
     amount: string;
     recipient: string;
@@ -207,4 +221,14 @@ export interface ISetScript extends ICreateTxData {
 
 export interface ISponsorship extends ICreateTxData {
     minSponsoredAssetFee: Money;
+}
+
+export interface IOrder {
+    senderPublicKey?: string;
+    matcherPublicKey: string;
+    price: Money;
+    amount: Money;
+    timestamp: number;
+    expiration: number;
+    matcherFee: Money;
 }
