@@ -41,7 +41,7 @@ const keeperMock = {
         signCancelOrder: async data => {},
         signRequest: async data => {},
         publicState: async () => ({
-            locked: true,
+            locked: false,
             account: {
                 address:"3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj",
                 publicKey:"2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr"
@@ -59,7 +59,6 @@ describe('WavesKeeper adapter test', () => {
             const users = await WavesKeeperAdapter.getUserList();
             const adapter = new WavesKeeperAdapter(users[0]);
             await adapter.isAvailable();
-            
         } catch (e) {
             expect('Fail create adapter').toBe('Done')
         }

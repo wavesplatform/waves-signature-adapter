@@ -82,7 +82,7 @@ const SIGN_SCHEMA = {
     [SIGN_TYPE.LEASE]: [
         fieldsType.string('senderPublicKey', null, null,true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
-        fieldsType.address('recipient'),
+        fieldsType.aliasOrAddress('recipient'),
         fieldsType.numberLike('amount', null, processors.toBigNumber),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
