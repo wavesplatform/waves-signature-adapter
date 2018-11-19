@@ -2,11 +2,12 @@ import { prepare } from './prepare';
 import { SIGN_TYPE } from './constants';
 import { config, TRANSACTION_TYPE_VERSION } from '@waves/signature-generator';
 import * as fieldsType from './fieldTypes';
+
 const { schema, wrap, signSchema, processors } = prepare;
 
 const SIGN_SCHEMA = {
     [SIGN_TYPE.MATCHER_ORDERS]: [
-        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.AUTH]: [
@@ -19,23 +20,23 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CREATE_ORDER]: [
-        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.string('matcherPublicKey'),
         fieldsType.money('amount', 'amountAsset', processors.moneyToAssetId),
         fieldsType.money('price', 'priceAsset', processors.moneyToAssetId),
         fieldsType.orderType('orderType'),
-        fieldsType.required('price', null, processors.toBigNumber),
-        fieldsType.required('amount', null, processors.toBigNumber),
+        fieldsType.money('amount', 'amount', processors.toBigNumber),
+        fieldsType.fromData(null, 'price', processors.toOrderPrice),
         fieldsType.numberLike('matcherFee', null, processors.toBigNumber),
         fieldsType.timestamp('expiration', null, processors.expiration),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CANCEL_ORDER]: [
-        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.string('id', 'orderId'),
     ],
     [SIGN_TYPE.ISSUE]: [
-        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.assetName('name'),
         fieldsType.assetDescription('description'),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
@@ -46,7 +47,7 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.REISSUE]: [
-        fieldsType.string('senderPublicKey', null,  null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset('assetId'),
         fieldsType.numberLike('quantity', null, processors.toBigNumber),
@@ -55,7 +56,7 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.BURN]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset('assetId'),
         fieldsType.numberLike('amount', 'quantity', processors.toBigNumber),
@@ -63,14 +64,14 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.SPONSORSHIP]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.money('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
         fieldsType.numberLike('minSponsoredAssetFee', null, processors.toBigNumber),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.TRANSFER]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.money('amount', 'assetId', processors.moneyToAssetId),
         fieldsType.required('amount', null, processors.toBigNumber),
         fieldsType.money('fee', 'feeAssetId', processors.moneyToAssetId),
@@ -80,7 +81,7 @@ const SIGN_SCHEMA = {
         fieldsType.attachment('attachment', null, processors.orString, true),
     ],
     [SIGN_TYPE.LEASE]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.aliasOrAddress('recipient'),
         fieldsType.numberLike('amount', null, processors.toBigNumber),
@@ -88,20 +89,20 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CANCEL_LEASING]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.string('leaseId', 'transactionId'),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CREATE_ALIAS]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.aliasName('alias'),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.MASS_TRANSFER]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.money('totalAmount', 'assetId', processors.moneyToAssetId),
         fieldsType.transfers('transfers', null, processors.transfers(
             processors.noProcess,
@@ -112,13 +113,13 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.DATA]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.data('data')
     ],
     [SIGN_TYPE.SET_SCRIPT]: [
-        fieldsType.string('senderPublicKey', null, null,true),
+        fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
@@ -141,7 +142,7 @@ module schemas {
             'matcherPublicKey',
             'orderType',
             wrap(null, 'assetPair', processors.assetPair),
-            wrap('price', 'price', processors.toBigNumber),
+            wrap(null, 'price', processors.toOrderPrice),
             wrap('amount', 'amount', processors.toBigNumber),
             wrap('matcherFee', 'matcherFee', processors.toBigNumber),
             wrap('expiration', 'expiration', processors.expiration),

@@ -79,7 +79,7 @@ describe('Check validators', () => {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
             } catch (e) {
-                expect(e.length).toEqual(1);
+                expect(e.length).toEqual(3);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('amount');
             }

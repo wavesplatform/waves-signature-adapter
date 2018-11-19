@@ -1,4 +1,4 @@
-import { Money, BigNumber } from '@waves/data-entities';
+import { Money, BigNumber, AssetPair, OrderPrice } from '@waves/data-entities';
 import { WAVES_ID, libs, config } from '@waves/signature-generator';
 import { VALIDATORS } from './fieldValidator';
 
@@ -102,6 +102,12 @@ export module prepare {
         export function base64(str): string {
             return (str || '').replace('base64:', '');
         }
+
+        export function toOrderPrice(order) {
+            const assetPair = new AssetPair(order.amount.asset, order.price.asset);
+            const orderPrice = OrderPrice.fromTokens(order.price.toTokens(), assetPair);
+            return orderPrice.getMatcherCoins();
+        }
     }
 
     export function wrap(from: string, to: string, cb: any): IWrappedFunction {
@@ -132,51 +138,51 @@ export module prepare {
                 return result;
             }, Object.create(null));
     }
-    
-    export function signSchema(args: Array<{ name, field, processor, optional, type } >) {
+
+    export function signSchema(args: Array<{ name, field, processor, optional, type }>) {
         return (data, validate = false) => {
             const errors = [];
             const prepareData = args.map((item) => {
-                    const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
-        
-                    const validateOptions = {
-                        key: wrapped.to,
-                        value: wrapped.from ? data[wrapped.from] : data,
-                        optional: item.optional,
-                        type: item.type,
-                        name: item.name,
-                    };
-                    const validator = VALIDATORS[validateOptions.type];
-                    try {
-                        if (validate && validator) {
-                            validator(validateOptions);
-                        }
-                        return {
-                            key: validateOptions.key,
-                            value: wrapped.cb(validateOptions.value),
-                        };
-                    } catch (e) {
-                        errors.push(e);
+                const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
+
+                const validateOptions = {
+                    key: wrapped.to,
+                    value: wrapped.from ? data[wrapped.from] : data,
+                    optional: item.optional,
+                    type: item.type,
+                    name: item.name,
+                };
+                const validator = VALIDATORS[validateOptions.type];
+                try {
+                    if (validate && validator) {
+                        validator(validateOptions);
                     }
-        
                     return {
                         key: validateOptions.key,
-                        value: null,
+                        value: wrapped.cb(validateOptions.value),
                     };
-                })
+                } catch (e) {
+                    errors.push(e);
+                }
+
+                return {
+                    key: validateOptions.key,
+                    value: null,
+                };
+            })
                 .reduce((result, { key, value }) => {
                     result[key] = value;
                     return result;
                 }, Object.create(null));
-    
+
             if (errors.length) {
                 throw errors;
             }
-            
+
             return prepareData;
-        }
+        };
     }
-    
+
     export function idToNode(id: string): string {
         return id === WAVES_ID ? '' : id;
     }
