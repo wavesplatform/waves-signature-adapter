@@ -20,18 +20,23 @@ export abstract class Adapter {
     public isAvailable(): Promise<void> {
         return Promise.resolve();
     }
-
+    
+    public onDestroy(cb?): void {
+        return;
+    }
+    
+    
     public abstract getPublicKey(): Promise<string>;
 
     public abstract getAddress(): Promise<string>;
 
     public abstract getPrivateKey(): Promise<string>;
 
-    public abstract signRequest(bytes: Uint8Array): Promise<string>;
+    public abstract signRequest(databytes: Uint8Array, signData?): Promise<string>;
 
-    public abstract signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string>;
+    public abstract signTransaction(bytes: Uint8Array, amountPrecision: number, signData?): Promise<string>;
 
-    public abstract signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string>;
+    public abstract signOrder(bytes: Uint8Array, amountPrecision: number, signData): Promise<string>;
 
     public abstract signData(bytes: Uint8Array): Promise<string>;
 

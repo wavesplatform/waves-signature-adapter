@@ -1,14 +1,15 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "2.1.0",
+  "version": "3.0.10",
   "types": "src/index.ts",
   "main": "dist/index.js",
   "dependencies": {
     "@waves/data-entities": "^1.6.3",
-    "@waves/ledger": "^0.1.3",
+    "@waves/ledger": "^1.0.0-beta",
     "@waves/signature-generator": "^1.0.7"
   },
   "scripts": {
+    "test": "jest",
     "compile": "tsc",
     "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/data-entities -u @waves/signature-generator -u @waves/ledger -o dist/signature-adapter.js",
     "build": "npm run compile && npm run browserify && npm run uglify",

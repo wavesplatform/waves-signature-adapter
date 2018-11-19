@@ -15,10 +15,14 @@ export class Signable {
 
 
     constructor(forSign: TSignData, adapter: Adapter) {
-        this._forSign = forSign;
+        this._forSign = { ...forSign };
         this._adapter = adapter;
         this._prepare = getSchemaByType(forSign.type);
 
+        if (!this._forSign.data.timestamp) {
+            this._forSign.data.timestamp = Date.now();
+        }
+        
         if (this._forSign.data.proofs) {
             this._proofs = this._forSign.data.proofs.slice();
         }
@@ -35,6 +39,7 @@ export class Signable {
         }
 
         let generator: ISignatureGeneratorConstructor<any>;
+        
         if (forSign.type === SIGN_TYPE.CUSTOM) {
             generator = forSign.generator;
             this._signMethod = 'signRequest';
@@ -46,7 +51,8 @@ export class Signable {
         if (!generator) {
             throw new Error(`Unknown data type ${forSign.type}!`);
         }
-
+        this._prepare.sign(forSign.data, true);
+        
         this._bytePromise = Promise.all([
             this._adapter.getPublicKey(),
             this._adapter.getAddress()
@@ -156,7 +162,7 @@ export class Signable {
     private _makeSignPromise(): Signable {
         if (!this._signPromise) {
             this._signPromise = this._bytePromise.then(bytes => {
-                return this._adapter[this._signMethod](bytes, this._getAmountPrecision());
+                return this._adapter[this._signMethod](bytes, this._getAmountPrecision(), this._forSign);
             });
 
             this._signPromise.catch(() => {
