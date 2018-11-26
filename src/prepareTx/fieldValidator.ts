@@ -43,7 +43,7 @@ const isBase64 = (value) => {
 };
 
 const getBytesFromString = value => {
-    return unescape(encodeURIComponent(value));
+    return utils.convert.stringToByteArray(value);
 };
 
 const numberToString = (num) => num && typeof num === 'number' ? num.toString() : num;
