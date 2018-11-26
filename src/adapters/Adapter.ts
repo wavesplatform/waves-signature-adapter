@@ -67,7 +67,6 @@ export interface IUser {
     encryptedSeed: string;
     password: string;
     encryptionRounds: number;
-    networkCode: string;
 }
 
 export interface IProofData {
