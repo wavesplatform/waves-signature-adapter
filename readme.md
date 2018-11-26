@@ -54,7 +54,14 @@ Object structure:
 encryptedSeed {string} - seed phrase encoded with passwords
 password {string} - password that is encrypted seed phrase
 encryptionRounds {number} - encryption complexity
-networkCode {string} - network byte code ("W" for mainnet, and "T" for testnet)
+
+For change network byte use @waves/signature-generator config:
+
+```typescript
+import { config } from '@waves/signature-generator';
+
+config.set('networkByte', 'T'.charCodeAt(0))
+```
 
 *If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters. See the documentation @waves/signature-generator for more details*
 
