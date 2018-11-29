@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "types": "src/index.ts",
   "main": "dist/index.js",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@waves/data-entities": "^1.6.3",
-    "@waves/ledger": "^1.0.0-beta",
+    "@waves/ledger": "^1.0.1-beta",
     "@waves/signature-generator": "^1.0.7"
   },
   "scripts": {
