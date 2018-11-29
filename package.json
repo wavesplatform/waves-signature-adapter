@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@waves/data-entities": "^1.6.3",
-    "@waves/ledger": "^1.0.0-beta",
+    "@waves/ledger": "^1.0.1-beta",
     "@waves/signature-generator": "^1.0.7"
   },
   "scripts": {
