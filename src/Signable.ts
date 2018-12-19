@@ -5,6 +5,7 @@ import { ISignatureGeneratorConstructor, utils } from '@waves/signature-generato
 
 export class Signable {
 
+    public readonly type: SIGN_TYPE;
     private readonly _forSign: TSignData;
     private readonly _adapter: Adapter;
     private readonly _bytePromise: Promise<Uint8Array>;
@@ -16,13 +17,14 @@ export class Signable {
 
     constructor(forSign: TSignData, adapter: Adapter) {
         this._forSign = { ...forSign };
+        this.type = forSign.type;
         this._adapter = adapter;
         this._prepare = getSchemaByType(forSign.type);
 
         if (!this._forSign.data.timestamp) {
             this._forSign.data.timestamp = Date.now();
         }
-        
+
         if (this._forSign.data.proofs) {
             this._proofs = this._forSign.data.proofs.slice();
         }
@@ -39,7 +41,7 @@ export class Signable {
         }
 
         let generator: ISignatureGeneratorConstructor<any>;
-        
+
         if (forSign.type === SIGN_TYPE.CUSTOM) {
             generator = forSign.generator;
             this._signMethod = 'signRequest';
@@ -52,7 +54,7 @@ export class Signable {
             throw new Error(`Unknown data type ${forSign.type}!`);
         }
         this._prepare.sign(forSign.data, true);
-        
+
         this._bytePromise = Promise.all([
             this._adapter.getPublicKey(),
             this._adapter.getAddress()
