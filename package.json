@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "3.2.0",
+  "version": "4.0.0-beta",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "license": "MIT",
