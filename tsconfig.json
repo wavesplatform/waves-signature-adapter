@@ -1,17 +1,38 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
-    "module": "commonjs",
-    "target": "es5",
-    "lib": [
-      "es2015",
-      "es2015.promise",
-      "dom"
-    ],
     "sourceMap": true,
-    "outDir": "dist"
+    "target": "es6",
+    "module": "commonjs",
+    "alwaysStrict": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "removeComments": true,
+    "noImplicitReturns": false,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "outDir": "dist",
+    "lib": [
+      "es6",
+      "es7",
+      "dom",
+      "es5",
+      "es2017.object"
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "app/*": [
+        "./app/*"
+      ]
+    }
   },
-  "include": [
+  "files": [
     "src/index.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
   ]
 }

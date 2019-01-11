@@ -16,7 +16,7 @@ const testAsset = new Asset({
     reissuable: false,
     sender: seed.address,
     timestamp: new Date(),
-    ticker: null
+    ticker: undefined
 });
 
 describe('Check validators', () => {
@@ -33,7 +33,7 @@ describe('Check validators', () => {
             matcherPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh',
             orderType: 'sell',
             price: Money.fromTokens('12.22', testAsset),
-            amount: new Money('12.5', new Asset(testAsset)),
+            amount: new Money('12.5', testAsset),
             matcherFee: Money.fromTokens('0.003', testAsset),
             expiration: Date.now(),
         };

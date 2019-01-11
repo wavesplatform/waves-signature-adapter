@@ -8,6 +8,7 @@ const { schema, wrap, signSchema, processors } = prepare;
 const SIGN_SCHEMA = {
     [SIGN_TYPE.MATCHER_ORDERS]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.AUTH]: [
@@ -17,18 +18,26 @@ const SIGN_SCHEMA = {
     ],
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: [
         fieldsType.string('prefix', null, processors.addValue('Coinomat'), true),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CREATE_ORDER]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.string('matcherPublicKey'),
+        //@ts-ignore
         fieldsType.money('amount', 'amountAsset', processors.moneyToAssetId),
+        //@ts-ignore
         fieldsType.money('price', 'priceAsset', processors.moneyToAssetId),
         fieldsType.orderType('orderType'),
+        //@ts-ignore
         fieldsType.money('amount', 'amount', processors.toBigNumber),
+        //@ts-ignore
         fieldsType.fromData(null, 'price', processors.toOrderPrice),
+        //@ts-ignore
         fieldsType.numberLike('matcherFee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('expiration', null, processors.expiration),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CANCEL_ORDER]: [
@@ -40,87 +49,122 @@ const SIGN_SCHEMA = {
         fieldsType.assetName('name'),
         fieldsType.assetDescription('description'),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
+        //@ts-ignore
         fieldsType.numberLike('quantity', null, processors.toBigNumber),
         fieldsType.precision('precision'),
         fieldsType.boolean('reissuable'),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.REISSUE]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset('assetId'),
+        //@ts-ignore
         fieldsType.numberLike('quantity', null, processors.toBigNumber),
         fieldsType.boolean('reissuable'),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.BURN]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset('assetId'),
+        //@ts-ignore
         fieldsType.numberLike('amount', 'quantity', processors.toBigNumber),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.SPONSORSHIP]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.money('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
+        //@ts-ignore
         fieldsType.numberLike('minSponsoredAssetFee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.TRANSFER]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.money('amount', 'assetId', processors.moneyToAssetId),
+        //@ts-ignore
         fieldsType.required('amount', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.money('fee', 'feeAssetId', processors.moneyToAssetId),
+        //@ts-ignore
         fieldsType.required('fee', 'fee', processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.aliasOrAddress('recipient'),
+        //@ts-ignore
         fieldsType.attachment('attachment', null, processors.orString, true),
     ],
     [SIGN_TYPE.LEASE]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.aliasOrAddress('recipient'),
+        //@ts-ignore
         fieldsType.numberLike('amount', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CANCEL_LEASING]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.string('leaseId', 'transactionId'),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.CREATE_ALIAS]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.aliasName('alias'),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.MASS_TRANSFER]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.money('totalAmount', 'assetId', processors.moneyToAssetId),
+        //@ts-ignore
         fieldsType.transfers('transfers', null, processors.transfers(
             processors.noProcess,
             processors.toBigNumber
         )),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.attachment('attachment', null, processors.orString, true),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
     [SIGN_TYPE.DATA]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.data('data')
     ],
     [SIGN_TYPE.SET_SCRIPT]: [
         fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.script('script')
@@ -141,6 +185,7 @@ module schemas {
         export const createOrder = schema(
             'matcherPublicKey',
             'orderType',
+            wrap(null, 'version', processors.addValue(2)),
             wrap(null, 'assetPair', processors.assetPair),
             wrap(null, 'price', processors.toOrderPrice),
             wrap('amount', 'amount', processors.toBigNumber),
@@ -148,7 +193,7 @@ module schemas {
             wrap('expiration', 'expiration', processors.expiration),
             'senderPublicKey',
             'timestamp',
-            wrap('proofs', 'signature', processors.signatureFromProof)
+            'proofs'
         );
 
         export const cancelOrder = schema(
@@ -309,6 +354,7 @@ module schemas {
         export const data = signSchema(SIGN_SCHEMA[SIGN_TYPE.DATA]);
         export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
         export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
+        //@ts-ignore
         export const exchange = data => {
             console.warn('Sign exchange transaction is not supported!');
             return data;
@@ -316,6 +362,7 @@ module schemas {
     }
 }
 
+//@ts-ignore
 const hasNoApiMethod = schemaType => () => {
     throw new Error(`Has no method for prepare ${schemaType}`);
 };

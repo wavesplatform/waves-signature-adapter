@@ -1,11 +1,10 @@
 import { SIGN_TYPE } from './constants';
-import { IDATA_ENTRY, ISignatureGeneratorConstructor } from '@waves/signature-generator/src/signatureFactory/interface';
+import { IDATA_ENTRY } from '@waves/signature-generator/src/signatureFactory/interface';
 import { Money, BigNumber } from '@waves/data-entities';
 
 export type TSignData =
     ISignAuthData |
     ISignCoinomatConfirmation |
-    ISignCustom |
     ISignGetOrders |
     ISignCreateOrder |
     ISignCancelOrder |
@@ -30,14 +29,6 @@ export interface ISignAuthData {
 export interface ISignCoinomatConfirmation {
     data: ICoinomatData;
     type: SIGN_TYPE.COINOMAT_CONFIRMATION;
-}
-
-export interface ISignCustom {
-    data: any;
-    type: SIGN_TYPE.CUSTOM;
-    generator: ISignatureGeneratorConstructor<any>;
-    apiProcessor?: Function;
-    signProcessor?: Function;
 }
 
 export interface ISignGetOrders {
@@ -121,14 +112,21 @@ export interface IAuthData {
     prefix: string;
     host: string;
     data: string;
+    timestamp?: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICoinomatData {
     timestamp: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface IGetOrders {
     timestamp: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICreateOrder {
@@ -142,10 +140,14 @@ export interface ICreateOrder {
     matcherFee: string;
     timestamp: number;
     proofs?: Array<string>;
+    version?: number;
 }
 
 export interface ICancelOrder {
     orderId: string;
+    version?: number;
+    timestamp?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICreateTxData {
@@ -153,6 +155,7 @@ export interface ICreateTxData {
     timestamp: number;
     sender?: string;
     proofs?: Array<string>;
+    version?: number;
 }
 
 export interface ITransferData extends ICreateTxData {
@@ -203,7 +206,6 @@ export interface ICreateAlias extends ICreateTxData {
 }
 
 export interface IMassTransfer extends ICreateTxData {
-    version: string;
     assetId: string;
     transfers: Array<{ recipient: string; amount: string; }>;
     attachment: string;
@@ -231,4 +233,10 @@ export interface IOrder {
     timestamp: number;
     expiration: number;
     matcherFee: Money;
+}
+
+export interface IAdapterSignMethods {
+    signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
+    signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: any): Promise<string>;
+    signOrder(bytes: Uint8Array, amountPrecision: number, signData: any): Promise<string>;
 }
