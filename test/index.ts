@@ -13,7 +13,7 @@ const checkCryptoGen = publicKey => (bytes, signature) => {
     return utils.crypto.isValidSignature(bytes, signature, publicKey);
 };
 
-const checkRypto = checkCryptoGen(seed.keyPair.publicKey);
+const checkCrypto = checkCryptoGen(seed.keyPair.publicKey);
 
 const testAsset = new Asset({
     precision: 5,
@@ -52,10 +52,10 @@ describe('Create data and signature check', () => {
                 type: SIGN_TYPE.TRANSFER,
                 data
             });
-            
+
             Promise.all([signable.getBytes(), signable.getSignature()])
                 .then(([bytes, signature]) => {
-                    expect(checkRypto(bytes, signature)).toBe(true);
+                    expect(checkCrypto(bytes, signature)).toBe(true);
                     done();
                 });
         });

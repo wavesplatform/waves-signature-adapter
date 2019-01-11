@@ -25,7 +25,7 @@ export abstract class Adapter {
         return;
     }
 
-    public abstract getSignVersions(): Promise<Record<SIGN_TYPE, Array<number>>>;
+    public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;
 
     public abstract getPublicKey(): Promise<string>;
 

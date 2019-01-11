@@ -51,10 +51,6 @@ export class LedgerAdapter extends Adapter {
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        if (bytes[0] === 4) {
-            return this.signData(bytes);
-        }
-        
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
@@ -73,12 +69,12 @@ export class LedgerAdapter extends Adapter {
         return Promise.reject('No private key');
     }
 
-    public getSignVersions(): Promise<Record<SIGN_TYPE, Array<number>>> {
-        return Promise.resolve({
+    public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+        return {
             [SIGN_TYPE.AUTH]: [0],
             [SIGN_TYPE.MATCHER_ORDERS]: [0],
             [SIGN_TYPE.CREATE_ORDER]: [0, 2],
-            [SIGN_TYPE.CANCEL_ORDER]: [0, 2],
+            [SIGN_TYPE.CANCEL_ORDER]: [0],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [0],
             [SIGN_TYPE.ISSUE]: [2],
             [SIGN_TYPE.TRANSFER]: [2],
@@ -92,7 +88,7 @@ export class LedgerAdapter extends Adapter {
             [SIGN_TYPE.DATA]: [1],
             [SIGN_TYPE.SET_SCRIPT]: [1],
             [SIGN_TYPE.SPONSORSHIP]: [1]
-        });
+        };
     }
 
     protected _isMyLedger() {

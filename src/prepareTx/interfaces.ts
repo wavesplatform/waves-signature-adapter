@@ -237,6 +237,8 @@ export interface IOrder {
 
 export interface IAdapterSignMethods {
     signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
+
     signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: any): Promise<string>;
+
     signOrder(bytes: Uint8Array, amountPrecision: number, signData: any): Promise<string>;
 }

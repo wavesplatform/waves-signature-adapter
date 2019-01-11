@@ -59,11 +59,11 @@ export class WavesKeeperAdapter extends Adapter {
         }
     }
 
-    public getSignVersions(): Promise<Record<SIGN_TYPE, Array<number>>> {
+    public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
         if (WavesKeeperAdapter._api.getSignVersions) {
             return WavesKeeperAdapter._api.getSignVersions();
         } else {
-            return Promise.resolve({
+            return {
                 [SIGN_TYPE.AUTH]: [0],
                 [SIGN_TYPE.MATCHER_ORDERS]: [0],
                 [SIGN_TYPE.CREATE_ORDER]: [0],
@@ -81,7 +81,7 @@ export class WavesKeeperAdapter extends Adapter {
                 [SIGN_TYPE.DATA]: [1],
                 [SIGN_TYPE.SET_SCRIPT]: [1],
                 [SIGN_TYPE.SPONSORSHIP]: [1]
-            });
+            };
         }
     }
 
@@ -229,7 +229,7 @@ export class WavesKeeperAdapter extends Adapter {
 
 
 interface IWavesKeeper {
-    getSignVersions?: () => Promise<Record<SIGN_TYPE, Array<number>>>;
+    getSignVersions?: () => Record<SIGN_TYPE, Array<number>>;
     auth: (data: IAuth) => Promise<IAuthData>;
     signTransaction: (data: TSignData) => Promise<any>;
     signOrder: (data: any) => Promise<any>;
