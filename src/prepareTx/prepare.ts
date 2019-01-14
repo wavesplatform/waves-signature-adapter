@@ -187,7 +187,7 @@ export module prepare {
                 }, Object.create(null));
 
             if (errors.length) {
-                throw errors;
+                throw new Error(JSON.stringify(errors));
             }
 
             return prepareData;

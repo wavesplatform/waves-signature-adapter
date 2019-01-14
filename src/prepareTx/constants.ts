@@ -20,7 +20,8 @@ export enum TRANSACTION_TYPE_NUMBER {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14
+    SPONSORSHIP = 14 ,
+    SET_ASSET_SCRIPT = 15,
 }
 
 export enum SIGN_TYPE {
@@ -40,7 +41,8 @@ export enum SIGN_TYPE {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14
+    SPONSORSHIP = 14,
+    SET_ASSET_SCRIPT = 15,
 }
 
 export interface ITypesMap {
@@ -136,5 +138,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         //@ts-ignore
         signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
         adapter: 'signTransaction'
-    }
+    },
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: {
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT],
+        adapter: 'signTransaction'
+    },
 };

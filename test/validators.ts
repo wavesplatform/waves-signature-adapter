@@ -4,6 +4,7 @@ import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
 import { Seed } from '@waves/signature-generator';
 
+const getError = (e: Error) => JSON.parse(e.message);
 const testSeed = 'some test seed words without money on mainnet';
 const seed = new Seed(testSeed);
 const testAsset = new Asset({
@@ -53,7 +54,7 @@ describe('Check validators', () => {
             ).toBe(true)
         });
         
-        it('invalid order amount', () => {
+        it('invalid order type', () => {
             const signData = {
                 type: SIGN_TYPE.CREATE_ORDER,
                 data: { ...data, orderType: 'none' }
@@ -62,7 +63,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_ORDER_TYPE);
                 expect(e[0].field).toEqual('orderType');
@@ -78,7 +80,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(3);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('amount');
@@ -115,7 +118,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('amount');
@@ -131,7 +135,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('fee');
@@ -147,7 +152,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('attachment');
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
@@ -163,7 +169,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('recipient');
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_ADDRESS);
@@ -179,7 +186,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('timestamp');
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TIMESTAMP);
@@ -217,7 +225,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('transfers');
                 expect(e[0].message).toEqual(ERROR_MSG.REQUIRED);
@@ -233,7 +242,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('transfers');
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
@@ -254,7 +264,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('transfers');
                 
@@ -283,10 +294,22 @@ describe('Check validators', () => {
             reissuable: true,
         };
         
-        it('issure valid', () => {
+        it('issure no script valid', () => {
             const signData = {
                 type: SIGN_TYPE.ISSUE,
                 data: { ...data }
+            } as any;
+            
+            expect(
+                (() => !!adapter.makeSignable(signData))()
+            ).toBe(true);
+        });
+        
+        it('issure has script valid', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data },
+                script: 'base64:AbCd'
             } as any;
             
             expect(
@@ -303,7 +326,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('name');
                 expect(e[0].message).toEqual(ERROR_MSG.SMALL_FIELD);
@@ -316,7 +340,8 @@ describe('Check validators', () => {
             
             try {
                 adapter.makeSignable(signData2);
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('name');
                 expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
@@ -332,7 +357,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('description');
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
@@ -348,7 +374,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData2);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('description');
                 expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
@@ -364,7 +391,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('precision');
                 expect(e[0].message).toEqual(ERROR_MSG.SMALL_FIELD);
@@ -378,7 +406,8 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData2);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].field).toEqual('precision');
                 expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
@@ -418,63 +447,73 @@ describe('Check validators', () => {
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].field).toEqual('data');
             }
         });
-    
+        
         it('invalid data binary', () => {
             const signData = {
                 type: SIGN_TYPE.DATA,
-                data: { ...data, data: [
+                data: {
+                    ...data, data: [
                         { key: 'binary', value: 'AbCd', type: 'binary' },
-                    ] }
+                    ]
+                }
             } as any;
-        
+            
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message[0].message).toEqual(ERROR_MSG.BASE64);
                 expect(e[0].message[0].field).toEqual('data:0:value');
             }
         });
-    
+        
         it('invalid data binary no base64', () => {
             const signData = {
                 type: SIGN_TYPE.DATA,
-                data: { ...data, data: [
+                data: {
+                    ...data, data: [
                         { key: 'binary', value: 'base64:AbC', type: 'binary' },
-                    ] }
+                    ]
+                }
             } as any;
-        
+            
             try {
                 adapter.makeSignable(signData);
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 expect(e.length).toEqual(1);
                 expect(e[0].message[0].message).toEqual(ERROR_MSG.BASE64);
                 expect(e[0].message[0].field).toEqual('data:0:value');
             }
         });
-    
+        
         it('invalid data type', () => {
             const signData = {
                 type: SIGN_TYPE.DATA,
-                data: { ...data, data: [
+                data: {
+                    ...data, data: [
                         { key: 'custom', value: 'base64:AbCd', type: 'custom' },
-                    ] }
+                    ]
+                }
             } as any;
-        
+            
             try {
                 adapter.makeSignable(signData).getBytes().catch(e => {
                     console.log(e);
                 });
                 expect('Fail').toBe('Done');
-            } catch (e) {
+            } catch (error) {
+                const e = getError(error);
                 console.log('Error', e.message);
                 expect(e.length).toEqual(1);
                 expect(e[0].message[0].message).toEqual(ERROR_MSG.WRONG_TYPE);

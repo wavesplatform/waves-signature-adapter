@@ -125,7 +125,6 @@ describe('WavesKeeper adapter test', () => {
             const result = await signable.getDataForApi() as any;
             expect(result.proofs[0]).toBe('realProof');
         } catch (e) {
-            console.log(e);
             expect(e).toBe('Done');
         }
     });

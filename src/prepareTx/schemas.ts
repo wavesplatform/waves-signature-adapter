@@ -53,6 +53,7 @@ const SIGN_SCHEMA = {
         fieldsType.numberLike('quantity', null, processors.toBigNumber),
         fieldsType.precision('precision'),
         fieldsType.boolean('reissuable'),
+        fieldsType.script('script', null, null, true),
         //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         //@ts-ignore
@@ -169,6 +170,16 @@ const SIGN_SCHEMA = {
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.script('script')
     ],
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: [
+        fieldsType.string('senderPublicKey', null, null, true),
+        fieldsType.asset('assetId'),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
+        fieldsType.script('script')
+    ],
     [SIGN_TYPE.EXCHANGE]: []
 };
 
@@ -227,6 +238,7 @@ module schemas {
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('timestamp', 'timestamp', processors.timestamp),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.ISSUE)),
+            wrap('script', 'script', processors.scriptProcessor),
             'proofs'
         );
 
@@ -348,6 +360,18 @@ module schemas {
             wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
+    
+        export const setAssetScript = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
+            'senderPublicKey',
+            wrap('assetId', 'assetId', processors.noProcess),
+            wrap('script', 'script', processors.scriptProcessor),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
     }
 
     export module sign {
@@ -367,6 +391,7 @@ module schemas {
         export const data = signSchema(SIGN_SCHEMA[SIGN_TYPE.DATA]);
         export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
         export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
+        export const setAssetScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_ASSET_SCRIPT]);
         //@ts-ignore
         export const exchange = data => {
             console.warn('Sign exchange transaction is not supported!');
@@ -421,5 +446,7 @@ export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<
             return { api: { 1: schemas.api.setScript }, sign: schemas.sign.setScript };
         case SIGN_TYPE.SPONSORSHIP:
             return { api: { 1: schemas.api.sponsorship }, sign: schemas.sign.sponsorship };
+        case SIGN_TYPE.SET_ASSET_SCRIPT:
+            return { api: { 1: schemas.api.setAssetScript }, sign: schemas.sign.setAssetScript };
     }
 }

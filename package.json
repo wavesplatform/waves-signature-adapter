@@ -11,7 +11,7 @@
   "dependencies": {
     "@waves/data-entities": "^1.6.3",
     "@waves/ledger": "^2.0.0",
-    "@waves/signature-generator": "^3.0.1-beta"
+    "@waves/signature-generator": "^3.0.2-beta-1"
   },
   "scripts": {
     "test": "jest",

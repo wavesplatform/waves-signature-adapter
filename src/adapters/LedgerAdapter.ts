@@ -51,6 +51,9 @@ export class LedgerAdapter extends Adapter {
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+        if (bytes[0] === 15) {
+            return this.signData(bytes);
+        }
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
@@ -87,7 +90,8 @@ export class LedgerAdapter extends Adapter {
             [SIGN_TYPE.MASS_TRANSFER]: [1],
             [SIGN_TYPE.DATA]: [1],
             [SIGN_TYPE.SET_SCRIPT]: [1],
-            [SIGN_TYPE.SPONSORSHIP]: [1]
+            [SIGN_TYPE.SPONSORSHIP]: [1],
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
         };
     }
 
