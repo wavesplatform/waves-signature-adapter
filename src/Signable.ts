@@ -2,6 +2,8 @@ import { getSchemaByType, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData 
 import { isEmpty, last } from './utils';
 import { Adapter } from './adapters';
 import { utils } from '@waves/signature-generator';
+import { ERRORS } from './constants';
+import { SignError } from './SignError';
 
 
 export class Signable {
@@ -25,6 +27,10 @@ export class Signable {
 
         this._prepareForSing = prepareMap.sign;
 
+        if (!prepareMap) {
+            throw new SignError(`Can't find prepare api for tx type "${forSign.type}"!`, ERRORS.UNKNOWN_SIGN_TYPE);
+        }
+
         if (!this._forSign.data.timestamp) {
             this._forSign.data.timestamp = Date.now();
         }
@@ -33,14 +39,10 @@ export class Signable {
             this._proofs = this._forSign.data.proofs.slice();
         }
 
-        if (!prepareMap) {
-            throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
-        }
-
         const availableVersions = adapter.getSignVersions()[forSign.type];
 
         if (availableVersions.length === 0) {
-            throw new Error(`Can\'t sign data with type ${this.type}`);
+            throw new SignError(`Can\'t sign data with type ${this.type}`, ERRORS.NO_SUPPORTED_VERSIONS);
         }
 
         if (isEmpty(this._forSign.data.version)) {
@@ -50,13 +52,13 @@ export class Signable {
         const version = this._forSign.data.version;
 
         if (!availableVersions.includes(version)) {
-            throw new Error(`Can\'t sign data with type "${this.type}" and version "${version}"`);
+            throw new SignError(`Can\'t sign data with type "${this.type}" and version "${version}"`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }
 
         this._prepareForApi = prepareMap.api[version];
 
         if (!this._prepareForApi) {
-            throw new Error(`Can't find prepare api for tx type "${forSign.type}" with version ${version}!`);
+            throw new SignError(`Can't find prepare api for tx type "${forSign.type}" with version ${version}!`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }
 
         const generator = SIGN_TYPES[forSign.type].signatureGenerator[version];
@@ -66,7 +68,11 @@ export class Signable {
             throw new Error(`Unknown data type ${forSign.type} with version ${version}!`);
         }
 
-        this._prepareForSing(forSign.data, true);
+        try {
+            this._prepareForSing(forSign.data, true);
+        } catch (e) {
+            throw new SignError(e.message, ERRORS.VALIDATION_FAILED);
+        }
 
         this._bytePromise = Promise.all([
             this._adapter.getPublicKey(),
