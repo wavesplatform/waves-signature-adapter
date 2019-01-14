@@ -27,4 +27,5 @@ export const boolean = fieldFactory('boolean');
 export const transfers = fieldFactory('transfers');
 export const data = fieldFactory('data');
 export const script = fieldFactory('script');
+export const asset_script = fieldFactory('asset_script');
 export const required = fieldFactory('required');

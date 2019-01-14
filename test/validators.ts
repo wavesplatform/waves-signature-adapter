@@ -509,12 +509,10 @@ describe('Check validators', () => {
             
             try {
                 adapter.makeSignable(signData).getBytes().catch(e => {
-                    console.log(e);
                 });
                 expect('Fail').toBe('Done');
             } catch (error) {
                 const e = getError(error);
-                console.log('Error', e.message);
                 expect(e.length).toEqual(1);
                 expect(e[0].message[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
                 expect(e[0].message[0].field).toEqual('data:0:type');

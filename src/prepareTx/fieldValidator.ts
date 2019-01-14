@@ -35,6 +35,7 @@ export const ERROR_MSG = {
     WRONG_ORDER_TYPE: 'field is wrong order type. Field can be "buy" or "sell"',
     NOT_HTTPS_URL: 'field can be url with https protocol',
     BASE64: 'field can be base64 string with prefix "base64:"',
+    EMPTY_BASE64: 'field can be not empty base64"',
 };
 
 const isBase64 = (value: string): boolean => {
@@ -459,6 +460,16 @@ const script = (options: IFieldOptions) => {
     binary(options);
 };
 
+const asset_script = (options: IFieldOptions) => {
+    const { value } = options;
+    
+    if (!value || !value.replace('base64:', '')) {
+        error(options, ERROR_MSG.EMPTY_BASE64);
+    }
+    
+    script(options);
+};
+
 
 export const VALIDATORS = {
     string,
@@ -480,6 +491,7 @@ export const VALIDATORS = {
     aliasOrAddress,
     data,
     script,
+    asset_script,
     binary,
     precision
 };
