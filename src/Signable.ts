@@ -49,6 +49,10 @@ export class Signable {
 
         const version = this._forSign.data.version;
 
+        if (!availableVersions.includes(version)) {
+            throw new Error(`Can\'t sign data with type "${this.type}" and version "${version}"`);
+        }
+
         this._prepareForApi = prepareMap.api[version];
 
         if (!this._prepareForApi) {
