@@ -53,7 +53,8 @@ const SIGN_SCHEMA = {
         fieldsType.numberLike('quantity', null, processors.toBigNumber),
         fieldsType.precision('precision'),
         fieldsType.boolean('reissuable'),
-        fieldsType.script('script', null, null, true),
+        //@ts-ignore
+        fieldsType.script('script', null, processors.orString, true),
         //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toBigNumber),
         //@ts-ignore

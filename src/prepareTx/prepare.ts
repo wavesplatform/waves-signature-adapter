@@ -65,7 +65,7 @@ export module prepare {
             return time && time instanceof Date ? time.getTime() : time;
         }
         //@ts-ignore
-        export function orString(data) {
+        export function orString(data): string {
             return data || '';
         }
         //@ts-ignore
