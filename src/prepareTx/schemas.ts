@@ -185,7 +185,6 @@ module schemas {
         export const createOrder = schema(
             'matcherPublicKey',
             'orderType',
-            wrap(null, 'version', processors.addValue(2)),
             wrap(null, 'assetPair', processors.assetPair),
             wrap(null, 'price', processors.toOrderPrice),
             wrap('amount', 'amount', processors.toBigNumber),
