@@ -19,7 +19,8 @@ export type TSignData =
     ISignMassTransfer |
     IDataTxData |
     ISetScriptData |
-    ISponsorshipData;
+    ISponsorshipData |
+    ISetAssetScriptData;
 
 export interface ISignAuthData {
     data: IAuthData;
@@ -107,6 +108,10 @@ export interface ISponsorshipData {
     type: SIGN_TYPE.SPONSORSHIP;
 }
 
+export interface ISetAssetScriptData {
+    data: ISetAssetScript;
+    type: SIGN_TYPE.SET_ASSET_SCRIPT;
+}
 
 export interface IAuthData {
     prefix: string;
@@ -158,6 +163,11 @@ export interface ICreateTxData {
     version?: number;
 }
 
+export interface ISetAssetScript extends ICreateTxData {
+    assetId: string;
+    script: string;
+}
+
 export interface ITransferData extends ICreateTxData {
     amount: Money;
     recipient: string;
@@ -175,14 +185,13 @@ export interface IIssue extends ICreateTxData {
 
 export interface IReissue extends ICreateTxData {
     assetId: string;
-    quantity: string;
-    decimals: number;
+    quantity: string | BigNumber | Money | number;
     reissuable: boolean;
 }
 
 export interface IBurn extends ICreateTxData {
     assetId: string;
-    quantity: string;
+    amount: string | BigNumber | Money;
 }
 
 export interface IExchange extends ICreateTxData {
@@ -193,12 +202,12 @@ export interface IExchange extends ICreateTxData {
 }
 
 export interface ILease extends ICreateTxData {
-    amount: string;
+    amount: string | BigNumber | Money;
     recipient: string;
 }
 
 export interface ICancelLeasing extends ICreateTxData {
-    transactionId: string;
+    leaseId: string;
 }
 
 export interface ICreateAlias extends ICreateTxData {
@@ -206,9 +215,13 @@ export interface ICreateAlias extends ICreateTxData {
 }
 
 export interface IMassTransfer extends ICreateTxData {
+    /**
+     * @deprecated
+     */
+    totalAmount: Money;
     assetId: string;
-    transfers: Array<{ recipient: string; amount: string; }>;
-    attachment: string;
+    transfers: Array<{ recipient: string; amount: string  | number | BigNumber | Money; }>;
+    attachment?: string;
 }
 
 export interface IData extends ICreateTxData {
@@ -218,7 +231,7 @@ export interface IData extends ICreateTxData {
 
 export interface ISetScript extends ICreateTxData {
     script: string;
-    chainId: number;
+    chainId?: number;
 }
 
 export interface ISponsorship extends ICreateTxData {
