@@ -363,13 +363,13 @@ module schemas {
         );
     
         export const setAssetScript = schema(
-            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_ASSET_SCRIPT)),
             'senderPublicKey',
             wrap('assetId', 'assetId', processors.noProcess),
             wrap('script', 'script', processors.scriptProcessor),
             wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
-            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_ASSET_SCRIPT)),
             wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
