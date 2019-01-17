@@ -72,6 +72,23 @@ const SIGN_SCHEMA = {
         //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
+    [SIGN_TYPE.EXCHANGE]: [
+        fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        fieldsType.fromData('buyOrder'),
+        fieldsType.fromData('sellOrder'),
+        //@ts-ignore
+        fieldsType.numberLike('amount', 'amount', processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.numberLike('price', 'price', processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.numberLike('buyMatcherFee', 'buyMatcherFee', processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.numberLike('sellMatcherFee', 'sellMatcherFee', processors.toBigNumber)
+    ],
     [SIGN_TYPE.BURN]: [
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
@@ -282,6 +299,35 @@ module schemas {
             wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
         );
 
+        export const exchange = schema(
+            'senderPublicKey',
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('price', 'price', processors.toBigNumber),
+            wrap('buyMatcherFee', 'buyMatcherFee', processors.toBigNumber),
+            wrap('sellMatcherFee', 'sellMatcherFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'buyOrder',
+            'sellOrder',
+            'signature',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
+        );
+
+        export const exchange_v2 = schema(
+            wrap(null, 'version', processors.addValue(2)),
+            'senderPublicKey',
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('price', 'price', processors.toBigNumber),
+            wrap('buyMatcherFee', 'buyMatcherFee', processors.toBigNumber),
+            wrap('sellMatcherFee', 'sellMatcherFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'buyOrder',
+            'sellOrder',
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
+        );
+
         export const lease = schema(
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.LEASE)),
             wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
@@ -361,7 +407,7 @@ module schemas {
             wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
-    
+
         export const setAssetScript = schema(
             wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_ASSET_SCRIPT)),
             'senderPublicKey',
@@ -393,11 +439,7 @@ module schemas {
         export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
         export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
         export const setAssetScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_ASSET_SCRIPT]);
-        //@ts-ignore
-        export const exchange = data => {
-            console.warn('Sign exchange transaction is not supported!');
-            return data;
-        };
+        export const exchange = signSchema(SIGN_SCHEMA[SIGN_TYPE.EXCHANGE]);
     }
 }
 
@@ -432,7 +474,7 @@ export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<
         case SIGN_TYPE.BURN:
             return { api: { 2: schemas.api.burn }, sign: schemas.sign.burn };
         case SIGN_TYPE.EXCHANGE:
-            return { api: { 0: hasNoApiMethod('api, exchange') }, sign: schemas.sign.exchange };
+            return { api: { 0: schemas.api.exchange, 2: schemas.api.exchange_v2 }, sign: schemas.sign.exchange };
         case SIGN_TYPE.LEASE:
             return { api: { 2: schemas.api.lease }, sign: schemas.sign.lease };
         case SIGN_TYPE.CANCEL_LEASING:
