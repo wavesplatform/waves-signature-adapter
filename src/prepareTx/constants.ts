@@ -2,8 +2,9 @@ import {
     MATCHER_BYTES_GENERATOR_MAP,
     BYTES_GENERATORS_MAP,
     StringWithLength,
-    Long,
-    generate, ISignatureGeneratorConstructor
+    generate,
+    ISignatureGeneratorConstructor,
+    Int
 } from '@waves/signature-generator';
 import { IAdapterSignMethods, IAuthData } from './interfaces';
 
@@ -20,7 +21,7 @@ export enum TRANSACTION_TYPE_NUMBER {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14 ,
+    SPONSORSHIP = 14,
     SET_ASSET_SCRIPT = 15,
 }
 
@@ -66,7 +67,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         signatureGenerator: {
             0: generate([
                 new StringWithLength('prefix'),
-                new Long('timestamp')
+                new Int('timestamp', 8)
             ])
         },
         adapter: 'signRequest'
@@ -103,7 +104,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.BURN],
         adapter: 'signTransaction'
     },
-    [SIGN_TYPE.EXCHANGE]: {} as any, // TODO
+    [SIGN_TYPE.EXCHANGE]: {
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.EXCHANGE],
+        adapter: 'signTransaction'
+    },
     [SIGN_TYPE.LEASE]: {
         //@ts-ignore
         signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.LEASE],
