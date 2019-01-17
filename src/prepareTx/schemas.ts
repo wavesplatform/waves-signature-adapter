@@ -197,8 +197,7 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset_script('script')
-    ],
-    [SIGN_TYPE.EXCHANGE]: []
+    ]
 };
 
 
