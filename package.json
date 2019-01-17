@@ -12,7 +12,7 @@
     "@types/ramda": "^0.25.46",
     "@waves/data-entities": "^1.6.3",
     "@waves/ledger": "^2.0.0",
-    "@waves/signature-generator": "^3.0.2-beta-4",
+    "@waves/signature-generator": "^3.0.2-beta-5",
     "ramda": "^0.25.0"
   },
   "scripts": {
