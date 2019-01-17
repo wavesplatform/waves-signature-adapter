@@ -21,7 +21,7 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.DATA]: [1],
     [SIGN_TYPE.SET_SCRIPT]: [1],
     [SIGN_TYPE.SPONSORSHIP]: [1],
-    [SIGN_TYPE.SET_ASSET_SCRIPT]: [],
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: []
 };
 
 export class WavesKeeperAdapter extends Adapter {
