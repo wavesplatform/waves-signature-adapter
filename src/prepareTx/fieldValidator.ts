@@ -35,17 +35,20 @@ export const ERROR_MSG = {
     WRONG_ORDER_TYPE: 'field is wrong order type. Field can be "buy" or "sell"',
     NOT_HTTPS_URL: 'field can be url with https protocol',
     BASE64: 'field can be base64 string with prefix "base64:"',
+    EMPTY_BASE64: 'field can be not empty base64"',
 };
 
-const isBase64 = (value) => {
+const isBase64 = (value: string): boolean => {
     const regExp = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
     return regExp.test(value);
 };
 
+//@ts-ignore
 const getBytesFromString = value => {
     return utils.convert.stringToByteArray(value);
 };
 
+//@ts-ignore
 const numberToString = (num) => num && typeof num === 'number' ? num.toString() : num;
 
 const error = ({ value, ...options }: IFieldOptions, message: string) => {
@@ -188,7 +191,7 @@ const aliasName = (options: IFieldOptions) => {
             return error(options, ERROR_MSG.SMALL_FIELD);
         case value.length > ALIAS.MAX_ALIAS_LENGTH:
             return error(options, ERROR_MSG.LARGE_FIELD);
-        case !(value.split('').every((char) => ALIAS.AVAILABLE_CHARS.includes(char))):
+        case !(value.split('').every((char: string) => ALIAS.AVAILABLE_CHARS.includes(char))):
             return error(options, ERROR_MSG.WRONG_SYMBOLS);
     }
 };
@@ -197,7 +200,7 @@ const address = (options: IFieldOptions) => {
     options = { ...options, value: numberToString(options.value) };
     required(options);
     const { value } = options;
-    const isValidAddress = (address) => {
+    const isValidAddress = (address: string) => {
         try {
             return utils.crypto.isValidAddress(address);
         } catch (e) {
@@ -331,7 +334,7 @@ const precision = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    const isNotUrl = (url) => {
+    const isNotUrl = (url: string) => {
         try {
             new URL(url);
             return false;
@@ -369,7 +372,8 @@ const transfers = (options: IFieldOptions) => {
     if (!options.optional && value.length === 0) {
         error(options, ERROR_MSG.REQUIRED);
     }
-    
+
+    //@ts-ignore
     const errors = (value || []).map(({ recipient, amount }, index) => {
         const dataErrors = [];
         
@@ -386,6 +390,7 @@ const transfers = (options: IFieldOptions) => {
         }
         
         return dataErrors;
+        //@ts-ignore
     }).filter(item => item.length);
     
     if (errors.length) {
@@ -400,7 +405,7 @@ const data = (options: IFieldOptions) => {
     if (!Array.isArray(value)) {
         error(options, ERROR_MSG.WRONG_TYPE);
     }
-    
+    //@ts-ignore
     const errors = value.map(({ key, type, value }, index) => {
         try {
             string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
@@ -430,7 +435,7 @@ const data = (options: IFieldOptions) => {
         } catch(e) {
             return e;
         }
-        
+        //@ts-ignore
     }).filter(item => item);
     
     if (errors.length) {
@@ -455,6 +460,16 @@ const script = (options: IFieldOptions) => {
     binary(options);
 };
 
+const asset_script = (options: IFieldOptions) => {
+    const { value } = options;
+    
+    if (!value || !value.replace('base64:', '')) {
+        error(options, ERROR_MSG.EMPTY_BASE64);
+    }
+    
+    script(options);
+};
+
 
 export const VALIDATORS = {
     string,
@@ -476,6 +491,7 @@ export const VALIDATORS = {
     aliasOrAddress,
     data,
     script,
+    asset_script,
     binary,
     precision
 };

@@ -1,11 +1,10 @@
 import { SIGN_TYPE } from './constants';
-import { IDATA_ENTRY, ISignatureGeneratorConstructor } from '@waves/signature-generator/src/signatureFactory/interface';
+import { IDATA_ENTRY } from '@waves/signature-generator/src/signatureFactory/interface';
 import { Money, BigNumber } from '@waves/data-entities';
 
 export type TSignData =
     ISignAuthData |
     ISignCoinomatConfirmation |
-    ISignCustom |
     ISignGetOrders |
     ISignCreateOrder |
     ISignCancelOrder |
@@ -20,7 +19,8 @@ export type TSignData =
     ISignMassTransfer |
     IDataTxData |
     ISetScriptData |
-    ISponsorshipData;
+    ISponsorshipData |
+    ISetAssetScriptData;
 
 export interface ISignAuthData {
     data: IAuthData;
@@ -30,14 +30,6 @@ export interface ISignAuthData {
 export interface ISignCoinomatConfirmation {
     data: ICoinomatData;
     type: SIGN_TYPE.COINOMAT_CONFIRMATION;
-}
-
-export interface ISignCustom {
-    data: any;
-    type: SIGN_TYPE.CUSTOM;
-    generator: ISignatureGeneratorConstructor<any>;
-    apiProcessor?: Function;
-    signProcessor?: Function;
 }
 
 export interface ISignGetOrders {
@@ -116,19 +108,30 @@ export interface ISponsorshipData {
     type: SIGN_TYPE.SPONSORSHIP;
 }
 
+export interface ISetAssetScriptData {
+    data: ISetAssetScript;
+    type: SIGN_TYPE.SET_ASSET_SCRIPT;
+}
 
 export interface IAuthData {
     prefix: string;
     host: string;
     data: string;
+    timestamp?: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICoinomatData {
     timestamp: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface IGetOrders {
     timestamp: number;
+    version?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICreateOrder {
@@ -142,10 +145,14 @@ export interface ICreateOrder {
     matcherFee: string;
     timestamp: number;
     proofs?: Array<string>;
+    version?: number;
 }
 
 export interface ICancelOrder {
     orderId: string;
+    version?: number;
+    timestamp?: number;
+    proofs?: Array<string>;
 }
 
 export interface ICreateTxData {
@@ -153,6 +160,12 @@ export interface ICreateTxData {
     timestamp: number;
     sender?: string;
     proofs?: Array<string>;
+    version?: number;
+}
+
+export interface ISetAssetScript extends ICreateTxData {
+    assetId: string;
+    script: string;
 }
 
 export interface ITransferData extends ICreateTxData {
@@ -172,14 +185,13 @@ export interface IIssue extends ICreateTxData {
 
 export interface IReissue extends ICreateTxData {
     assetId: string;
-    quantity: string;
-    decimals: number;
+    quantity: string | BigNumber | Money | number;
     reissuable: boolean;
 }
 
 export interface IBurn extends ICreateTxData {
     assetId: string;
-    quantity: string;
+    amount: string | BigNumber | Money;
 }
 
 export interface IExchange extends ICreateTxData {
@@ -190,12 +202,12 @@ export interface IExchange extends ICreateTxData {
 }
 
 export interface ILease extends ICreateTxData {
-    amount: string;
+    amount: string | BigNumber | Money;
     recipient: string;
 }
 
 export interface ICancelLeasing extends ICreateTxData {
-    transactionId: string;
+    leaseId: string;
 }
 
 export interface ICreateAlias extends ICreateTxData {
@@ -203,10 +215,13 @@ export interface ICreateAlias extends ICreateTxData {
 }
 
 export interface IMassTransfer extends ICreateTxData {
-    version: string;
+    /**
+     * @deprecated
+     */
+    totalAmount: Money;
     assetId: string;
-    transfers: Array<{ recipient: string; amount: string; }>;
-    attachment: string;
+    transfers: Array<{ recipient: string; amount: string  | number | BigNumber | Money; }>;
+    attachment?: string;
 }
 
 export interface IData extends ICreateTxData {
@@ -216,7 +231,7 @@ export interface IData extends ICreateTxData {
 
 export interface ISetScript extends ICreateTxData {
     script: string;
-    chainId: number;
+    chainId?: number;
 }
 
 export interface ISponsorship extends ICreateTxData {
@@ -231,4 +246,12 @@ export interface IOrder {
     timestamp: number;
     expiration: number;
     matcherFee: Money;
+}
+
+export interface IAdapterSignMethods {
+    signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
+
+    signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: any): Promise<string>;
+
+    signOrder(bytes: Uint8Array, amountPrecision: number, signData: any): Promise<string>;
 }

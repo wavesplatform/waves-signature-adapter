@@ -1,6 +1,9 @@
-import { getSchemaByType, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
+import { getSchemaByType, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
+import { isEmpty, last } from './utils';
 import { Adapter } from './adapters';
-import { ISignatureGeneratorConstructor, utils } from '@waves/signature-generator';
+import { utils } from '@waves/signature-generator';
+import { ERRORS } from './constants';
+import { SignError } from './SignError';
 
 
 export class Signable {
@@ -8,10 +11,11 @@ export class Signable {
     public readonly type: SIGN_TYPE;
     private readonly _forSign: TSignData;
     private readonly _adapter: Adapter;
+    private readonly _prepareForSing: Function;
     private readonly _bytePromise: Promise<Uint8Array>;
-    private readonly _prepare: { sign: Function; api: Function };
-    private readonly _signMethod: string;
-    private _signPromise: Promise<string>;
+    private readonly _prepareForApi: Function | undefined;
+    private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
+    private _signPromise: Promise<string> | undefined;
     private _proofs: Array<string> = [];
 
 
@@ -19,7 +23,13 @@ export class Signable {
         this._forSign = { ...forSign };
         this.type = forSign.type;
         this._adapter = adapter;
-        this._prepare = getSchemaByType(forSign.type);
+        const prepareMap = getSchemaByType(forSign.type);
+
+        this._prepareForSing = prepareMap.sign;
+
+        if (!prepareMap) {
+            throw new SignError(`Can't find prepare api for tx type "${forSign.type}"!`, ERRORS.UNKNOWN_SIGN_TYPE);
+        }
 
         if (!this._forSign.data.timestamp) {
             this._forSign.data.timestamp = Date.now();
@@ -29,49 +39,59 @@ export class Signable {
             this._proofs = this._forSign.data.proofs.slice();
         }
 
-        if (!this._prepare) {
-            if (forSign.type !== SIGN_TYPE.CUSTOM) {
-                throw new Error(`Can't find prepare api for tx type "${forSign.type}"!`);
-            } else {
-                this._prepare = {
-                    sign: forSign.signProcessor || (data => data),
-                    api: forSign.apiProcessor || (data => data)
-                };
-            }
+        const availableVersions = adapter.getSignVersions()[forSign.type];
+
+        if (availableVersions.length === 0) {
+            throw new SignError(`Can\'t sign data with type ${this.type}`, ERRORS.NO_SUPPORTED_VERSIONS);
         }
 
-        let generator: ISignatureGeneratorConstructor<any>;
-
-        if (forSign.type === SIGN_TYPE.CUSTOM) {
-            generator = forSign.generator;
-            this._signMethod = 'signRequest';
-        } else {
-            generator = SIGN_TYPES[forSign.type].signatureGenerator;
-            this._signMethod = SIGN_TYPES[forSign.type].adapter;
+        if (isEmpty(this._forSign.data.version)) {
+            this._forSign.data.version = last(availableVersions);
         }
+
+        const version = this._forSign.data.version;
+
+        if (!availableVersions.includes(version)) {
+            throw new SignError(`Can\'t sign data with type "${this.type}" and version "${version}"`, ERRORS.VERSION_IS_NOT_SUPPORTED);
+        }
+
+        this._prepareForApi = prepareMap.api[version];
+
+        if (!this._prepareForApi) {
+            throw new SignError(`Can't find prepare api for tx type "${forSign.type}" with version ${version}!`, ERRORS.VERSION_IS_NOT_SUPPORTED);
+        }
+
+        const generator = SIGN_TYPES[forSign.type].signatureGenerator[version];
+        this._signMethod = SIGN_TYPES[forSign.type].adapter;
 
         if (!generator) {
-            throw new Error(`Unknown data type ${forSign.type}!`);
+            throw new Error(`Unknown data type ${forSign.type} with version ${version}!`);
         }
-        this._prepare.sign(forSign.data, true);
+
+        try {
+            this._prepareForSing(forSign.data, true);
+        } catch (e) {
+            throw new SignError(e.message, ERRORS.VALIDATION_FAILED);
+        }
 
         this._bytePromise = Promise.all([
             this._adapter.getPublicKey(),
             this._adapter.getAddress()
         ]).then(([senderPublicKey, sender]) => {
-            const dataForSign = this._prepare.sign({ sender, senderPublicKey, ...forSign.data });
+            const dataForSign = this._prepareForSing({ sender, senderPublicKey, ...forSign.data });
             return new generator(dataForSign).getBytes();
         });
     }
 
-    public getTxData() {
+
+    public getTxData(): TSignData['data'] {
         return { ...this._forSign.data };
     }
 
     public async getSignData() {
         const senderPublicKey = await this._adapter.getPublicKey();
         const sender = await this._adapter.getAddress();
-        return this._prepare.sign({ sender, senderPublicKey, ...this._forSign.data });
+        return this._prepareForSing({ sender, senderPublicKey, ...this._forSign.data });
     }
 
     public sign2fa(options: ISign2faOptions): Promise<Signable> {
@@ -106,12 +126,12 @@ export class Signable {
 
     public sign(): Promise<Signable> {
         this._makeSignPromise();
-        return this._signPromise.then(() => this);
+        return (this._signPromise as Promise<string>).then(() => this);
     }
 
     public getSignature(): Promise<string> {
         this._makeSignPromise();
-        return this._signPromise;
+        return (this._signPromise as Promise<string>);
     }
 
     public getBytes() {
@@ -157,7 +177,8 @@ export class Signable {
             this.addMyProof()
         ]).then(([senderPublicKey, sender]) => {
             const proofs = this._proofs.slice();
-            return this._prepare.api({ senderPublicKey, sender, ...this._forSign.data, proofs });
+            const prepare = this._prepareForApi as Function;
+            return prepare({ senderPublicKey, sender, ...this._forSign.data, proofs });
         });
     }
 
@@ -168,7 +189,7 @@ export class Signable {
             });
 
             this._signPromise.catch(() => {
-                this._signPromise = null;
+                this._signPromise = undefined;
             });
         }
         return this;

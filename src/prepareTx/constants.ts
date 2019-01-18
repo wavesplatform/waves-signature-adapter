@@ -1,13 +1,12 @@
 import {
-    AUTH_ORDER_SIGNATURE,
-    CREATE_ORDER_SIGNATURE,
-    CANCEL_ORDER_SIGNATURE,
-    TX_NUMBER_MAP,
+    MATCHER_BYTES_GENERATOR_MAP,
+    BYTES_GENERATORS_MAP,
     StringWithLength,
-    Long,
-    generate
+    generate,
+    ISignatureGeneratorConstructor,
+    Int
 } from '@waves/signature-generator';
-import { IAuthData } from './interfaces';
+import { IAdapterSignMethods, IAuthData } from './interfaces';
 
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -22,7 +21,8 @@ export enum TRANSACTION_TYPE_NUMBER {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14
+    SPONSORSHIP = 14,
+    SET_ASSET_SCRIPT = 15,
 }
 
 export enum SIGN_TYPE {
@@ -31,7 +31,6 @@ export enum SIGN_TYPE {
     CREATE_ORDER = 1002,
     CANCEL_ORDER = 1003,
     COINOMAT_CONFIRMATION = 1004,
-    CUSTOM = 1005,
     ISSUE = 3,
     TRANSFER = 4,
     REISSUE = 5,
@@ -43,86 +42,110 @@ export enum SIGN_TYPE {
     MASS_TRANSFER = 11,
     DATA = 12,
     SET_SCRIPT = 13,
-    SPONSORSHIP = 14
+    SPONSORSHIP = 14,
+    SET_ASSET_SCRIPT = 15,
 }
 
-export const SIGN_TYPES = {
+export interface ITypesMap {
+    signatureGenerator: Record<number, ISignatureGeneratorConstructor<any>>;
+    adapter: keyof IAdapterSignMethods;
+}
+
+export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
 
     [SIGN_TYPE.AUTH]: {
-        signatureGenerator: generate<IAuthData>([
-            new StringWithLength('prefix'),
-            new StringWithLength('host'),
-            new StringWithLength('data')
-        ]),
+        signatureGenerator: {
+            0: generate<IAuthData>([
+                new StringWithLength('prefix'),
+                new StringWithLength('host'),
+                new StringWithLength('data')
+            ])
+        },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
-        signatureGenerator: generate([
-            new StringWithLength('prefix'),
-            new Long('timestamp')
-        ]),
+        signatureGenerator: {
+            0: generate([
+                new StringWithLength('prefix'),
+                new Int('timestamp', 8)
+            ])
+        },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.MATCHER_ORDERS]: {
-        signatureGenerator: AUTH_ORDER_SIGNATURE,
+        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER,
         adapter: 'signRequest'
     },
     [SIGN_TYPE.CREATE_ORDER]: {
-        signatureGenerator: CREATE_ORDER_SIGNATURE,
+        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER,
         adapter: 'signOrder'
     },
     [SIGN_TYPE.CANCEL_ORDER]: {
-        signatureGenerator: CANCEL_ORDER_SIGNATURE,
+        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER,
         adapter: 'signRequest'
     },
     [SIGN_TYPE.TRANSFER]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.TRANSFER],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.TRANSFER],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.ISSUE]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.ISSUE],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.ISSUE],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.REISSUE]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.REISSUE],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.REISSUE],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.BURN]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.BURN],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.BURN],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.EXCHANGE]: {
-        signatureGenerator: generate<IAuthData>([
-            new StringWithLength('exchange-tx')
-        ]),
-        adapter: 'signRequest'
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.EXCHANGE],
+        adapter: 'signTransaction'
     },
     [SIGN_TYPE.LEASE]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.LEASE],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.LEASE],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.CANCEL_LEASING],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.CANCEL_LEASING],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.CREATE_ALIAS],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.CREATE_ALIAS],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.MASS_TRANSFER],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.MASS_TRANSFER],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.DATA]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.DATA],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.DATA],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SPONSORSHIP]: {
-        signatureGenerator: TX_NUMBER_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
         adapter: 'signTransaction'
-    }
+    },
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: {
+        //@ts-ignore
+        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT],
+        adapter: 'signTransaction'
+    },
 };

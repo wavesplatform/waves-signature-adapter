@@ -2,6 +2,7 @@ import { Money, BigNumber, AssetPair, OrderPrice } from '@waves/data-entities';
 import { WAVES_ID, libs, config } from '@waves/signature-generator';
 import { VALIDATORS } from './fieldValidator';
 
+//@ts-ignore
 const normalizeAssetId = id => id === WAVES_ID ? '' : id;
 
 export module prepare {
@@ -12,13 +13,14 @@ export module prepare {
             return !!(code || '').replace('base64:', '') ? code : null;
         }
 
+        //@ts-ignore
         export function assetPair(data) {
             return {
                 amountAsset: normalizeAssetId(data.amount.asset.id),
                 priceAsset: normalizeAssetId(data.price.asset.id)
             };
         }
-
+        //@ts-ignore
         export function signatureFromProof(proofs) {
             return proofs[0];
         }
@@ -40,6 +42,7 @@ export module prepare {
         export function toSponsorshipFee(moeny: Money): BigNumber {
             const coins = moeny.getCoins();
             if (coins.eq(0)) {
+                //@ts-ignore
                 return null;
             } else {
                 return coins;
@@ -54,21 +57,22 @@ export module prepare {
             return idToNode(money.asset.id);
         }
 
+        //@ts-ignore
         export function timestamp(time) {
             if (!(+time) && typeof time === 'string') {
                 return Date.parse(time);
             }
             return time && time instanceof Date ? time.getTime() : time;
         }
-
-        export function orString(data) {
+        //@ts-ignore
+        export function orString(data): string {
             return data || '';
         }
-
+        //@ts-ignore
         export function noProcess(data) {
             return data;
         }
-
+        //@ts-ignore
         export function recipient(data) {
             const code = String.fromCharCode(config.get('networkByte'));
             return data.length < 30 ? `alias:${code}:${data}` : data;
@@ -83,26 +87,27 @@ export module prepare {
         export function addValue(value: any) {
             return typeof value === 'function' ? value : () => value;
         }
-
+        //@ts-ignore
         export function expiration(date?) {
             return date || new Date().setDate(new Date().getDate() + 20);
         }
-
+        //@ts-ignore
         export function transfers(recipient, amount) {
+            //@ts-ignore
             return (transfers) => transfers.map((transfer) => ({
                 recipient: recipient(transfer.recipient),
                 amount: amount(transfer.amount)
             }));
         }
-
+        //@ts-ignore
         export function quantity(data): BigNumber {
             return new BigNumber(data.quantity).times(new BigNumber(10).pow(data.precision));
         }
-
+        //@ts-ignore
         export function base64(str): string {
             return (str || '').replace('base64:', '');
         }
-
+        //@ts-ignore
         export function toOrderPrice(order) {
             const assetPair = new AssetPair(order.amount.asset, order.price.asset);
             const orderPrice = OrderPrice.fromTokens(order.price.toTokens(), assetPair);
@@ -110,10 +115,12 @@ export module prepare {
         }
     }
 
-    export function wrap(from: string, to: string, cb: any): IWrappedFunction {
+    export function wrap(from: string | null, to: string, cb: any): IWrappedFunction {
         if (typeof cb != 'function') {
+            //@ts-ignore
             return { from, to, cb: () => cb };
         }
+        //@ts-ignore
         return { from, to, cb };
     }
 
@@ -124,6 +131,7 @@ export module prepare {
     }
 
     export function schema(...args: Array<IWrappedFunction | string>) {
+        //@ts-ignore
         return (data) => args.map((item) => {
             return typeof item === 'string' ? {
                 key: item,
@@ -139,9 +147,11 @@ export module prepare {
             }, Object.create(null));
     }
 
+    //@ts-ignore
     export function signSchema(args: Array<{ name, field, processor, optional, type }>) {
+        //@ts-ignore
         return (data, validate = false) => {
-            const errors = [];
+            const errors: Array<any> = [];
             const prepareData = args.map((item) => {
                 const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
 
@@ -152,6 +162,7 @@ export module prepare {
                     type: item.type,
                     name: item.name,
                 };
+                //@ts-ignore
                 const validator = VALIDATORS[validateOptions.type];
                 try {
                     if (validate && validator) {
@@ -176,7 +187,7 @@ export module prepare {
                 }, Object.create(null));
 
             if (errors.length) {
-                throw errors;
+                throw new Error(JSON.stringify(errors));
             }
 
             return prepareData;

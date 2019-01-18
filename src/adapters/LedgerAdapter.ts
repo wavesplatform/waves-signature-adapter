@@ -1,15 +1,21 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
 import { WavesLedger } from '@waves/ledger';
+import { SIGN_TYPE } from '../prepareTx';
 
 
 export class LedgerAdapter extends Adapter {
 
+    //@ts-ignore
     private _currentUser;
     public static type = AdapterType.Ledger;
+    //@ts-ignore
     private static _ledger;
+    //@ts-ignore
     private static _hasConnectionPromise;
 
+
+    //@ts-ignore
     constructor(user) {
         super();
         this._currentUser = user;
@@ -45,10 +51,9 @@ export class LedgerAdapter extends Adapter {
     }
 
     public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
-        if (bytes[0] === 4) {
+        if (bytes[0] === 15) {
             return this.signData(bytes);
         }
-        
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
     }
@@ -67,9 +72,33 @@ export class LedgerAdapter extends Adapter {
         return Promise.reject('No private key');
     }
 
+    public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+        return {
+            [SIGN_TYPE.AUTH]: [0],
+            [SIGN_TYPE.MATCHER_ORDERS]: [0],
+            [SIGN_TYPE.CREATE_ORDER]: [0, 2],
+            [SIGN_TYPE.CANCEL_ORDER]: [0],
+            [SIGN_TYPE.COINOMAT_CONFIRMATION]: [0],
+            [SIGN_TYPE.ISSUE]: [2],
+            [SIGN_TYPE.TRANSFER]: [2],
+            [SIGN_TYPE.REISSUE]: [2],
+            [SIGN_TYPE.BURN]: [2],
+            [SIGN_TYPE.EXCHANGE]: [],
+            [SIGN_TYPE.LEASE]: [2],
+            [SIGN_TYPE.CANCEL_LEASING]: [2],
+            [SIGN_TYPE.CREATE_ALIAS]: [2],
+            [SIGN_TYPE.MASS_TRANSFER]: [1],
+            [SIGN_TYPE.DATA]: [1],
+            [SIGN_TYPE.SET_SCRIPT]: [1],
+            [SIGN_TYPE.SPONSORSHIP]: [1],
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
+        };
+    }
+
     protected _isMyLedger() {
         return LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
-            .then((user) => {
+            //@ts-ignore
+            .then(user => {
                 if (user.address !== this._currentUser.address) {
                     throw {error: 'Invalid ledger'};
                 }
@@ -93,6 +122,7 @@ export class LedgerAdapter extends Adapter {
         return LedgerAdapter._hasConnectionPromise.then(() => {
             LedgerAdapter._hasConnectionPromise = null;
             return true;
+            //@ts-ignore
         }, (err) => {
             LedgerAdapter._hasConnectionPromise = null;
             return false;
@@ -106,5 +136,6 @@ interface IWavesLedger  {
     openTimeout?: number;
     listenTimeout?: number;
     exchangeTimeout?: number;
+    //@ts-ignore
     transport?;
 }
