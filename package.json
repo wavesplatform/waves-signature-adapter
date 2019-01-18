@@ -11,7 +11,7 @@
   "dependencies": {
     "@types/ramda": "^0.25.46",
     "@waves/data-entities": "^1.6.3",
-    "@waves/ledger": "^3.0.0",
+    "@waves/ledger": "^3.0.1",
     "@waves/signature-generator": "^4.0.0",
     "ramda": "^0.25.0"
   },
