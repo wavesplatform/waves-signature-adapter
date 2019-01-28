@@ -4,11 +4,11 @@ import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { utils } from '@waves/signature-generator';
 
 const DEFAULT_TX_VERSIONS = {
-    [SIGN_TYPE.AUTH]: [0],
-    [SIGN_TYPE.MATCHER_ORDERS]: [0],
-    [SIGN_TYPE.CREATE_ORDER]: [0],
-    [SIGN_TYPE.CANCEL_ORDER]: [0],
-    [SIGN_TYPE.COINOMAT_CONFIRMATION]: [0],
+    [SIGN_TYPE.AUTH]: [1],
+    [SIGN_TYPE.MATCHER_ORDERS]: [1],
+    [SIGN_TYPE.CREATE_ORDER]: [1],
+    [SIGN_TYPE.CANCEL_ORDER]: [1],
+    [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
     [SIGN_TYPE.ISSUE]: [2],
     [SIGN_TYPE.TRANSFER]: [2],
     [SIGN_TYPE.REISSUE]: [2],
@@ -21,7 +21,7 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.DATA]: [1],
     [SIGN_TYPE.SET_SCRIPT]: [1],
     [SIGN_TYPE.SPONSORSHIP]: [1],
-    [SIGN_TYPE.SET_ASSET_SCRIPT]: []
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: [1]
 };
 
 export class WavesKeeperAdapter extends Adapter {
