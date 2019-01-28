@@ -33,7 +33,7 @@ export class WavesKeeperAdapter extends Adapter {
     private _needDestroy = false;
     private _address: string;
     private _pKey: string;
-    private _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
+    private static _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
     private static _getApiCb: () => IWavesKeeper;
 
     private static _api: IWavesKeeper;
@@ -45,11 +45,11 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._initExtension();
         //@ts-ignore
         WavesKeeperAdapter.onUpdate((state) => {
-            
+
             if (state.txVersion) {
-                this._txVersion = state.txVersion;
+                WavesKeeperAdapter._txVersion = state.txVersion;
             }
-            
+
             if (!state.locked && (!state.account || state.account.address !== this._address)) {
                 this._needDestroy = true;
                 //@ts-ignore
@@ -86,7 +86,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
-        return this._txVersion;
+        return WavesKeeperAdapter._txVersion;
     }
 
     //@ts-ignore
@@ -192,6 +192,12 @@ export class WavesKeeperAdapter extends Adapter {
     public static initOptions(options) {
         Adapter.initOptions(options);
         this.setApiExtension(options.extension);
+        this._initExtension();
+        this._api.publicState().then(state => {
+            if (state.txVersion) {
+                WavesKeeperAdapter._txVersion = state.txVersion;
+            }
+        });
     }
 
     //@ts-ignore
