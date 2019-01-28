@@ -55,7 +55,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
 
     [SIGN_TYPE.AUTH]: {
         signatureGenerator: {
-            0: generate<IAuthData>([
+            1: generate<IAuthData>([
                 new StringWithLength('prefix'),
                 new StringWithLength('host'),
                 new StringWithLength('data')
@@ -65,7 +65,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
         signatureGenerator: {
-            0: generate([
+            1: generate([
                 new StringWithLength('prefix'),
                 new Int('timestamp', 8)
             ])
