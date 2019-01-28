@@ -193,11 +193,15 @@ export class WavesKeeperAdapter extends Adapter {
         Adapter.initOptions(options);
         this.setApiExtension(options.extension);
         this._initExtension();
-        this._api.publicState().then(state => {
-            if (state.txVersion) {
-                WavesKeeperAdapter._txVersion = state.txVersion;
-            }
-        });
+        try {
+            this._api.publicState().then(state => {
+                if (state.txVersion) {
+                    WavesKeeperAdapter._txVersion = state.txVersion;
+                }
+            });
+        } catch (e) {
+
+        }
     }
 
     //@ts-ignore
