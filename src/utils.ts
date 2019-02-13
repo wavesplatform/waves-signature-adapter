@@ -1,6 +1,12 @@
 import { BigNumber } from '@waves/data-entities';
 import { path } from 'ramda';
-import { parseTransactionBytes, TRANSACTION_TYPE_NUMBER } from '@waves/signature-generator';
+import { parseTransactionBytes } from '@waves/signature-generator';
+import {
+    IExchangeTransactionOrder,
+    TTransaction,
+    IDataTransaction,
+    IMassTransferTransaction
+} from '@waves/ts-types';
 
 
 export function find<T>(some: Partial<T>, list: Array<T>) {
@@ -23,29 +29,60 @@ export function last<T>(list: Array<T>): T {
     return list[list.length - 1];
 }
 
+export const TRANSACTION_TYPE = { // TODO Remove after refactor ts-types lib
+    GENESIS: 1 as 1,
+    PAYMENT: 2 as 2,
+    ISSUE: 3 as 3,
+    TRANSFER: 4 as 4,
+    REISSUE: 5 as 5,
+    BURN: 6 as 6,
+    EXCHANGE: 7 as 7,
+    LEASE: 8 as 8,
+    CANCEL_LEASE: 9 as 9,
+    ALIAS: 10 as 10,
+    MASS_TRANSFER: 11 as 11,
+    DATA: 12 as 12,
+    SET_SCRIPT: 13 as 13,
+    SPONSORSHIP: 14 as 14,
+    SET_ASSET_SCRIPT: 15 as 15
+};
+
+export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNumber): (order: IExchangeTransactionOrder<BigNumber>, hasMatcherScript?: boolean, smartAssetIdList?: Array<string>) => BigNumber {
+    return (order, hasScript = false, smartAssetIdList = []) => {
+        const accountFee: BigNumber = hasScript ? config.smart_account_extra_fee : new BigNumber(0);
+        const extraFee: BigNumber = Object
+            .values(order.assetPair)
+            .map(id => {
+                return id && smartAssetIdList.includes(id) ? config.smart_asset_extra_fee : new BigNumber(0);
+            })
+            .reduce((sum, item) => sum.plus(item), new BigNumber(0));
+
+        return minOrderFee.plus(accountFee).plus(extraFee);
+    };
+}
+
 export function currentFeeFactory(config: IFeeConfig): (bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => BigNumber {
     return (bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => {
-        const tx = parseTransactionBytes(bytes);
+        const tx: TTransaction<BigNumber> = parseTransactionBytes(bytes);
         const accountFee = hasAccountScript ? config.smart_account_extra_fee : new BigNumber(0);
         const minFee: BigNumber = accountFee.plus(getConfigProperty(tx.type, 'fee', config));
 
         switch (tx.type) {
-            case TRANSACTION_TYPE_NUMBER.ISSUE:
-            case TRANSACTION_TYPE_NUMBER.REISSUE:
-            case TRANSACTION_TYPE_NUMBER.CANCEL_LEASING:
-            case TRANSACTION_TYPE_NUMBER.CREATE_ALIAS:
-            case TRANSACTION_TYPE_NUMBER.LEASE:
-            case TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT:
-            case TRANSACTION_TYPE_NUMBER.SET_SCRIPT:
-            case TRANSACTION_TYPE_NUMBER.SPONSORSHIP:
+            case TRANSACTION_TYPE.ISSUE:
+            case TRANSACTION_TYPE.CANCEL_LEASE:
+            case TRANSACTION_TYPE.ALIAS:
+            case TRANSACTION_TYPE.LEASE:
+            case TRANSACTION_TYPE.SET_ASSET_SCRIPT:
+            case TRANSACTION_TYPE.SET_SCRIPT:
+            case TRANSACTION_TYPE.SPONSORSHIP:
                 return minFee;
-            case TRANSACTION_TYPE_NUMBER.BURN:
-                return minFee.plus(getBurnFee(tx, config, smartAssetIdList || []));
-            case TRANSACTION_TYPE_NUMBER.TRANSFER:
-                return minFee.plus(getTransferFee(tx, config, smartAssetIdList || []));
-            case TRANSACTION_TYPE_NUMBER.MASS_TRANSFER:
+            case TRANSACTION_TYPE.REISSUE:
+            case TRANSACTION_TYPE.BURN:
+            case TRANSACTION_TYPE.TRANSFER:
+                return minFee.plus(getSmartAssetFeeByAssetId(tx.assetId, config, smartAssetIdList || []));
+            case TRANSACTION_TYPE.MASS_TRANSFER:
                 return minFee.plus(getMassTransferFee(tx, config, smartAssetIdList || []));
-            case TRANSACTION_TYPE_NUMBER.DATA:
+            case TRANSACTION_TYPE.DATA:
                 return accountFee.plus(getDataFee(bytes, tx, config));
             default:
                 throw new Error('Wrong transaction type!');
@@ -53,23 +90,19 @@ export function currentFeeFactory(config: IFeeConfig): (bytes: Uint8Array, hasAc
     };
 }
 
-function getBurnFee(tx: any, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
-    return smartAssetIdList.includes(tx.assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
+function getSmartAssetFeeByAssetId(assetId: string | null, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
+    return assetId && smartAssetIdList.includes(assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
 }
 
-function getTransferFee(tx: any, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
-    return smartAssetIdList.includes(tx.assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
-}
-
-function getDataFee(bytes: Uint8Array, tx: any, config: IFeeConfig): BigNumber {
+function getDataFee(bytes: Uint8Array, tx: IDataTransaction<BigNumber>, config: IFeeConfig): BigNumber {
     const kbPrice = getConfigProperty(tx.type, 'price_per_kb', config) as BigNumber;
     return kbPrice.times(Math.floor(1 + (bytes.length - 1) / 1024));
 }
 
-function getMassTransferFee(tx: any, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
+function getMassTransferFee(tx: IMassTransferTransaction<BigNumber>, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
     const transferPrice: BigNumber = getConfigProperty(tx.type, 'price_per_transfer', config) as BigNumber;
     const transfersCount: number = path(['transfers', 'length'], tx) || 0;
-    const smartAssetExtraFee = smartAssetIdList.includes(tx.assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
+    const smartAssetExtraFee = tx.assetId && smartAssetIdList.includes(tx.assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
     const minPriceStep = getConfigProperty(tx.type, 'min_price_step', config) as BigNumber;
     let price = transferPrice.times(transfersCount);
 

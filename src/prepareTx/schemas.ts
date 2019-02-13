@@ -450,20 +450,40 @@ const hasNoApiMethod = schemaType => () => {
 export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<number, Function> } {
     switch (type) {
         case SIGN_TYPE.MATCHER_ORDERS:
-            return { api: { 0: hasNoApiMethod('api, get orders') }, sign: schemas.sign.matcherOrders };
+            return {
+                api: {
+                    0: hasNoApiMethod('api, get orders'),
+                    1: hasNoApiMethod('api, get orders')
+                }, sign: schemas.sign.matcherOrders
+            };
         case SIGN_TYPE.AUTH:
-            return { api: { 0: hasNoApiMethod('api auth') }, sign: schemas.sign.auth };
+            return {
+                api: {
+                    0: hasNoApiMethod('api auth'),
+                    1: hasNoApiMethod('api auth')
+                }, sign: schemas.sign.auth
+            };
         case SIGN_TYPE.COINOMAT_CONFIRMATION:
-            return { api: { 0: schemas.api.coinomatConfirmation }, sign: schemas.sign.coinomatConfirmation };
+            return {
+                api: {
+                    0: schemas.api.coinomatConfirmation,
+                    1: schemas.api.coinomatConfirmation
+                }, sign: schemas.sign.coinomatConfirmation
+            };
         case SIGN_TYPE.CREATE_ORDER:
             return {
                 api: {
-                    0: schemas.api.createOrder,
+                    1: schemas.api.createOrder,
                     2: schemas.api.createOrder_v2
                 }, sign: schemas.sign.createOrder
             };
         case SIGN_TYPE.CANCEL_ORDER:
-            return { api: { 0: schemas.api.cancelOrder }, sign: schemas.sign.cancelOrder };
+            return {
+                api: {
+                    0: schemas.api.cancelOrder,
+                    1: schemas.api.cancelOrder
+                }, sign: schemas.sign.cancelOrder
+            };
         case SIGN_TYPE.TRANSFER:
             return { api: { 2: schemas.api.transfer }, sign: schemas.sign.transfer };
         case SIGN_TYPE.ISSUE:
@@ -473,7 +493,7 @@ export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<
         case SIGN_TYPE.BURN:
             return { api: { 2: schemas.api.burn }, sign: schemas.sign.burn };
         case SIGN_TYPE.EXCHANGE:
-            return { api: { 0: schemas.api.exchange, 2: schemas.api.exchange_v2 }, sign: schemas.sign.exchange };
+            return { api: { 1: schemas.api.exchange, 2: schemas.api.exchange_v2 }, sign: schemas.sign.exchange };
         case SIGN_TYPE.LEASE:
             return { api: { 2: schemas.api.lease }, sign: schemas.sign.lease };
         case SIGN_TYPE.CANCEL_LEASING:

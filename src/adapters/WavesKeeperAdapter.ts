@@ -4,11 +4,11 @@ import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { utils } from '@waves/signature-generator';
 
 const DEFAULT_TX_VERSIONS = {
-    [SIGN_TYPE.AUTH]: [0],
-    [SIGN_TYPE.MATCHER_ORDERS]: [0],
-    [SIGN_TYPE.CREATE_ORDER]: [0],
-    [SIGN_TYPE.CANCEL_ORDER]: [0],
-    [SIGN_TYPE.COINOMAT_CONFIRMATION]: [0],
+    [SIGN_TYPE.AUTH]: [1],
+    [SIGN_TYPE.MATCHER_ORDERS]: [1],
+    [SIGN_TYPE.CREATE_ORDER]: [1],
+    [SIGN_TYPE.CANCEL_ORDER]: [1],
+    [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
     [SIGN_TYPE.ISSUE]: [2],
     [SIGN_TYPE.TRANSFER]: [2],
     [SIGN_TYPE.REISSUE]: [2],
@@ -21,7 +21,7 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.DATA]: [1],
     [SIGN_TYPE.SET_SCRIPT]: [1],
     [SIGN_TYPE.SPONSORSHIP]: [1],
-    [SIGN_TYPE.SET_ASSET_SCRIPT]: []
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: [1]
 };
 
 export class WavesKeeperAdapter extends Adapter {
@@ -33,7 +33,7 @@ export class WavesKeeperAdapter extends Adapter {
     private _needDestroy = false;
     private _address: string;
     private _pKey: string;
-    private _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
+    private static _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
     private static _getApiCb: () => IWavesKeeper;
 
     private static _api: IWavesKeeper;
@@ -45,11 +45,11 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._initExtension();
         //@ts-ignore
         WavesKeeperAdapter.onUpdate((state) => {
-            
+
             if (state.txVersion) {
-                this._txVersion = state.txVersion;
+                WavesKeeperAdapter._txVersion = state.txVersion;
             }
-            
+
             if (!state.locked && (!state.account || state.account.address !== this._address)) {
                 this._needDestroy = true;
                 //@ts-ignore
@@ -86,7 +86,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
-        return this._txVersion;
+        return WavesKeeperAdapter._txVersion;
     }
 
     //@ts-ignore
@@ -192,6 +192,16 @@ export class WavesKeeperAdapter extends Adapter {
     public static initOptions(options) {
         Adapter.initOptions(options);
         this.setApiExtension(options.extension);
+        this._initExtension();
+        try {
+            this._api.publicState().then(state => {
+                if (state.txVersion) {
+                    WavesKeeperAdapter._txVersion = state.txVersion;
+                }
+            });
+        } catch (e) {
+
+        }
     }
 
     //@ts-ignore

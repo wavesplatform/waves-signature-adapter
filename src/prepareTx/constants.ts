@@ -59,6 +59,11 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 new StringWithLength('prefix'),
                 new StringWithLength('host'),
                 new StringWithLength('data')
+            ]),
+            1: generate<IAuthData>([
+                new StringWithLength('prefix'),
+                new StringWithLength('host'),
+                new StringWithLength('data')
             ])
         },
         adapter: 'signRequest'
@@ -68,20 +73,33 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: generate([
                 new StringWithLength('prefix'),
                 new Int('timestamp', 8)
+            ]),
+            1: generate([
+                new StringWithLength('prefix'),
+                new Int('timestamp', 8)
             ])
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.MATCHER_ORDERS]: {
-        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER,
+        signatureGenerator: {
+            0: MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER[1],
+            ...MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER
+        },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.CREATE_ORDER]: {
-        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER,
+        signatureGenerator: {
+            0: MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER[1],
+            ...MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER
+        },
         adapter: 'signOrder'
     },
     [SIGN_TYPE.CANCEL_ORDER]: {
-        signatureGenerator: MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER,
+        signatureGenerator: {
+            0: MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER[1],
+            ...MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER
+        },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.TRANSFER]: {

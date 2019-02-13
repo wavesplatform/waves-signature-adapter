@@ -1,6 +1,7 @@
 import { BigNumber, Asset, Money } from '@waves/data-entities';
 import { Seed } from '@waves/signature-generator';
-import { Signable, currentFeeFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
+import { Signable, currentFeeFactory, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
+import { IExchangeTransactionOrder } from '@waves/ts-types';
 
 const seed = Seed.create();
 
@@ -174,6 +175,21 @@ const TEST_LIST: Array<ITestItem> = [
         hasScript: false,
         smartAssetIdList: undefined,
         fee: new BigNumber(100000000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.REISSUE,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
+                quantity: new BigNumber(500),
+                reissuable: true
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100800000)
     },
     {
         data: {
@@ -598,6 +614,20 @@ const TEST_LIST: Array<ITestItem> = [
     }
 ];
 
+const ORDER: IExchangeTransactionOrder<BigNumber> = {
+    amount: new BigNumber(10),
+    price: new BigNumber(5),
+    expiration: Date.now() + 1000 * 60 * 60,
+    timestamp: Date.now(),
+    matcherFee: new BigNumber(300000),
+    matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+    assetPair: {
+        amountAsset: TEST_ASSET.id,
+        priceAsset: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn'
+    },
+    orderType: 'sell'
+};
+
 interface ITestItem {
     data: TSignData,
     hasScript: boolean;
@@ -623,6 +653,37 @@ describe('Current fee list', () => {
                 done();
             });
 
+        });
+
+    });
+
+    describe('Create order', () => {
+
+        const currentOrderFee = currentCreateOrderFactory(CONFIG, new BigNumber(300000));
+
+        it('Simple', () => {
+            const fee = currentOrderFee(ORDER);
+            expect(fee).toEqual(new BigNumber(300000));
+        });
+
+        it('With matcher script', () => {
+            const fee = currentOrderFee(ORDER, true);
+            expect(fee).toEqual(new BigNumber(700000));
+        });
+
+        it('With script and one smart asset', () => {
+            const fee = currentOrderFee(ORDER, true, [TEST_ASSET.id]);
+            expect(fee).toEqual(new BigNumber(1100000));
+        });
+
+        it('Without script and two smart asset', () => {
+            const fee = currentOrderFee(ORDER, false, [ORDER.assetPair.amountAsset, ORDER.assetPair.priceAsset]);
+            expect(fee).toEqual(new BigNumber(1100000));
+        });
+
+        it('With script and two smart asset', () => {
+            const fee = currentOrderFee(ORDER, true, [ORDER.assetPair.amountAsset, ORDER.assetPair.priceAsset]);
+            expect(fee).toEqual(new BigNumber(1500000));
         });
 
     });
