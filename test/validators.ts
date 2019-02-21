@@ -108,6 +108,17 @@ describe('Check validators', () => {
                 (() => (!!adapter.makeSignable(signData)))()
             ).toBe(true)
         });
+    
+        it('valid transfer bytes', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, transfers: [2, 15, 40, 20] }
+            } as any;
+        
+            expect(
+                (() => (!!adapter.makeSignable(signData)))()
+            ).toBe(true)
+        });
         
         it('invalid transfer amount', () => {
             const signData = {

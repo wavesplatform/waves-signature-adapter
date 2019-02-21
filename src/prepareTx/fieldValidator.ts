@@ -75,22 +75,43 @@ const string = (options: IFieldOptions) => {
 };
 
 const attachment = (options: IFieldOptions) => {
-    const value = numberToString(options.value);
-    options = { ...options, value };
-    string(options);
     
-    if (value == null) {
+    if (options.value == null) {
         return;
     }
     
-    switch (true) {
-        case typeof value != 'string':
-            error(options, ERROR_MSG.WRONG_TYPE);
-            break;
-        case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:
-            error(options, ERROR_MSG.LARGE_FIELD);
-            break;
+    if (typeof options.value === 'string' || typeof options.value === 'number') {
+    
+        string(options);
+        const { value } = options;
+    
+        switch (true) {
+            case typeof value != 'string':
+                error(options, ERROR_MSG.WRONG_TYPE);
+                break;
+            case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:
+                error(options, ERROR_MSG.LARGE_FIELD);
+                break;
+        }
+        
+        return;
     }
+    
+    if (typeof options.value === 'object') {
+        
+        switch (true) {
+            case typeof options.value.length !== 'number' || options.value.length < 0:
+                error(options, ERROR_MSG.WRONG_TYPE);
+                break;
+            case options.value.length > TRANSFERS.ATTACHMENT:
+                error(options, ERROR_MSG.LARGE_FIELD);
+                break;
+        }
+        
+        return;
+    }
+    
+    error(options, ERROR_MSG.WRONG_TYPE);
 };
 
 const number = (options: IFieldOptions) => {
