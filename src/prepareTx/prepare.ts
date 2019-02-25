@@ -80,7 +80,7 @@ export module prepare {
 
         export function attachment(data: string) {
             data = data || '';
-            const value = Uint8Array.from(libs.converters.stringToByteArray(data));
+            const value = typeof data === 'string' ? Uint8Array.from(libs.converters.stringToByteArray(data)) : data;
             return libs.base58.encode(Uint8Array.from(value));
         }
 
