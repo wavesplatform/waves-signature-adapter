@@ -81,10 +81,10 @@ const attachment = (options: IFieldOptions) => {
     }
     
     if (typeof options.value === 'string' || typeof options.value === 'number') {
-    
+        
         string(options);
         const { value } = options;
-    
+        
         switch (true) {
             case typeof value != 'string':
                 error(options, ERROR_MSG.WRONG_TYPE);
@@ -148,7 +148,7 @@ const money = (options: IFieldOptions) => {
     }
 };
 
-const numberLike = (options: IFieldOptions, min?: string|number, max?: string|number) => {
+const numberLike = (options: IFieldOptions, min?: string | number, max?: string | number) => {
     required(options);
     const { value } = options;
     
@@ -158,13 +158,13 @@ const numberLike = (options: IFieldOptions, min?: string|number, max?: string|nu
     
     const checkInterval = (bigNumber: BigNumber) => {
         if (min != null) {
-            if(bigNumber.lt(new BigNumber(min))) {
+            if (bigNumber.lt(new BigNumber(min))) {
                 error(options, ERROR_MSG.SMALL_FIELD);
             }
         }
-    
+        
         if (max != null) {
-            if(bigNumber.gt(new BigNumber(max))) {
+            if (bigNumber.gt(new BigNumber(max))) {
                 error(options, ERROR_MSG.LARGE_FIELD);
             }
         }
@@ -181,7 +181,7 @@ const numberLike = (options: IFieldOptions, min?: string|number, max?: string|nu
             
             const coins = (<Money>value).getCoins();
             
-            if(coins.isNaN()) {
+            if (coins.isNaN()) {
                 error(options, ERROR_MSG.WRONG_NUMBER);
             }
             checkInterval(coins);
@@ -271,7 +271,7 @@ const assetId = (options: IFieldOptions) => {
     try {
         isAssetId = libs.base58.decode(value.trim()).length === 32;
     } catch (e) {
-        isAssetId =  false;
+        isAssetId = false;
     }
     
     if (!isAssetId && value !== 'WAVES') {
@@ -316,13 +316,13 @@ const assetName = (options: IFieldOptions) => {
         if (typeof value !== 'string') {
             error(options, ERROR_MSG.WRONG_TYPE);
         }
-    
+        
         const bytesLength = getBytesFromString(value).length;
         
         if (bytesLength < ASSETS.NAME_MIN_BYTES) {
             error(options, ERROR_MSG.SMALL_FIELD);
         }
-    
+        
         if (bytesLength > ASSETS.NAME_MAX_BYTES) {
             error(options, ERROR_MSG.LARGE_FIELD);
         }
@@ -350,8 +350,8 @@ const precision = (options: IFieldOptions) => {
     required(options);
     numberLike(options, 0, 8);
 };
-    
-    const httpsUrl = (options: IFieldOptions) => {
+
+const httpsUrl = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
@@ -378,7 +378,7 @@ const precision = (options: IFieldOptions) => {
         case isNotUrl(value):
             error(options, ERROR_MSG.NOT_HTTPS_URL);
             break;
-    
+        
     }
 };
 
@@ -393,7 +393,7 @@ const transfers = (options: IFieldOptions) => {
     if (!options.optional && value.length === 0) {
         error(options, ERROR_MSG.REQUIRED);
     }
-
+    
     //@ts-ignore
     const errors = (value || []).map(({ recipient, amount }, index) => {
         const dataErrors = [];
@@ -405,7 +405,12 @@ const transfers = (options: IFieldOptions) => {
         }
         
         try {
-            aliasOrAddress({ ...options, value: recipient, name: `${options.name}:${index}:recipient`, optional: false });
+            aliasOrAddress({
+                ...options,
+                value: recipient,
+                name: `${options.name}:${index}:recipient`,
+                optional: false
+            });
         } catch (e) {
             dataErrors.push(e);
         }
@@ -433,7 +438,7 @@ const data = (options: IFieldOptions) => {
         } catch (e) {
             return e;
         }
-
+        
         const itemOptions = { ...options, name: `${options.name}:${index}:value`, optional: false, value };
         
         try {
@@ -451,9 +456,9 @@ const data = (options: IFieldOptions) => {
                     string(itemOptions);
                     break;
                 default:
-                    error({ ...options, value: key, name: `${options.name}:${index}:type`}, ERROR_MSG.WRONG_TYPE);
+                    error({ ...options, value: key, name: `${options.name}:${index}:type` }, ERROR_MSG.WRONG_TYPE);
             }
-        } catch(e) {
+        } catch (e) {
             return e;
         }
         //@ts-ignore
@@ -491,6 +496,61 @@ const asset_script = (options: IFieldOptions) => {
     script(options);
 };
 
+const call = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    if (!value || typeof value !== 'object') {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    const functionValue = {
+        key: 'call.function',
+        value: value.function,
+        optional: false,
+        type: 'string',
+        name: 'function'
+    };
+    
+    string(functionValue);
+    
+    const argsValue = {
+        key: 'call.args',
+        value: value.args,
+        optional: true,
+        type: 'args',
+        name: 'args'
+    };
+    
+    if (argsValue.value) {
+        data(argsValue);
+    }
+};
+
+const payment = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (typeof value !== 'object' || typeof value.length !== 'number' || !value.forEach) {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    const errors = (value || []).map((amount: any, index: number) => {
+        const dataErrors = [];
+    
+        try {
+            money({ ...options, value: amount, name: `${options.name}:${index}`, optional: false });
+        } catch (e) {
+            dataErrors.push(e);
+        }
+        
+        return dataErrors;
+    }).filter((item: any) => item.length);
+    
+    if (errors.length) {
+        error(options, errors);
+        error(options, errors);
+    }
+};
 
 export const VALIDATORS = {
     string,
@@ -514,7 +574,9 @@ export const VALIDATORS = {
     script,
     asset_script,
     binary,
-    precision
+    precision,
+    call,
+    payment,
 };
 
 

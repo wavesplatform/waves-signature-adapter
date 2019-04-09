@@ -20,7 +20,8 @@ export type TSignData =
     IDataTxData |
     ISetScriptData |
     ISponsorshipData |
-    ISetAssetScriptData;
+    ISetAssetScriptData|
+    IScriptInvocationData;
 
 export interface ISignAuthData {
     data: IAuthData;
@@ -111,6 +112,20 @@ export interface ISponsorshipData {
 export interface ISetAssetScriptData {
     data: ISetAssetScript;
     type: SIGN_TYPE.SET_ASSET_SCRIPT;
+}
+
+export interface IScriptInvocationData {
+    data: IScriptInvocation;
+    type: SIGN_TYPE.SCRIPT_INVOCATION;
+}
+
+export interface IScriptInvocation extends ICreateTxData {
+    payment: [Money] | [];
+    dappAddress: string;
+    call: {
+        function: string;
+        args?: Array<IDATA_ENTRY>;
+    };
 }
 
 export interface IAuthData {

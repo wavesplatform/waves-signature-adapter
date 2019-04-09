@@ -54,7 +54,7 @@ export class Signable {
         if (!availableVersions.includes(version)) {
             throw new SignError(`Can\'t sign data with type "${this.type}" and version "${version}"`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }
-
+        
         this._prepareForApi = prepareMap.api[version];
 
         if (!this._prepareForApi) {
@@ -79,7 +79,8 @@ export class Signable {
             this._adapter.getAddress()
         ]).then(([senderPublicKey, sender]) => {
             const dataForSign = this._prepareForSing({ sender, senderPublicKey, ...forSign.data });
-            return new generator(dataForSign).getBytes();
+            const bytesConstructor = new generator(dataForSign);
+            return bytesConstructor.getBytes();
         });
     }
 

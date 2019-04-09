@@ -45,6 +45,7 @@ export class SeedAdapter extends Adapter {
             [SIGN_TYPE.SET_SCRIPT]: [1],
             [SIGN_TYPE.SPONSORSHIP]: [1],
             [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
         };
     }
 
