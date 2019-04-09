@@ -23,7 +23,16 @@ export module prepare {
             return (payments || []).map(pay => {
                 return {
                     amount: toBigNumber(pay).toString(),
-                    assetId: pay.asset.id
+                    assetId: moneyToNodeAssetId(pay)
+                }
+            });
+        }
+        
+        export function paymentsToNode(payments: Array<Money>) {
+            return (payments || []).map(pay => {
+                return {
+                    amount: toBigNumber(pay),
+                    assetId: moneyToNodeAssetId(pay) || null,
                 }
             });
         }
