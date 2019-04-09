@@ -425,7 +425,7 @@ const transfers = (options: IFieldOptions) => {
     }
 };
 
-const data = (options: IFieldOptions) => {
+const data = (options: IFieldOptions, noKey?: boolean) => {
     required(options);
     const { value } = options;
     if (!Array.isArray(value)) {
@@ -433,12 +433,13 @@ const data = (options: IFieldOptions) => {
     }
     //@ts-ignore
     const errors = value.map(({ key, type, value }, index) => {
-        try {
-            string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
-        } catch (e) {
-            return e;
+        if (!noKey) {
+            try {
+                string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
+            } catch (e) {
+                return e;
+            }
         }
-        
         const itemOptions = { ...options, name: `${options.name}:${index}:value`, optional: false, value };
         
         try {
@@ -522,7 +523,7 @@ const call = (options: IFieldOptions) => {
     };
     
     if (argsValue.value) {
-        data(argsValue);
+        data(argsValue, true);
     }
 };
 

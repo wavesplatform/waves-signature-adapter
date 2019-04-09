@@ -43,7 +43,8 @@ describe('Create data and signature check', () => {
                 dappAddress: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
                 timestamp: Date.now(),
                 call: {
-                    function: 'trololo'
+                    function: 'trololo',
+                    args: [ { value: 123, type: 'string' } ]
                 }
             };
     

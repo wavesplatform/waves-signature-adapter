@@ -37,7 +37,7 @@
     "uglify-js": "^3.4.7"
   },
   "jest": {
-    "collectCoverage": false,
+    "collectCoverage": true,
     "testEnvironment": "jest-environment-node",
     "coveragePathIgnorePatterns": [
       "/node_modules/",

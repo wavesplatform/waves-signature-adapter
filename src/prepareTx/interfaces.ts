@@ -2,6 +2,11 @@ import { SIGN_TYPE } from './constants';
 import { IDATA_ENTRY } from '@waves/signature-generator/src/signatureFactory/interface';
 import { Money, BigNumber } from '@waves/data-entities';
 
+export interface IARGS_ENTRY {
+    type: string;
+    value: any;
+}
+
 export type TSignData =
     ISignAuthData |
     ISignCoinomatConfirmation |
@@ -124,7 +129,7 @@ export interface IScriptInvocation extends ICreateTxData {
     dappAddress: string;
     call: {
         function: string;
-        args?: Array<IDATA_ENTRY>;
+        args?: Array<IARGS_ENTRY>;
     };
 }
 
