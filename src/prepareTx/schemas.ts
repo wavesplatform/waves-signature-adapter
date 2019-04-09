@@ -437,11 +437,11 @@ module schemas {
         );
     
         export const scriptInvocation = schema(
-            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_ASSET_SCRIPT)),
+            wrap('version', 'version', processors.addValue(1)),
             'senderPublicKey',
             wrap('feeAssetId', 'feeAssetId', processors.noProcess),
-            wrap('call', 'call', processors.noProcess),
-            wrap('payments', 'payments', processors.payments),
+            wrap('call', 'call', processors.callFunc),
+            wrap('payment', 'payment', processors.payments),
             wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
             wrap('fee', 'fee', processors.toBigNumber),
             wrap('type', 'type', processors.addValue(SIGN_TYPE.SCRIPT_INVOCATION)),

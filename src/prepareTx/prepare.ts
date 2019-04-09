@@ -20,7 +20,7 @@ export module prepare {
         }
         
         export function payments(payments: Array<Money>) {
-            return payments.map(pay => {
+            return (payments || []).map(pay => {
                 return {
                     amount: toBigNumber(pay).toString(),
                     assetId: pay.asset.id
