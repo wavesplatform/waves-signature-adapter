@@ -7,6 +7,7 @@ import {
     Int
 } from '@waves/signature-generator';
 import { IAdapterSignMethods, IAuthData } from './interfaces';
+import { binary } from '@waves/marshall';
 
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -23,6 +24,7 @@ export enum TRANSACTION_TYPE_NUMBER {
     SET_SCRIPT = 13,
     SPONSORSHIP = 14,
     SET_ASSET_SCRIPT = 15,
+    SCRIPT_INVOCATION = 16,
 }
 
 export enum SIGN_TYPE {
@@ -44,6 +46,7 @@ export enum SIGN_TYPE {
     SET_SCRIPT = 13,
     SPONSORSHIP = 14,
     SET_ASSET_SCRIPT = 15,
+    SCRIPT_INVOCATION = 16,
 }
 
 export interface ITypesMap {
@@ -164,6 +167,20 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.SET_ASSET_SCRIPT]: {
         //@ts-ignore
         signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT],
+        adapter: 'signTransaction'
+    },
+    [SIGN_TYPE.SCRIPT_INVOCATION]: {
+        //@ts-ignore
+        signatureGenerator: {
+            1: ((data: any) => {
+                return {
+                    getBytes: () => new Promise((res) => {
+                        const bin = binary.serializeTx(data);
+                        return res(bin)
+                    })
+                };
+            }) as any
+        },
         adapter: 'signTransaction'
     },
 };

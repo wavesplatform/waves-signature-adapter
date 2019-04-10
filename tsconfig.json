@@ -19,7 +19,7 @@
       "es7",
       "dom",
       "es5",
-      "es2017.object",
+      "es2017.object"
     ],
     "baseUrl": "src",
     "paths": {

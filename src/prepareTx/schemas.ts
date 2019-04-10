@@ -197,9 +197,26 @@ const SIGN_SCHEMA = {
         fieldsType.timestamp('timestamp', null, processors.timestamp),
         fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
         fieldsType.asset_script('script')
+    ],
+    [SIGN_TYPE.SCRIPT_INVOCATION]: [
+        fieldsType.number('type', null, processors.addValue(() => SIGN_TYPE.SCRIPT_INVOCATION), true),
+        fieldsType.number('version', null, processors.addValue(() => 1), true),
+    
+        fieldsType.string('senderPublicKey', null, null, true),
+        fieldsType.address('dappAddress'),
+        //@ts-ignore
+        fieldsType.call('call', 'call', processors.callFunc, false),
+        //@ts-ignore
+        fieldsType.payment('payment', null, processors.payments, true),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toNumberString),
+        //@ts-ignore
+        fieldsType.numberLike('fee', 'assetId', processors.moneyToAssetId),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
     ]
 };
-
 
 module schemas {
 
@@ -418,6 +435,20 @@ module schemas {
             wrap('timestamp', 'timestamp', processors.timestamp),
             'proofs'
         );
+    
+        export const scriptInvocation = schema(
+            wrap('version', 'version', processors.addValue(1)),
+            'senderPublicKey',
+            wrap('dappAddress', 'dappAddress', processors.recipient),
+            wrap('feeAssetId', 'feeAssetId', processors.noProcess),
+            wrap('call', 'call', processors.callFunc),
+            wrap('payment', 'payment', processors.paymentsToNode),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SCRIPT_INVOCATION)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
     }
 
     export module sign {
@@ -439,6 +470,7 @@ module schemas {
         export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
         export const setAssetScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_ASSET_SCRIPT]);
         export const exchange = signSchema(SIGN_SCHEMA[SIGN_TYPE.EXCHANGE]);
+        export const scriptInvocation = signSchema(SIGN_SCHEMA[SIGN_TYPE.SCRIPT_INVOCATION]);
     }
 }
 
@@ -510,5 +542,7 @@ export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<
             return { api: { 1: schemas.api.sponsorship }, sign: schemas.sign.sponsorship };
         case SIGN_TYPE.SET_ASSET_SCRIPT:
             return { api: { 1: schemas.api.setAssetScript }, sign: schemas.sign.setAssetScript };
+        case SIGN_TYPE.SCRIPT_INVOCATION:
+            return { api: { 1: schemas.api.scriptInvocation }, sign: schemas.sign.scriptInvocation };
     }
 }

@@ -44,7 +44,8 @@ export const TRANSACTION_TYPE = { // TODO Remove after refactor ts-types lib
     DATA: 12 as 12,
     SET_SCRIPT: 13 as 13,
     SPONSORSHIP: 14 as 14,
-    SET_ASSET_SCRIPT: 15 as 15
+    SET_ASSET_SCRIPT: 15 as 15,
+    SCRIPT_INVOCATION: 16 as 16
 };
 
 export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNumber): (order: IExchangeTransactionOrder<BigNumber>, hasMatcherScript?: boolean, smartAssetIdList?: Array<string>) => BigNumber {
@@ -53,7 +54,7 @@ export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNu
         const extraFee: BigNumber = Object
             .values(order.assetPair)
             .map(id => {
-                return id && smartAssetIdList.includes(id) ? config.smart_asset_extra_fee : new BigNumber(0);
+                return id && smartAssetIdList.includes(id as string) ? config.smart_asset_extra_fee : new BigNumber(0);
             })
             .reduce((sum, item) => sum.plus(item), new BigNumber(0));
 
