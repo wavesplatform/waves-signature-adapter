@@ -207,7 +207,7 @@ const SIGN_SCHEMA = {
         //@ts-ignore
         fieldsType.call('call', 'call', processors.callFunc, false),
         //@ts-ignore
-        fieldsType.payment('payment',null, processors.payments, true),
+        fieldsType.payment('payment', null, processors.payments, true),
         //@ts-ignore
         fieldsType.numberLike('fee', null, processors.toNumberString),
         //@ts-ignore

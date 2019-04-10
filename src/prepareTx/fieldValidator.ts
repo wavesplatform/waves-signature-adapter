@@ -76,14 +76,15 @@ const string = (options: IFieldOptions) => {
 
 const attachment = (options: IFieldOptions) => {
     
-    if (options.value == null) {
+    const { value } = options;
+    
+    if (value == null) {
         return;
     }
     
-    if (typeof options.value === 'string' || typeof options.value === 'number') {
+    if (typeof value === 'string' || typeof value === 'number') {
         
         string(options);
-        const { value } = options;
         
         switch (true) {
             case typeof value != 'string':
@@ -97,13 +98,13 @@ const attachment = (options: IFieldOptions) => {
         return;
     }
     
-    if (typeof options.value === 'object') {
+    if (typeof value === 'object') {
         
         switch (true) {
-            case typeof options.value.length !== 'number' || options.value.length < 0:
+            case typeof value.length !== 'number' || value.length < 0:
                 error(options, ERROR_MSG.WRONG_TYPE);
                 break;
-            case options.value.length > TRANSFERS.ATTACHMENT:
+            case value.length > TRANSFERS.ATTACHMENT:
                 error(options, ERROR_MSG.LARGE_FIELD);
                 break;
         }
@@ -537,7 +538,7 @@ const payment = (options: IFieldOptions) => {
     
     const errors = (value || []).map((amount: any, index: number) => {
         const dataErrors = [];
-    
+        
         try {
             money({ ...options, value: amount, name: `${options.name}:${index}`, optional: false });
         } catch (e) {
