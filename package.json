@@ -15,7 +15,6 @@
     "@waves/marshall": "^0.6.0",
     "@waves/signature-generator": "^5.0.0",
     "@waves/ts-types": "^0.2.0-beta-1",
-    "@waves/types": "0.0.2",
     "ramda": "^0.25.0"
   },
   "scripts": {
