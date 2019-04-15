@@ -116,8 +116,13 @@ export module prepare {
         
         export function attachment(data: string) {
             data = data || '';
-            const value = Uint8Array.from(libs.converters.stringToByteArray(data));
-            return libs.base58.encode(Uint8Array.from(value));
+            let value: string | Array<number> | Uint8Array = data;
+            
+            if (typeof data === 'string') {
+                value = Uint8Array.from(libs.converters.stringToByteArray(data));
+            }
+            
+            return libs.base58.encode(Uint8Array.from(value as ArrayLike<number>));
         }
         
         export function addValue(value: any) {
