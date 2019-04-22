@@ -111,7 +111,7 @@ export module prepare {
         //@ts-ignore
         export function recipient(data) {
             const code = String.fromCharCode(config.get('networkByte'));
-            return data.length < 30 ? `alias:${code}:${data}` : data;
+            return data.length <= 30 ? `alias:${code}:${data}` : data;
         }
         
         export function attachment(data: string) {
