@@ -224,6 +224,12 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
 
+    private static _updateState(state: any) {
+        for (const cb of WavesKeeperAdapter._onUpdateCb) {
+            cb(state);
+        }
+    }
+    
     private static _initExtension() {
         if (WavesKeeperAdapter._api || !WavesKeeperAdapter._getApiCb) {
             return null;
@@ -233,11 +239,8 @@ export class WavesKeeperAdapter extends Adapter {
         if (wavesApi) {
             wavesApi.initialPromise.then((api: IWavesKeeper) => {
                 this._api = api;
-                this._api.on('update', (state: any) => {
-                    for (const cb of WavesKeeperAdapter._onUpdateCb) {
-                        cb(state);
-                    }
-                });
+                this._api.on('update', WavesKeeperAdapter._updateState);
+                this._api.publicState().then(WavesKeeperAdapter._updateState)
             });
         }
     }
