@@ -229,14 +229,15 @@ export class WavesKeeperAdapter extends Adapter {
             return null;
         }
 
-        this._api = WavesKeeperAdapter._getApiCb();
-
-        if (this._api) {
-            //@ts-ignore
-            this._api.on('update', (state) => {
-                for (const cb of WavesKeeperAdapter._onUpdateCb) {
-                    cb(state);
-                }
+        const wavesApi = WavesKeeperAdapter._getApiCb();
+        if (wavesApi) {
+            wavesApi.initialPromise.then((api: IWavesKeeper) => {
+                this._api = api;
+                this._api.on('update', (state: any) => {
+                    for (const cb of WavesKeeperAdapter._onUpdateCb) {
+                        cb(state);
+                    }
+                });
             });
         }
     }
@@ -253,6 +254,7 @@ interface IWavesKeeper {
     signBytes: (data: any) => Promise<string>;
     publicState: () => Promise<any>;
     on: (name: string, cb: any) => Promise<any>;
+    initialPromise: Promise<IWavesKeeper>;
 }
 
 interface IAuth {
