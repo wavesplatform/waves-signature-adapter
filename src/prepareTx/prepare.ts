@@ -11,8 +11,11 @@ export module prepare {
     
     export module processors {
         
-        export function callFunc(callData?: ICall|null): ICall {
-            callData = callData || Object.create(null);
+        export function callFunc(callData?: ICall|null): ICall|null {
+            if (!callData) {
+                return null;
+            }
+            
             return {
                 function: callData && callData.function || '',
                 args: callData && callData.args || [],

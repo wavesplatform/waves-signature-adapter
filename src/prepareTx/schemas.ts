@@ -205,7 +205,7 @@ const SIGN_SCHEMA = {
         fieldsType.string('senderPublicKey', null, null, true),
         fieldsType.address('dappAddress'),
         //@ts-ignore
-        fieldsType.call('call', 'call', processors.callFunc, false),
+        fieldsType.call('call', 'call', processors.callFunc, true),
         //@ts-ignore
         fieldsType.payment('payment', null, processors.payments, true),
         //@ts-ignore

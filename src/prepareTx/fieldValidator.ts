@@ -501,6 +501,10 @@ const asset_script = (options: IFieldOptions) => {
 const call = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
+    if (value == null) {
+        return;
+    }
+    
     if (!value || typeof value !== 'object') {
         error(options, ERROR_MSG.WRONG_TYPE);
     }

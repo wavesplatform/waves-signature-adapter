@@ -130,7 +130,7 @@ export interface IScriptInvocation extends ICreateTxData {
     call: {
         function: string;
         args?: Array<IARGS_ENTRY>;
-    };
+    } | null;
 }
 
 export interface IAuthData {
