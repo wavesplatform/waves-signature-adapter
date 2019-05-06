@@ -40,7 +40,7 @@ describe('Create data and signature check', () => {
             const data = {
                 payment: [Money.fromTokens(1, testAsset)] as [Money],
                 fee: Money.fromTokens(0.0005, testAsset),
-                dappAddress: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
+                dApp: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
                 timestamp: Date.now(),
                 call: {
                     function: 'trololo',
@@ -65,7 +65,7 @@ describe('Create data and signature check', () => {
             const data = {
                 payment: [Money.fromTokens(1, testAsset)] as [Money],
                 fee: Money.fromTokens(0.0005, testAsset),
-                dappAddress: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
+                dApp: 'merry',
                 timestamp: Date.now(),
                 call: null,
             };

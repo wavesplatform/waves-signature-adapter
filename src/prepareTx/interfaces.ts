@@ -126,7 +126,7 @@ export interface IScriptInvocationData {
 
 export interface IScriptInvocation extends ICreateTxData {
     payment: [Money] | [];
-    dappAddress: string;
+    dApp: string;
     call: {
         function: string;
         args?: Array<IARGS_ENTRY>;

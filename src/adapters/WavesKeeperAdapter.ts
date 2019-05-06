@@ -156,7 +156,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static async isAvailable() {
-        WavesKeeperAdapter._initExtension();
+        await WavesKeeperAdapter._initExtension();
 
         if (!this._api) {
             throw { code: 0, message: 'Install WavesKeeper' };
@@ -232,12 +232,12 @@ export class WavesKeeperAdapter extends Adapter {
     
     private static _initExtension() {
         if (WavesKeeperAdapter._api || !WavesKeeperAdapter._getApiCb) {
-            return null;
+            return WavesKeeperAdapter._api.initialPromise;
         }
 
         const wavesApi = WavesKeeperAdapter._getApiCb();
         if (wavesApi) {
-            wavesApi.initialPromise.then((api: IWavesKeeper) => {
+           return wavesApi.initialPromise.then((api: IWavesKeeper) => {
                 this._api = api;
                 this._api.on('update', WavesKeeperAdapter._updateState);
                 this._api.publicState().then(WavesKeeperAdapter._updateState)
