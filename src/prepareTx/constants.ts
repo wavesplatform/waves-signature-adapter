@@ -8,6 +8,8 @@ import {
 } from '@waves/signature-generator';
 import { IAdapterSignMethods, IAuthData } from './interfaces';
 import { binary } from '@waves/marshall';
+import { prepare } from './prepare';
+import recipient = prepare.processors.recipient;
 
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -175,6 +177,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             1: ((data: any) => {
                 return {
                     getBytes: () => new Promise((res) => {
+                        data.dApp = recipient(data.dApp);
                         const bin = binary.serializeTx(data);
                         return res(bin)
                     })
