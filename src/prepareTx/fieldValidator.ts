@@ -1,5 +1,6 @@
-import { Money, BigNumber } from '@waves/data-entities';
+import { Money } from '@waves/data-entities';
 import { utils, libs } from '@waves/signature-generator';
+import { BigNumber } from '@waves/bignumber';
 
 const TRANSFERS = {
     ATTACHMENT: 140

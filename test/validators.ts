@@ -1,8 +1,9 @@
 import { SeedAdapter } from '../src/adapters';
-import { Asset, Money, BigNumber } from '@waves/data-entities';
+import { Asset, Money } from '@waves/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
 import { Seed } from '@waves/signature-generator';
+import { BigNumber } from '@waves/bignumber';
 
 const getError = (e: Error) => JSON.parse(e.message);
 const testSeed = 'some test seed words without money on mainnet';

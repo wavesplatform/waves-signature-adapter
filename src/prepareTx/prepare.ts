@@ -1,4 +1,5 @@
-import { Money, BigNumber, AssetPair, OrderPrice } from '@waves/data-entities';
+import { Money, AssetPair, OrderPrice } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
 import { WAVES_ID, libs, config } from '@waves/signature-generator';
 import { VALIDATORS } from './fieldValidator';
 
@@ -148,7 +149,7 @@ export module prepare {
         
         //@ts-ignore
         export function quantity(data): BigNumber {
-            return new BigNumber(data.quantity).times(new BigNumber(10).pow(data.precision));
+            return new BigNumber(data.quantity).mul(new BigNumber(10).pow(data.precision));
         }
         
         //@ts-ignore

@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
 import { path } from 'ramda';
 import { parseTransactionBytes } from '@waves/signature-generator';
 import {
@@ -56,9 +56,9 @@ export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNu
             .map(id => {
                 return id && smartAssetIdList.includes(id as string) ? config.smart_asset_extra_fee : new BigNumber(0);
             })
-            .reduce((sum, item) => sum.plus(item), new BigNumber(0));
+            .reduce((sum, item) => sum.add(item), new BigNumber(0));
 
-        return minOrderFee.plus(accountFee).plus(extraFee);
+        return minOrderFee.add(accountFee).add(extraFee);
     };
 }
 
@@ -66,7 +66,7 @@ export function currentFeeFactory(config: IFeeConfig): (bytes: Uint8Array, hasAc
     return (bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => {
         const tx: TTransaction<BigNumber> = parseTransactionBytes(bytes);
         const accountFee = hasAccountScript ? config.smart_account_extra_fee : new BigNumber(0);
-        const minFee: BigNumber = accountFee.plus(getConfigProperty(tx.type, 'fee', config));
+        const minFee: BigNumber = accountFee.add(getConfigProperty(tx.type, 'fee', config));
 
         switch (tx.type) {
             case TRANSACTION_TYPE.ISSUE:
@@ -80,11 +80,11 @@ export function currentFeeFactory(config: IFeeConfig): (bytes: Uint8Array, hasAc
             case TRANSACTION_TYPE.REISSUE:
             case TRANSACTION_TYPE.BURN:
             case TRANSACTION_TYPE.TRANSFER:
-                return minFee.plus(getSmartAssetFeeByAssetId(tx.assetId, config, smartAssetIdList || []));
+                return minFee.add(getSmartAssetFeeByAssetId(tx.assetId, config, smartAssetIdList || []));
             case TRANSACTION_TYPE.MASS_TRANSFER:
-                return minFee.plus(getMassTransferFee(tx, config, smartAssetIdList || []));
+                return minFee.add(getMassTransferFee(tx, config, smartAssetIdList || []));
             case TRANSACTION_TYPE.DATA:
-                return accountFee.plus(getDataFee(bytes, tx, config));
+                return accountFee.add(getDataFee(bytes, tx, config));
             default:
                 throw new Error('Wrong transaction type!');
         }
@@ -97,7 +97,7 @@ function getSmartAssetFeeByAssetId(assetId: string | null, config: IFeeConfig, s
 
 function getDataFee(bytes: Uint8Array, tx: IDataTransaction<BigNumber>, config: IFeeConfig): BigNumber {
     const kbPrice = getConfigProperty(tx.type, 'price_per_kb', config) as BigNumber;
-    return kbPrice.times(Math.floor(1 + (bytes.length - 1) / 1024));
+    return kbPrice.mul(Math.floor(1 + (bytes.length - 1) / 1024));
 }
 
 function getMassTransferFee(tx: IMassTransferTransaction<BigNumber>, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
@@ -105,13 +105,13 @@ function getMassTransferFee(tx: IMassTransferTransaction<BigNumber>, config: IFe
     const transfersCount: number = path(['transfers', 'length'], tx) || 0;
     const smartAssetExtraFee = tx.assetId && smartAssetIdList.includes(tx.assetId) ? config.smart_asset_extra_fee : new BigNumber(0);
     const minPriceStep = getConfigProperty(tx.type, 'min_price_step', config) as BigNumber;
-    let price = transferPrice.times(transfersCount);
+    let price = transferPrice.mul(transfersCount);
 
-    if (!price.div(minPriceStep).isInteger()) {
-        price = price.div(minPriceStep).dp(0, BigNumber.ROUND_UP).times(minPriceStep);
+    if (!price.div(minPriceStep).isInt()) {
+        price = price.div(minPriceStep).roundTo(0, BigNumber.ROUND_MODE.ROUND_UP).mul(minPriceStep);
     }
 
-    return price.plus(smartAssetExtraFee);
+    return price.add(smartAssetExtraFee);
 }
 
 function getConfigProperty<T extends keyof IFeeConfigItem>(type: number, propertyName: T, config: IFeeConfig): IFeeConfigItem[T] {
