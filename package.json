@@ -21,7 +21,7 @@
   "scripts": {
     "test": "jest",
     "compile": "tsc",
-    "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/data-entities -u @waves/signature-generator -u @waves/marshall  -u @waves/ledger -o dist/signature-adapter.js",
+    "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/bignumber -u @waves/data-entities -u @waves/signature-generator -u @waves/marshall  -u @waves/ledger -o dist/signature-adapter.js",
     "build": "npm run compile && npm run browserify && npm run uglify",
     "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
     "postpublish": "git push",
