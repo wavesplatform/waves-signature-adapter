@@ -203,9 +203,9 @@ const SIGN_SCHEMA = {
         fieldsType.number('version', null, processors.addValue(() => 1), true),
     
         fieldsType.string('senderPublicKey', null, null, true),
-        fieldsType.address('dappAddress'),
+        fieldsType.aliasOrAddress('dApp'),
         //@ts-ignore
-        fieldsType.call('call', 'call', processors.callFunc, false),
+        fieldsType.call('call', 'call', processors.callFunc, true),
         //@ts-ignore
         fieldsType.payment('payment', null, processors.payments, true),
         //@ts-ignore
@@ -439,7 +439,7 @@ module schemas {
         export const scriptInvocation = schema(
             wrap('version', 'version', processors.addValue(1)),
             'senderPublicKey',
-            wrap('dappAddress', 'dappAddress', processors.recipient),
+            wrap('dApp', 'dApp', processors.recipient),
             wrap('feeAssetId', 'feeAssetId', processors.noProcess),
             wrap('call', 'call', processors.callFunc),
             wrap('payment', 'payment', processors.paymentsToNode),

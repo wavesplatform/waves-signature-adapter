@@ -66,8 +66,10 @@ const keeperMock = {
     //@ts-ignore
     on: (key: string, cb) => {
     },
+    initialPromise: Promise.reject(),
 };
 
+keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
 describe('WavesKeeper adapter test', () => {
 
@@ -78,6 +80,7 @@ describe('WavesKeeper adapter test', () => {
             const adapter = new WavesKeeperAdapter(users[0]);
             await adapter.isAvailable();
         } catch (e) {
+            console.error(e);
             expect('Fail create adapter').toBe('Done');
         }
     });
