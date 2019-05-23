@@ -1,12 +1,14 @@
 import { Adapter, IUser } from './Adapter';
 import { AdapterType } from '../config';
-import { Seed, utils } from '@waves/signature-generator';
+import { seedUtils } from '@waves/waves-transactions';
+import { signWithPrivateKey } from '@waves/waves-crypto';
 import { SIGN_TYPE } from '../prepareTx';
 
+const Seed = seedUtils.Seed;
 
 export class SeedAdapter extends Adapter {
 
-    private seed: Seed;
+    private seed: seedUtils.Seed;
     public static type = AdapterType.Seed;
 
 
@@ -22,7 +24,7 @@ export class SeedAdapter extends Adapter {
             seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
         }
 
-        this.seed = new Seed(seed);
+        this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
@@ -82,7 +84,7 @@ export class SeedAdapter extends Adapter {
     }
 
     private _sign(bytes: Uint8Array): Promise<string> {
-        return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
+        return Promise.resolve(signWithPrivateKey(bytes, this.seed.keyPair.privateKey));
     }
 
     public static isAvailable() {
