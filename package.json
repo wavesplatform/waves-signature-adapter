@@ -13,8 +13,11 @@
     "@waves/data-entities": "^1.6.3",
     "@waves/ledger": "^3.4.0",
     "@waves/marshall": "^0.7.2",
+    "@waves/money-like-to-node": "0.0.4",
     "@waves/signature-generator": "^5.0.1",
     "@waves/ts-types": "^0.2.0-beta-1",
+    "@waves/waves-crypto": "^2.1.2",
+    "@waves/waves-transactions": "^3.7.1",
     "ramda": "^0.25.0"
   },
   "scripts": {
@@ -36,7 +39,7 @@
     "uglify-js": "^3.4.7"
   },
   "jest": {
-    "collectCoverage": true,
+    "collectCoverage": false,
     "testEnvironment": "jest-environment-node",
     "coveragePathIgnorePatterns": [
       "/node_modules/",

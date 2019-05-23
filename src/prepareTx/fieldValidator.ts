@@ -1,5 +1,5 @@
 import { Money, BigNumber } from '@waves/data-entities';
-import { utils, libs } from '@waves/signature-generator';
+import { stringToUint8Array, base58decode, keccak, blake2b } from '@waves/waves-crypto';
 
 const TRANSFERS = {
     ATTACHMENT: 140
@@ -38,6 +38,29 @@ export const ERROR_MSG = {
     EMPTY_BASE64: 'field can be not empty base64"',
 };
 
+const isValidAddress = function (address: string, networkByte: number) {
+    if (!address || typeof address !== 'string') {
+        throw new Error('Missing or invalid address');
+    }
+    
+    let addressBytes = base58decode(address);
+    
+    if (addressBytes[0] !== 1 || addressBytes[1] !== networkByte) {
+        return false;
+    }
+    
+    let key = addressBytes.slice(0, 22);
+    let check = addressBytes.slice(22, 26);
+    let keyHash = keccak(blake2b(key)).slice(0, 4);
+    
+    for (var i = 0; i < 4; i++) {
+        if (check[i] !== keyHash[i]) {
+            return false;
+        }
+    }
+    return true;
+};
+
 const isBase64 = (value: string): boolean => {
     const regExp = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
     return regExp.test(value);
@@ -45,7 +68,7 @@ const isBase64 = (value: string): boolean => {
 
 //@ts-ignore
 const getBytesFromString = value => {
-    return utils.convert.stringToByteArray(value);
+    return stringToUint8Array(value);
 };
 
 //@ts-ignore
@@ -222,9 +245,9 @@ const address = (options: IFieldOptions) => {
     options = { ...options, value: numberToString(options.value) };
     required(options);
     const { value } = options;
-    const isValidAddress = (address: string) => {
+    const validateAddress = (address: string) => {
         try {
-            return utils.crypto.isValidAddress(address);
+            return isValidAddress(address, options.optionalData as number);
         } catch (e) {
             return false;
         }
@@ -240,7 +263,7 @@ const address = (options: IFieldOptions) => {
             return error(options, ERROR_MSG.SMALL_FIELD);
         case value.length > ADDRESS.MAX_ADDRESS_LENGTH:
             return error(options, ERROR_MSG.LARGE_FIELD);
-        case !isValidAddress(value):
+        case !validateAddress(value):
             return error(options, ERROR_MSG.WRONG_ADDRESS);
     }
 };
@@ -270,7 +293,7 @@ const assetId = (options: IFieldOptions) => {
     let isAssetId = false;
     
     try {
-        isAssetId = libs.base58.decode(value.trim()).length === 32;
+        isAssetId = base58decode(value.trim()).length === 32;
     } catch (e) {
         isAssetId = false;
     }
@@ -592,4 +615,5 @@ interface IFieldOptions {
     optional: boolean;
     type: string;
     name: string;
+    optionalData?: number;
 }

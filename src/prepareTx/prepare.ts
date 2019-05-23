@@ -1,6 +1,9 @@
 import { Money, BigNumber, AssetPair, OrderPrice } from '@waves/data-entities';
-import { WAVES_ID, libs, config } from '@waves/signature-generator';
+import { stringToUint8Array, base58encode } from '@waves/waves-crypto';
 import { VALIDATORS } from './fieldValidator';
+
+export const WAVES_ID = 'WAVES';
+
 
 //@ts-ignore
 const normalizeAssetId = id => id === WAVES_ID ? '' : id;
@@ -44,16 +47,14 @@ export module prepare {
             return !!(code || '').replace('base64:', '') ? code : null;
         }
         
-        //@ts-ignore
-        export function assetPair(data) {
+        export function assetPair(data: any) {
             return {
                 amountAsset: normalizeAssetId(data.amount.asset.id),
                 priceAsset: normalizeAssetId(data.price.asset.id)
             };
         }
         
-        //@ts-ignore
-        export function signatureFromProof(proofs) {
+        export function signatureFromProof(proofs: any) {
             return proofs[0];
         }
         
@@ -93,39 +94,35 @@ export module prepare {
             return idToNode(money.asset.id);
         }
         
-        //@ts-ignore
-        export function timestamp(time) {
+        export function timestamp(time: string|number|Date) {
             if (!(+time) && typeof time === 'string') {
                 return Date.parse(time);
             }
             return time && time instanceof Date ? time.getTime() : time;
         }
         
-        //@ts-ignore
-        export function orString(data): string {
+        export function orString(data: any | string): string {
             return data || '';
         }
         
-        //@ts-ignore
-        export function noProcess(data) {
+        export function noProcess<T>(data: T): T {
             return data;
         }
         
         //@ts-ignore
-        export function recipient(data) {
-            const code = String.fromCharCode(config.get('networkByte'));
-            return data.length <= 30 ? `alias:${code}:${data}` : data;
-        }
+        export const recipient = networkByte => data => {
+            return data.length <= 30 ? `alias:${networkByte}:${data}` : data;
+        };
         
-        export function attachment(data: string) {
+        export function attachment(data: string | Array<number> | Uint8Array) {
             data = data || '';
-            let value: string | Array<number> | Uint8Array = data;
+            let value = data;
             
             if (typeof data === 'string') {
-                value = Uint8Array.from(libs.converters.stringToByteArray(data));
+                value = stringToUint8Array(data);
             }
             
-            return libs.base58.encode(Uint8Array.from(value as ArrayLike<number>));
+            return base58encode(Uint8Array.from(value as ArrayLike<number>));
         }
         
         export function addValue(value: any) {

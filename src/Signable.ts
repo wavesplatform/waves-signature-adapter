@@ -1,40 +1,35 @@
-import { getSchemaByType, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
+import { getValidateSchema, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData, prepare } from './prepareTx';
 import { isEmpty, last } from './utils';
 import { Adapter } from './adapters';
-import { utils } from '@waves/signature-generator';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-
+import { base58encode, blake2b, verifySignature } from '@waves/waves-crypto';
 
 export class Signable {
 
     public readonly type: SIGN_TYPE;
     private readonly _forSign: TSignData;
     private readonly _adapter: Adapter;
-    private readonly _prepareForSing: Function;
     private readonly _bytePromise: Promise<Uint8Array>;
-    private readonly _prepareForApi: Function | undefined;
     private readonly _signMethod: keyof IAdapterSignMethods = 'signRequest';
     private _signPromise: Promise<string> | undefined;
+    private _preparedData: any;
     private _proofs: Array<string> = [];
 
 
     constructor(forSign: TSignData, adapter: Adapter) {
+        const networkCode = adapter.getNetworkByte();
         this._forSign = { ...forSign };
         this.type = forSign.type;
         this._adapter = adapter;
-        const prepareMap = getSchemaByType(forSign.type);
-
-        this._prepareForSing = prepareMap.sign;
-
+        const prepareMap = getValidateSchema(networkCode)[forSign.type];
+        
         if (!prepareMap) {
             throw new SignError(`Can't find prepare api for tx type "${forSign.type}"!`, ERRORS.UNKNOWN_SIGN_TYPE);
         }
-
-        if (!this._forSign.data.timestamp) {
-            this._forSign.data.timestamp = Date.now();
-        }
-
+        
+        this._forSign.data.timestamp = new Date(this._forSign.data.timestamp || Date.now()).getTime();
+        
         if (this._forSign.data.proofs) {
             this._proofs = this._forSign.data.proofs.slice();
         }
@@ -55,33 +50,20 @@ export class Signable {
             throw new SignError(`Can\'t sign data with type "${this.type}" and version "${version}"`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }
         
-        this._prepareForApi = prepareMap.api[version];
-
-        if (!this._prepareForApi) {
+        if (!SIGN_TYPES[forSign.type as SIGN_TYPE].getBytes[version]) {
             throw new SignError(`Can't find prepare api for tx type "${forSign.type}" with version ${version}!`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }
 
-        const generator = SIGN_TYPES[forSign.type].signatureGenerator[version];
         this._signMethod = SIGN_TYPES[forSign.type].adapter;
 
-        if (!generator) {
-            throw new Error(`Unknown data type ${forSign.type} with version ${version}!`);
-        }
-
         try {
-            this._prepareForSing(forSign.data, true);
+            this._preparedData = prepare.signSchema(prepareMap)(forSign.data);
         } catch (e) {
             throw new SignError(e.message, ERRORS.VALIDATION_FAILED);
         }
 
-        this._bytePromise = Promise.all([
-            this._adapter.getPublicKey(),
-            this._adapter.getAddress()
-        ]).then(([senderPublicKey, sender]) => {
-            const dataForSign = this._prepareForSing({ sender, senderPublicKey, ...forSign.data });
-            const bytesConstructor = new generator(dataForSign);
-            return bytesConstructor.getBytes();
-        });
+        this._bytePromise = this.getSignData()
+            .then(signData => SIGN_TYPES[signData.type as SIGN_TYPE].getBytes[version](signData));
     }
 
 
@@ -92,9 +74,17 @@ export class Signable {
     public async getSignData() {
         const senderPublicKey = await this._adapter.getPublicKey();
         const sender = await this._adapter.getAddress();
-        return this._prepareForSing({ sender, senderPublicKey, ...this._forSign.data });
+        const dataForBytes = { ...this._preparedData, senderPublicKey, sender, ...this._forSign.data, type: this._forSign.type };
+        const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
+        try {
+            const signData = convert && convert(dataForBytes, this._adapter.getNetworkByte());
+            return signData || dataForBytes;
+        } catch (e) {
+            debugger;
+        }
     }
 
+    
     public sign2fa(options: ISign2faOptions): Promise<Signable> {
         const code = options.code;
 
@@ -122,7 +112,7 @@ export class Signable {
     }
 
     public getId(): Promise<string> {
-        return this._bytePromise.then(utils.crypto.buildTransactionId);
+        return this._bytePromise.then(bytes => base58encode(blake2b(bytes)));
     }
 
     public sign(): Promise<Signable> {
@@ -146,7 +136,7 @@ export class Signable {
         ]).then(([bytes, publicKey]) => {
             return this._proofs.filter(signature => {
                 try {
-                    return utils.crypto.isValidSignature(bytes, signature, publicKey);
+                    return verifySignature(publicKey, bytes, signature);
                 } catch (e) {
                     return false;
                 }
@@ -171,16 +161,11 @@ export class Signable {
         });
     }
 
-    public getDataForApi(): Promise<object> {
-        return Promise.all([
-            this._adapter.getPublicKey(),
-            this._adapter.getAddress(),
-            this.addMyProof()
-        ]).then(([senderPublicKey, sender]) => {
-            const proofs = this._proofs.slice();
-            const prepare = this._prepareForApi as Function;
-            return prepare({ senderPublicKey, sender, ...this._forSign.data, proofs });
-        });
+    public async getDataForApi(): Promise<object> {
+        const data = await this.getSignData();
+        await this.addMyProof();
+        const proofs = this._proofs.slice();
+        return { ...data, proofs };
     }
 
     private _makeSignPromise(): Signable {
