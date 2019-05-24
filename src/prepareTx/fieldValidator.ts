@@ -1,5 +1,6 @@
-import { Money, BigNumber } from '@waves/data-entities';
 import { stringToUint8Array, base58decode, keccak, blake2b } from '@waves/waves-crypto';
+import { Money } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
 
 const TRANSFERS = {
     ATTACHMENT: 140

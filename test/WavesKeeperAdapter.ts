@@ -1,6 +1,7 @@
 import { WavesKeeperAdapter } from '../src/adapters/WavesKeeperAdapter';
-import { Asset, Money, BigNumber } from '@waves/data-entities';
+import { Asset, Money } from '@waves/data-entities';
 import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
+import { BigNumber } from '@waves/bignumber';
 
 const testAsset = new Asset({
     precision: 5,

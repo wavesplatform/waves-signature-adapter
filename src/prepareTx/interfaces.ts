@@ -1,5 +1,6 @@
 import { SIGN_TYPE } from './constants';
-import { Money, BigNumber } from '@waves/data-entities';
+import { Money } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
 
 export interface IARGS_ENTRY {
     type: string;
