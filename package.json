@@ -13,8 +13,8 @@
     "@waves/bignumber": "0.0.1-a5",
     "@waves/data-entities": "^2.0.0-a3",
     "@waves/ledger": "^3.4.0",
-    "@waves/marshall": "^0.7.2",
-    "@waves/money-like-to-node": "0.0.4",
+    "@waves/marshall": "^0.7.3",
+    "@waves/money-like-to-node": "0.0.6",
     "@waves/signature-generator": "^6.0.1-a",
     "@waves/ts-types": "^0.2.0-beta-1",
     "@waves/waves-crypto": "^2.1.2",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.2",
     "browserify": "^16.2.3",
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "ts-jest": "^23.10.3",
     "typescript": "^3.2.2",
     "uglify-js": "^3.4.7"

@@ -1,8 +1,8 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@waves/data-entities';
-import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset } from './assets';
+import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH } from './assets';
 import { base58decode } from '@waves/waves-crypto';
-import { BigNumber } from '@waves/data-entities/dist/libs/bignumber';
+import { BigNumber } from '@waves/bignumber';
 
 
 export const txs = {
@@ -18,7 +18,8 @@ export const txs = {
                 reissuable: true,
                 script: null,
                 fee: Money.fromCoins(100000000, WavesAsset),
-                timestamp: 1558497371511
+                timestamp: 1558497371511,
+                version: 2,
             },
             id: 'EJbLEHhB5Sdbmpagug9nBDrBpAfgnTQomhL7xnsvvxS9',
             proof: '3Wgh9tuRdDwQXhAe63iabC5VojkPiJfKPm4tNaawGfpuGncTnT4zMTKzAH3QCjsZQ2c4sqDCyUjDpAAYBGeZLYFb'
@@ -29,11 +30,12 @@ export const txs = {
             name: 'reissure',
             data: {
                 assetId: 'CUrS6BkWPJVniWE7zh8LyN7PYehMa5WxSKUz3jaGdU2C',
-                quantity: new BigNumber(9000000000),
+                quantity: new BigNumber('900000000000'),
                 reissuable: true,
                 senderPublicKey: 'CMxBthD1FH5kB597UY54jP3Q4LJr6LVnTFyajcEEkG46',
                 fee: Money.fromTokens(1, WavesAsset),
                 timestamp: new Date('2019-05-13T15:45:14.160Z'),
+                version: 2,
             },
             id: 'ApcQrPa5yE4PnS9h8aPWEfQpGBPcPP6j5czn6KPRcksc',
             proof: '5Gs7WhnoTALmA2rff6EyA3xM2tH8TFtfKgmEJdMEfFnDUiDnppTCWKgvXrdHRVBeE7g8yq6KJSxa2ZJ6C73BR7zg'
@@ -46,9 +48,10 @@ export const txs = {
                 senderPublicKey: 'BzeniWrmnD1qjoFjVnrYbSXwoiYNpKvaTkhpgwySM31Q',
                 assetId: 'GouQ4XCiunWv8A8zJ6BCB9yyWHyFHREiqkuNYiATjJeW',
                 amount: new BigNumber(1000000000000000000),
+                fee: Money.fromCoins(100000, WavesAsset),
                 timestamp: new Date(1558588376106),
+                version: 2,
             },
-            fee: Money.fromCoins(100000, WavesAsset),
             id: 'EDpiFv8RL9B4o8HvG9uXeocerZ8eiUQ7W1VjGwr9Ld1X',
             proof: '5dZqaWVrEtC4QFdwsrTQmfnL4ivPdLA8Trmz8FvhNYax4V1apQxfMqaxEHmVKhyyTCX73ahzuFMx3AjbypFYpjg4',
         }
@@ -104,7 +107,7 @@ export const txs = {
                 version: 2,
                 senderPublicKey: '5Dw7m2P8BJ9DsFWgKx5YN1ngPcKzrNrswYrqjMnFe1t8',
                 alias: 'yes2yunos',
-                fee: Money.fromTokens(0.001, WavesAsset),
+                fee: Money.fromCoins(100000, WavesAsset),
             },
             id: 'FPPLnwckHW7koBLsuThp1rHB8PbZMzpySzndy6ziUga4',
             proof: '78VKQC7nvmMC6rfSDKX7kqoJ8UUAffeF8ScU6GevsMKHL2mgRDPiL2zLGumETZxCurdbDABDCzxNTwAAyTozFCD',
@@ -129,6 +132,7 @@ export const txs = {
                 sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
                 senderPublicKey: '6Dugmm8rP7UsEZ1vN3y6s8MY2tfW5aGeJzpkozSR4rk5',
                 timestamp: 1558529580270,
+                version: 1,
             },
             id: '4stWtcwjq16ZbpwjTP9tJvWFRgsKgHhqnPx6PjskaWEH',
             proof: '45rAeooSYbb4UtxfBfBxnQR6vBdud6KiLG77vMCUX6ibKKT4APeVFPZhbMT35JG8sxLhXc55WRw2iKbxZSuFWBDy'
@@ -160,19 +164,15 @@ export const txs = {
                 fee: Money.fromCoins(300000, WavesAsset),
                 timestamp: 1512075551784,
                 version: 1,
-                order1: {
+                buyOrder: {
                     version: 1,
                     id: 'HFe1UL2xF9q7T1vcxhSk5h6L53sQcM9eevvjtASe1Szs',
                     sender: '3PMajJ6WC4XR3RMr4raWainaKQpfRZLGHsV',
                     senderPublicKey: '3FQtBZWd2PYSRyehzDNEr1YQC29Vd5pCYqiN4nRhnxQK',
                     matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
-                    assetPair: {
-                        amountAsset: '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu',
-                        priceAsset: null
-                    },
                     orderType: 'buy',
-                    amount: 1230364480,
-                    price: 8971734818,
+                    amount: Money.fromCoins(1230364480, WETH),
+                    price: Money.fromCoins(8971734818, WavesAsset),
                     timestamp: 1512075437685,
                     expiration: 1512161837685,
                     matcherFee: 300000,
@@ -181,7 +181,7 @@ export const txs = {
                         '4kh4HmFLCJnJuUfoCFir6G8GSiUcogVpMFEmUjpqutXqhpKFu5ECzxqQ3Kd1TxvtSN5aG35M76nrfvP7bt7UQ1k1'
                     ]
                 },
-                order2: {
+                sellOrder: {
                     version: 1,
                     id: 'EBxTpRwrRPpSgEaH1Lco8B9wZwXYbxUHfggP1tPiSEfW',
                     sender: '3P5XQcyuAs3Fs4FcBXUrKPSQmfY6Zvse36L',
@@ -192,8 +192,8 @@ export const txs = {
                         priceAsset: null
                     },
                     orderType: 'sell',
-                    amount: 49816000,
-                    price: 8971734818,
+                    amount: Money.fromCoins(49816000, WETH),
+                    price: Money.fromCoins(8971734818, WavesAsset),
                     timestamp: 1512075546319,
                     expiration: 1513803546319,
                     matcherFee: 300000,
@@ -260,4 +260,78 @@ export const txs = {
             proof: '2gYMJ8KZS7QY5FAD6FV7Ynx4pmQS6GErD7FSKoLbGUTmkgdAevaSiK9UN5Hwc2xbMZjziZkgVjvSFx3mJpaDFSCp',
         },
     },
+    [SIGN_TYPE.SPONSORSHIP]: {
+        1: {
+            data: {
+                timestamp: '2019-05-23T01:51:16.417Z',
+                version: 1,
+                fee: Money.fromCoins(100000000, WavesAsset),
+                senderPublicKey: '2Dmh69GXHWkrM1zT5khG3FeRJmQBACBjPU3sdYz3qC5A',
+                minSponsoredAssetFee: Money.fromCoins(100000000000, Aracoin)
+            },
+            id: '2Lvn7WGJdPgGR7Wdd66qyovUTXGGqcPRfkxU2P4msJQB',
+            proof: '43L7KoZy3CUj5XunfbNiEqVbYcaeZrsztUa3qDWGUDFjGSTJDkNqhukFaQmcVFdgFKeh6VU1zCaqeYm9Q1kXfcuV',
+        },
+    },
+    [SIGN_TYPE.SET_SCRIPT]: {
+        1: {
+            data: {
+                timestamp: '2019-05-19T16:57:14.262Z',
+                version: 1,
+                senderPublicKey: 'F2FdoxwSbGAHLcRBBNun7uSBvA9L5RvYWkwHHBc5UHqN',
+                script: 'base64:AgQAAAAJaHMxUHVia2V5AQAAACDQVb7HZxGcCjyEGUrIyKkyXvBUTCbTPFHtnRsj8pRfDQQAAAAJaHMyUHVia2V5AQAAACB9+8rXSKq9JZuI77yDN3Gwa1ube2kjCtazzXaevbq1LgQAAAAJaHMxU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAFAAAACWhzMVB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAQAAAAJaHMyU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAEFAAAACWhzMlB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAkAAGcAAAACCQAAZAAAAAIFAAAACWhzMVNpZ25lZAUAAAAJaHMyU2lnbmVkAAAAAAAAAAACG6WDNQ==',
+                fee: Money.fromCoins(1000000, WavesAsset),
+            },
+            id: '7KP47taMi46pfcEJFPYpneJojH6Li4efWrsEtqsqS3pN',
+            proof: '5MUYQnEZMXa3dqdN1c6r8CwJTG3qy9UxTg5g3gTuj2M6dRsPx3Bf23Jxx7sYa1UKtYmGbVYNu5qDPhzSafYSKE33',
+        }
+    },
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: {
+        1: {
+            data: {
+                senderPublicKey: '3Zogxgq7Gcw82HVnxBopx7qhWMjJYt55t98XC1hDSMR5',
+                fee: Money.fromCoins(100000000, WavesAsset),
+                timestamp: 1555958479625,
+                version: 1,
+                assetId: 'HFW1aho3BGGZd4yFUmANaj38PjCYh2J2xm1WzKy4Td6G',
+                script: 'base64:AgQAAAAHV0FWRVNJZAEAAAAEE6vZMwQAAAAGaXNzdWVyCQEAAAAHQWRkcmVzcwAAAAEBAAAACjBzQOgYK1aOY+IEAAAAB2Fzc2V0SWQBAAAACJ+kNIQu6TK4BAAAAAckbWF0Y2gwBQAAAAJ0eAMJAAABAAAAAgUAAAAHJG1hdGNoMAIAAAATRXhjaGFuZ2VUcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAMJAAAAAAAAAggICAUAAAABdAAAAAlzZWxsT3JkZXIAAAAJYXNzZXRQYWlyAAAACnByaWNlQXNzZXQFAAAAB1dBVkVTSWQGCQAAAAAAAAIICAgFAAAAAXQAAAAJc2VsbE9yZGVyAAAACWFzc2V0UGFpcgAAAAthbW91bnRBc3NldAUAAAAHV0FWRVNJZAaA4Tys',
+            },
+            id: 'GxePoQhGWsF7o2r4kvNqqHaGdDyeBYk8K49mqFREQf6W',
+            proof: '2eNxhqTGaBjLAwiyovQyfMoMMWddNzw2VHdbYbsY9jde8c8HeQ4rwE8cWTG4vdyacsNSv35vTJsoBrbWjSvARR3C',
+        }
+    },
+    [SIGN_TYPE.SCRIPT_INVOCATION]: {
+        1: {
+            data: {
+                dApp: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
+                call: {
+                    function: 'test',
+                    args: [{ value: 'test', type: 'string' }, {
+                        value: false,
+                        type: 'boolean'
+                    }, { value: new BigNumber(-10), type: 'integer' }]
+                },
+                version: 1,
+                timestamp: 1555958479625,
+                payment: [Money.fromCoins(100, Aracoin)],
+                fee: Money.fromCoins(1000000, WavesAsset),
+            },
+            id: 'DRF2wDvj9KL7cLsLaFibYwcq5n6PhWZR2USpp7bS4kCj',
+            proof: '4no5k4F7kEnSFBGeVtSqCJo6PD4PcPQcmcLm6ztjVerwULJwZgqTEia6i1cMt6WMdQ4rjDk8DMW9fcy9Nzi8MXZg'
+        }
+    },
+    
+    //////////////NOT TX////////////////
+    [SIGN_TYPE.AUTH]: {
+        1: {
+            data: {
+                host: 'chrome-ext.wvservices.com',
+                name: 'test app',
+                data: 'test random data',
+                senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr'
+            },
+            id: 'G6VKU9BqJmrp1gjyPf618WTZeMg8PYQBkTCtqx9gbC8g',
+            proof: '3ijDFHgMbdBgXkxddV8VMv5ocuKvgWvH4QM65h6E93ixDJiUGVCQnzVcKqBVmV4n6BkVT828C28bCp8hVo38ySxP'
+        }
+    }
 };

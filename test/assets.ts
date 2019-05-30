@@ -65,3 +65,27 @@ export const Beatz = new Asset({
     description: 'Beatz by waves will contribute to the future of Web 3.0 by building a decentralized music platform allowing all users from across the globe to publish their music whether your at home in your shower or a world class music studio you can publish your music and allow users from around the world to purchase it via Beatz by waves .',
     height: 1538724
 });
+
+export const Aracoin = new Asset({
+    id: '9tv9pBXj8jrJnFiSktMiohULps9LZwhm47bjjCHc8P6s',
+    sender: '3PNTrUhPCeuLzLNvJnyNvozpRw5e7XGRYG5',
+    timestamp: new Date(1558057919829),
+    name: 'Aracoin',
+    quantity: 100000000000000,
+    reissuable: true,
+    precision: 8,
+    description: 'moeda Amazonica',
+    height: 1529849
+});
+
+export const WETH = new Asset({
+    'id': '474jTeYx2r2Va35794tCScAXWJG9hU2HcgxzMowaZUnu',
+    'sender': '3PAfgHQPgodM6MxUzqRkepiKofGnECNoxt5',
+    'timestamp': new Date(1500374348683),
+    'name': 'WETH',
+    'quantity': 10000000000000000,
+    'reissuable': true,
+    'precision': 8,
+    'description': 'Ethereum Token',
+    'height': 585888
+});

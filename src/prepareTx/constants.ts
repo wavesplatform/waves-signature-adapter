@@ -1,8 +1,10 @@
 import { IAdapterSignMethods } from './interfaces';
-import { binary } from '@waves/marshall';
+import { binary, serializePrimitives } from '@waves/marshall';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
+
+const { LEN, SHORT, STRING, LONG } = serializePrimitives;
 
 const toNode = (data: any) => {
     const r = mlToNode(data);
@@ -60,22 +62,48 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
 
     [SIGN_TYPE.AUTH]: {
         getBytes: {
-            0: (data) => Uint8Array.from(data),
-            1: (data) => Uint8Array.from(data)
+            1: (txData) => {
+                const { host, data } = txData;
+                const pBytes = LEN(SHORT)(STRING)('WavesWalletAuthentication');
+                const hostBytes = LEN(SHORT)(STRING)(host || '');
+                const dataBytes = LEN(SHORT)(STRING)(data || '');
+   
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(hostBytes),
+                    ...Array.from(dataBytes)
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
         getBytes: {
-            0: (data) => Uint8Array.from(data),
-            1: (data) => Uint8Array.from(data)
+            1: (txData) => {
+                const { timestamp, prefix } = txData;
+                const pBytes = LEN(SHORT)(STRING)(prefix);
+                const timestampBytes = LONG(timestamp);
+        
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(timestampBytes),
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.MATCHER_ORDERS]: {
         getBytes: {
-            0: (data) => Uint8Array.from(data),
-            1: (data) => Uint8Array.from(data)
+            1: (txData) => {
+                const { timestamp, prefix } = txData;
+                const pBytes = LEN(SHORT)(STRING)(prefix);
+                const timestampBytes = LONG(timestamp);
+        
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(timestampBytes),
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
@@ -108,7 +136,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             2: binary.serializeTx,
         },
-        toNode,
+        toNode: data => {
+            return toNode({ ...data, quantity: data.amount || data.quantity })
+        },
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.REISSUE]: {
@@ -134,8 +164,17 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.EXCHANGE]: {
         getBytes: {
             0: binary.serializeTx,
-            1: binary.serializeTx,
             2: binary.serializeTx,
+        },
+        toNode: data => {
+            const tx = toNode(data);
+            const order1Sign = data.buyOrder.signature || data.buyOrder.proofs[0];
+            const order1proofs = data.buyOrder.proofs ? data.buyOrder.proofs : data.buyOrder.signature;
+            const order1 = { ...tx.buyOrder, signature: order1Sign, proofs: order1proofs };
+            const order2Sign = data.sellOrder.signature || data.sellOrder.proofs[0];
+            const order2proofs = data.sellOrder.proofs ? data.sellOrder.proofs : data.sellOrder.signature;
+            const order2 = { ...tx.sellOrder, signature: order2Sign, proofs: order2proofs };
+            return { ...tx, order1, order2 };
         },
         adapter: 'signTransaction'
     },
@@ -157,9 +196,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             2: binary.serializeTx,
         },
-        toNode: (data, networkByte: number) => (toNode({
-            ...data, name: processors.recipient(String.fromCharCode(networkByte))(data.name),
-        })),
+        toNode: data => ({ ...toNode(data), chainId: data.chainId }),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
@@ -182,12 +219,17 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
+        toNode,
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+        },
+        toNode: data => {
+            const script = (data.script || '').replace('base64:', '');
+            return toNode({ ...data, script: `base64:${script}` });
         },
         adapter: 'signTransaction'
     },
@@ -204,6 +246,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
+        toNode,
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SCRIPT_INVOCATION]: {
@@ -211,6 +254,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
+        toNode,
         adapter: 'signTransaction'
     },
 };

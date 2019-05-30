@@ -149,6 +149,7 @@ export const getValidateSchema = (networkByte: number) => {
         ],
         [SIGN_TYPE.CREATE_ALIAS]: [
             fieldsType.string()('senderPublicKey', null, null, true),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.aliasName(networkByte)('alias'),
             //@ts-ignore
             fieldsType.numberLike()('fee', null, processors.toBigNumber),
