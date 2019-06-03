@@ -1,10 +1,10 @@
 import { Adapter, IUser } from './Adapter';
 import { AdapterType } from '../config';
-import { seedUtils } from '@waves/waves-transactions';
-import { signWithPrivateKey } from '@waves/waves-crypto';
+import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const Seed = seedUtils.Seed;
+const signWithPrivateKey = libs.crypto.signWithPrivateKey;
 
 export class SeedAdapter extends Adapter {
 

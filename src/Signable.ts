@@ -3,7 +3,9 @@ import { currentFeeFactory, IFeeConfig, isEmpty, last } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-import { base58encode, blake2b, verifySignature } from '@waves/waves-crypto';
+import { libs } from '@waves/waves-transactions';
+
+const { base58encode, blake2b, verifySignature } = libs.crypto;
 
 export class Signable {
     

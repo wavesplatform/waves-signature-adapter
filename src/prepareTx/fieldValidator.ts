@@ -1,6 +1,8 @@
-import { stringToUint8Array, base58decode, keccak, blake2b } from '@waves/waves-crypto';
+import { libs } from '@waves/waves-transactions';
 import { Money } from '@waves/data-entities';
 import { BigNumber } from '@waves/bignumber';
+
+const { stringToUint8Array, base58decode, keccak, blake2b } = libs.crypto;
 
 const TRANSFERS = {
     ATTACHMENT: 140

@@ -1,9 +1,10 @@
 import { Money, AssetPair, OrderPrice } from '@waves/data-entities';
 import { BigNumber } from '@waves/bignumber';
-import { stringToUint8Array, base58encode } from '@waves/waves-crypto';
+import { libs } from '@waves/waves-transactions';
 import { VALIDATORS } from './fieldValidator';
 
 export const WAVES_ID = 'WAVES';
+const { stringToUint8Array, base58encode } = libs.crypto;
 
 
 //@ts-ignore
