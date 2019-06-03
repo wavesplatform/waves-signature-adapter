@@ -134,4 +134,28 @@ describe('WavesKeeper adapter test', () => {
             expect(e).toBe('Done');
         }
     });
+    
+    it('Test convert UInt8Array transfer', async () => {
+        
+        const data = {
+            type: 4,
+            data: {
+                fee: new Money(0.1, testAsset),
+                amount: new Money(1, testAsset),
+                recipient: 'test',
+                attachment: new Uint8Array([1,2,3,4])
+            }
+        };
+        
+        try {
+            WavesKeeperAdapter.setApiExtension(keeperMock);
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            const signable = adapter.makeSignable(data as any);
+            const result = await signable.getDataForApi() as any;
+            expect(result.proofs[0]).toBe('realProof');
+        } catch (e) {
+            expect(e).toBe('Done');
+        }
+    });
 });

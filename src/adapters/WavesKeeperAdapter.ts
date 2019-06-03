@@ -115,13 +115,13 @@ export class WavesKeeperAdapter extends Adapter {
     //@ts-ignore
     public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
         await this.isAvailable(true);
-        return await WavesKeeperAdapter._api.signRequest(signData);
+        return await WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
     }
 
     //@ts-ignore
     public async signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
         await this.isAvailable(true);
-        const dataStr = await WavesKeeperAdapter._api.signTransaction(signData);
+        const dataStr = await WavesKeeperAdapter._api.signTransaction(WavesKeeperAdapter._serializedData(signData));
         const { proofs, signature } = JSON.parse(dataStr);
         return signature || proofs.pop();
     }
@@ -132,13 +132,13 @@ export class WavesKeeperAdapter extends Adapter {
         let promise;
         switch (signData.type) {
             case SIGN_TYPE.CREATE_ORDER:
-                promise = WavesKeeperAdapter._api.signOrder(signData);
+                promise = WavesKeeperAdapter._api.signOrder(WavesKeeperAdapter._serializedData(signData));
                 break;
             case SIGN_TYPE.CANCEL_ORDER:
-                promise = WavesKeeperAdapter._api.signCancelOrder(signData);
+                promise = WavesKeeperAdapter._api.signCancelOrder(WavesKeeperAdapter._serializedData(signData));
                 break;
             default:
-                return WavesKeeperAdapter._api.signRequest(signData);
+                return WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
         }
 
         const dataStr = await promise;
@@ -248,6 +248,14 @@ export class WavesKeeperAdapter extends Adapter {
             });
         }
     }
+    
+    private static _serializedData(data: any) {
+        return JSON.parse(
+            JSON.stringify(data, (key, value) => value instanceof Uint8Array ? Array.from(value) : value)
+        );
+    }
+    
+    
 }
 
 
