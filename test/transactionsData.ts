@@ -1,6 +1,6 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@waves/data-entities';
-import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH } from './assets';
+import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
 import { base58decode } from '@waves/waves-crypto';
 import { BigNumber } from '@waves/bignumber';
 
@@ -75,6 +75,7 @@ export const txs = {
     },
     [SIGN_TYPE.LEASE]: {
         2: {
+            name: 'lease',
             data: {
                 recipient: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
                 senderPublicKey: '7QFRujJgBczYVM8Ey5hyAZeqVDNN56Fn1FFxAnjkiUnc',
@@ -89,6 +90,7 @@ export const txs = {
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
         2: {
+            name: 'cancel leasing',
             data: {
                 senderPublicKey: '4KZsRyZ9LVNBz6PM4CMLvEVm5oz3JepjUDuFumHx7oGJ',
                 leaseId: 'Ag6o9tTqT85AxAwWxzbWR9MEBzxptGjM2h59sGNNPzeT',
@@ -102,6 +104,7 @@ export const txs = {
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
         2: {
+            name: 'create alias',
             data: {
                 timestamp: new Date('2019-05-22T22:06:36.873Z'),
                 version: 2,
@@ -140,6 +143,7 @@ export const txs = {
     },
     [SIGN_TYPE.DATA]: {
         1: {
+            name: 'data',
             data: {
                 version: 1,
                 timestamp: '2019-05-17T16:02:48.062Z',
@@ -159,6 +163,7 @@ export const txs = {
     },
     [SIGN_TYPE.EXCHANGE]: {
         0: {
+            name: 'exchange',
             data: {
                 senderPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
                 fee: Money.fromCoins(300000, WavesAsset),
@@ -212,56 +217,63 @@ export const txs = {
             proof: '5CNVuHcLak6GjTWvVo3t92y1ZDKeRHdSgedHP5VTg65fC8fAN2RrxDhWNmTP3QktvSQUGi7Z3WjUtVztmHnp7Afk',
         },
         2: {
+            name: 'exchange',
             data: {
-                senderPublicKey: 'E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W',
-                timestamp: 1558620394055,
-                version: 2,
-                fee: Money.fromCoins(1800000, WavesAsset),
-                buyMatcherFee: new BigNumber(699972),
-                sellMatcherFee: new BigNumber(699972),
-                price: new BigNumber(32178),
-                amount: new BigNumber(63534092),
-                buyOrder: {
-                    id: '7yVER2gtyuozeo8jK3MXuced4nzSPVJ6b7P8ZpM1PhHk',
-                    senderPublicKey: 'Cb92PCaMeimQmmK1dSaoUro3j8YhskKhH89JWdmsCkQX',
-                    matcherPublicKey: 'E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W',
-                    assetPair: {
-                        amountAsset: 'WAVES',
-                        priceAsset: '9SxLVHaEGTeEjRiAMnEw74YWWndQDRw8SZhknK9EYoUd'
-                    },
-                    orderType: 'buy',
-                    price: 32178,
-                    sender: '3PQxNpso2uNbiPM7PQWJMNeYkVsUv4P5mLm',
-                    amount: 63536551,
-                    timestamp: new Date('2019-05-23T14:06:33.872Z'),
-                    expiration: new Date('2019-06-21T14:06:33.872Z'),
-                    matcherFee: Money.fromCoins(700000, WavesAsset),
-                    signature: '3174Hwa5RvLuT17myPiTCaxJzrLsccEmaTAP5Ppv9J5h9Fbtnq2pUwrEQ8fnKHg4iezNBmX59Tz8afeJhpVBDEcD'
+                'type': 7,
+                'senderPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+                'fee': Money.fromCoins(300000, WavesAsset),
+                'timestamp': 1559218968473,
+                'version': 2,
+                'buyOrder': {
+                    'version': 1,
+                    'id': 'Du7mcUrKveCyBchxfR8RULZK6Ad21AtfWQcR8uqo3WZq',
+                    'sender': '3PCdWLg27GMKprpwKcHqcWS2UwXWwQNRwag',
+                    'senderPublicKey': '6HfBybJc7E4wJYZgWNpDJf9RnZRDvS4WLbcx7FtYBCbN',
+                    'matcherPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+                    'orderType': 'buy',
+                    'amount': Money.fromCoins(139538564044, Voyage),
+                    'price': Money.fromCoins(105, WavesAsset),
+                    'timestamp': 1559218968424,
+                    'expiration': 1559219033424,
+                    'matcherFee': Money.fromCoins(300000, WavesAsset),
+                    'signature': 'SrzSabfBaGFyw1Ex6S7X4BH6mtujgwVxBMKNwcPb2wsyzTrkAzipybjAZcyoBdkEhBoUooUAUPGmHqFcffcTaVG',
+                    'proofs': [
+                        'SrzSabfBaGFyw1Ex6S7X4BH6mtujgwVxBMKNwcPb2wsyzTrkAzipybjAZcyoBdkEhBoUooUAUPGmHqFcffcTaVG'
+                    ]
                 },
-                sellOrder: {
-                    id: '5UJvBH2NB2ZQWQUadiMsrMWExcKJk47a9DZSygs8vS7L',
-                    senderPublicKey: '6TNqGk9VFwpNoUq6ZgfHGLpbGEgn5sfheirJF96FqHBT',
-                    matcherPublicKey: 'E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W',
-                    assetPair: {
-                        amountAsset: 'WAVES',
-                        priceAsset: '9SxLVHaEGTeEjRiAMnEw74YWWndQDRw8SZhknK9EYoUd'
+                'sellOrder': {
+                    'version': 1,
+                    'id': '8KyKHCgGPYrwco9QNGaNwCbVZgSBvjz8JNW24VxVr5Vb',
+                    'sender': '3PCdWLg27GMKprpwKcHqcWS2UwXWwQNRwag',
+                    'senderPublicKey': '6HfBybJc7E4wJYZgWNpDJf9RnZRDvS4WLbcx7FtYBCbN',
+                    'matcherPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+                    'assetPair': {
+                        'amountAsset': '9JKjU6U2Ho71U7VWHvr14RB7iLpx2qYBtyUZqLpv6pVB',
+                        'priceAsset': null
                     },
-                    orderType: 'sell',
-                    price: 32178,
-                    sender: '3PATy5UyBpYDVa9bGUe14o77zarXztprXfU',
-                    amount: 63536551,
-                    timestamp: new Date('2019-05-23T14:06:34.009Z'),
-                    expiration: new Date('2019-06-21T14:06:34.009Z'),
-                    matcherFee: Money.fromCoins(700000, WavesAsset),
-                    signature: '4h8WDKtGRY9xjBemSSyMNS5Uizy2Fo55YNME8Q8pGMqBSjy7AoAjtFibMNjwLtmyLtcS1C1AMGGfe6Yov839MvE1'
-                }
+                    'orderType': 'sell',
+                    'amount': Money.fromCoins(139538564044000, Voyage),
+                    'price': Money.fromCoins(105, WavesAsset),
+                    'timestamp': 1559218958940,
+                    'expiration': 1559219023940,
+                    'matcherFee': Money.fromCoins(300000, WavesAsset),
+                    'signature': '3TSrKc3EnZtnULQKDGBW6fMQqqPFZoRzy4fC7n637dHXhHhs9K61mTwAkmXnq8M5sTV4Y7eG7fq1YFUCJVEWVLjC',
+                    'proofs': [
+                        '3TSrKc3EnZtnULQKDGBW6fMQqqPFZoRzy4fC7n637dHXhHhs9K61mTwAkmXnq8M5sTV4Y7eG7fq1YFUCJVEWVLjC'
+                    ]
+                },
+                'amount': Money.fromCoins(139538095239, Voyage),
+                'price': Money.fromCoins(105, WavesAsset),
+                'buyMatcherFee': Money.fromCoins(299998, Voyage),
+                'sellMatcherFee': Money.fromCoins(299, Voyage),
             },
-            id: 'CCRGT4KTGzmf3rkirGTMRX29R3hYQTzL8vKSD5FPar5w',
-            proof: '2gYMJ8KZS7QY5FAD6FV7Ynx4pmQS6GErD7FSKoLbGUTmkgdAevaSiK9UN5Hwc2xbMZjziZkgVjvSFx3mJpaDFSCp',
+            id: 'GR7ZDZFU2K7R9zM1qNqJEaC1vgA7hFbD3qFxvsSB9U84',
+            proof: '4HdcL9Ppgbf4kKECBvRx28ieSRMtgaFeF97kxSwmB72fLb3FLApkn4KQcKFE4F4pz5UwFcYBP6PB5RqXSrbKLhQM'
         },
     },
     [SIGN_TYPE.SPONSORSHIP]: {
         1: {
+            name: 'sponsorship',
             data: {
                 timestamp: '2019-05-23T01:51:16.417Z',
                 version: 1,
@@ -275,6 +287,7 @@ export const txs = {
     },
     [SIGN_TYPE.SET_SCRIPT]: {
         1: {
+            name: 'set script',
             data: {
                 timestamp: '2019-05-19T16:57:14.262Z',
                 version: 1,
@@ -288,6 +301,7 @@ export const txs = {
     },
     [SIGN_TYPE.SET_ASSET_SCRIPT]: {
         1: {
+            name: 'set asset script',
             data: {
                 senderPublicKey: '3Zogxgq7Gcw82HVnxBopx7qhWMjJYt55t98XC1hDSMR5',
                 fee: Money.fromCoins(100000000, WavesAsset),
@@ -302,28 +316,42 @@ export const txs = {
     },
     [SIGN_TYPE.SCRIPT_INVOCATION]: {
         1: {
+            network: 'T',
+            name: 'script invocation',
             data: {
-                dApp: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
-                call: {
-                    function: 'test',
-                    args: [{ value: 'test', type: 'string' }, {
-                        value: false,
-                        type: 'boolean'
-                    }, { value: new BigNumber(-10), type: 'integer' }]
+                "senderPublicKey": "FkuT6Kxb5UG4pABfhq8y8f2XndyURrPQtq4rASDbMiSK",
+                "call": {
+                    "function": "bet",
+                    "args": [
+                        {
+                            "type": "string",
+                            "value": "6cPwB9AzRg3D3uTSVSfn1Pvhb5Y5Amxpv7akaCUWRbrv2REP1"
+                        },
+                        {
+                            "type": "string",
+                            "value": "36"
+                        }
+                    ]
                 },
-                version: 1,
-                timestamp: 1555958479625,
-                payment: [Money.fromCoins(100, Aracoin)],
-                fee: Money.fromCoins(1000000, WavesAsset),
+                "dApp": "3MqQ9ihYKGehfUnXYf5WmkYSZUD71ByeCQe",
+                "feeAssetId": null,
+                "fee": Money.fromCoins(500000, WavesAsset),
+                "payment": [ Money.fromCoins('1400500000', WavesAsset)
+                ],
+                "id": "F3NKXW84ADWjZUdSRHJRNrdGx6eDkGv4R3u1S6xpBPAm",
+                "type": 16,
+                "version": 1,
+                "timestamp": 1559291920421
             },
-            id: 'DRF2wDvj9KL7cLsLaFibYwcq5n6PhWZR2USpp7bS4kCj',
-            proof: '4no5k4F7kEnSFBGeVtSqCJo6PD4PcPQcmcLm6ztjVerwULJwZgqTEia6i1cMt6WMdQ4rjDk8DMW9fcy9Nzi8MXZg'
+            id: 'F3NKXW84ADWjZUdSRHJRNrdGx6eDkGv4R3u1S6xpBPAm',
+            proof: '251dDXzmZgXHpnwc9Hc9SuzvSydFmPYd4hayTHerMULvj1x9mdD223CUuzA1zCRmyWTBsmmuPGgrqFZjGV767p9R'
         }
     },
     
     //////////////NOT TX////////////////
     [SIGN_TYPE.AUTH]: {
         1: {
+            name: 'auth request',
             data: {
                 host: 'chrome-ext.wvservices.com',
                 name: 'test app',
@@ -333,5 +361,75 @@ export const txs = {
             id: 'G6VKU9BqJmrp1gjyPf618WTZeMg8PYQBkTCtqx9gbC8g',
             proof: '3ijDFHgMbdBgXkxddV8VMv5ocuKvgWvH4QM65h6E93ixDJiUGVCQnzVcKqBVmV4n6BkVT828C28bCp8hVo38ySxP'
         }
-    }
+    },
+    
+    [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
+        1: {
+            name: 'coinomat confirmation request',
+            data: {
+                timestamp: 1559227375,
+                senderPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh'
+            },
+            id: 'FypP87BPZMygFU4bgrryLCtRCVu28mFGg2V1voKGP1PS',
+            proof: '5PzPWJZ5qiFfvkRRn2ois2C9iE5fBB6hogSxkGZB8WBt7urrDRRvNX6xxD6FuNd7S1qHeJdtpUQD8ENBzcQmiVkR'
+        }
+    },
+    
+    [SIGN_TYPE.MATCHER_ORDERS]: {
+        1: {
+            name: 'matcher orders request',
+            data: {
+                timestamp: 1560812209521,
+                senderPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh'
+            },
+            id: '7Ehybg7fHc613Dar7v2KpUP5Vz2fgsDKc5pJwfUhp3Lg',
+            proof: '5zWuPQNs8QD7uGWiNLCLjHgFVYwzbyUXTb8bPaQgirfV6AEmdhVUqgmcbSgxJn2YgL3yuQjAZ9TuQrSsb16w9GMc'
+        }
+    },
+    
+    [SIGN_TYPE.CANCEL_ORDER]: {
+        1: {
+            name: 'cancel order request',
+            data: {
+                id: '2LRmS354UfyAgSf1Z6gataNmFRYZXjVeGeg8mEgvUt29',
+                senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr'
+                
+            },
+            id: '6o4iPH2dTgZzajmtg4vzYuUBV8nocKsh1mB8Nb7YrFNw',
+            proof: 'CuvYBVak3JPHsQaAKvijDr1g5WkEpbvP3uoXbQxZXbbAs4Q3BrvqtTsE46bceRmaSUmyXw2DNRWkbwfGZFkMkbv'
+        }
+    },
+    
+    [SIGN_TYPE.CREATE_ORDER]: {
+        1: {
+            data: {
+                senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
+                orderType: 'sell',
+                price: Money.fromTokens('0.00030665', BtcAsset),
+                amount: Money.fromTokens('0.05186534', WavesAsset),
+                matcherFee: Money.fromTokens('0.00300000', WavesAsset),
+                matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+                expiration: 1561795622165,
+                version: 1,
+                timestamp: 1559290022165
+            },
+            id: 'EYFuGbfHCpqjao4WYdvnqnTfyaJkvdv2cvwa9b7eXX7x',
+            proof: '66H7o9oQvtU79Gk7JryH8LmFz94Mv2TBVKyRX3KavJNsysvuLZppRhb5JpEhrRvHu8wsQQPxfSS2XtNQusHr1Z9h'
+        },
+        2: {
+            data: {
+                "version": 2,
+                "senderPublicKey": "Cb92PCaMeimQmmK1dSaoUro3j8YhskKhH89JWdmsCkQX",
+                "matcherPublicKey": "E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W",
+                "orderType": "buy",
+                "amount": Money.fromCoins(71841490, WavesAsset),
+                "price": Money.fromCoins(30800, TBTC),
+                "timestamp": 1559291009514,
+                "expiration": 1561796609514,
+                "matcherFee": Money.fromCoins(700000, WavesAsset),
+            },
+            id: 'FbjthDRAWRxETe9pjgpX3Fi6cBWRzVM5jgitsHaZ7sbj',
+            proof: '63N2ogYfxnWA2CYKAKzGrRCR7DDmnqCS1rhfRsseWGFufZvHXkmeiYYBp83CbtKzKAawtzviLYUeYhDuLfw3v3KA'
+        }
+    },
 };

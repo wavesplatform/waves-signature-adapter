@@ -1,5 +1,5 @@
 import { getValidateSchema, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData, prepare } from './prepareTx';
-import { isEmpty, last } from './utils';
+import { currentFeeFactory, IFeeConfig, isEmpty, last } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
@@ -57,15 +57,21 @@ export class Signable {
         this._signMethod = SIGN_TYPES[forSign.type].adapter;
         
         try {
-            this._preparedData = prepare.signSchema(prepareMap)(forSign.data);
+            this._preparedData = prepare.signSchema(prepareMap)(this._forSign.data, true);
         } catch (e) {
             throw new SignError(e.message, ERRORS.VALIDATION_FAILED);
         }
         
         this._bytePromise = this.getSignData()
-            .then(signData => SIGN_TYPES[signData.type as SIGN_TYPE].getBytes[version](signData));
+            .then(signData => SIGN_TYPES[forSign.type].getBytes[version](signData));
     }
     
+    public async getFee(config: IFeeConfig, hasScript: boolean, smartAssetIdList?: Array<string>) {
+        const currentFee = currentFeeFactory(config);
+        const txData = await this.getSignData();
+        const bytes = await this.getBytes();
+        return currentFee(txData, bytes, hasScript, smartAssetIdList);
+    }
     
     public getTxData(): TSignData['data'] {
         return { ...this._forSign.data };

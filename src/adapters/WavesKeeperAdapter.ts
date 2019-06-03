@@ -1,7 +1,7 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
 import { SIGN_TYPE, TSignData } from '../prepareTx';
-import { utils } from '@waves/signature-generator';
+import { isValidAddress } from '../prepareTx/fieldValidator';
 
 const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.AUTH]: [1],
@@ -39,8 +39,8 @@ export class WavesKeeperAdapter extends Adapter {
 
     private static _api: IWavesKeeper;
 
-    constructor({ address, publicKey }: any) {
-        super();
+    constructor({ address, publicKey }: any, networkCode?: number|string) {
+        super(networkCode);
         this._address = address;
         this._pKey = publicKey;
         WavesKeeperAdapter._initExtension();
@@ -61,7 +61,7 @@ export class WavesKeeperAdapter extends Adapter {
 
     public async isAvailable(ignoreLocked = false): Promise<void> {
         try {
-            await WavesKeeperAdapter.isAvailable();
+            await WavesKeeperAdapter.isAvailable(this.getNetworkByte());
             const data = await WavesKeeperAdapter._api.publicState();
 
             if (data.locked) {
@@ -155,7 +155,7 @@ export class WavesKeeperAdapter extends Adapter {
         return Promise.reject('No private key');
     }
 
-    public static async isAvailable() {
+    public static async isAvailable(networkCode?: number) {
         await WavesKeeperAdapter._initExtension();
 
         if (!this._api) {
@@ -172,7 +172,7 @@ export class WavesKeeperAdapter extends Adapter {
         if (!error && data) {
             if (!data.locked && !data.account) {
                 error = { code: 2, message: 'No accounts in waveskeeper' };
-            } else if (!data.locked && (!data.account.address || !utils.crypto.isValidAddress(data.account.address))) {
+            } else if (!data.locked && (!data.account.address || !isValidAddress(data.account.address, networkCode || Adapter._code))) {
                 error = { code: 3, message: 'Selected network incorrect' };
             }
         }

@@ -9,7 +9,8 @@ export abstract class Adapter {
     protected _code: number;
     protected static _code: number;
 
-    protected constructor(networkCode?: number) {
+    protected constructor(networkCode?: string | number) {
+        networkCode = typeof networkCode === 'string' ? networkCode.charCodeAt(0) : networkCode;
         this.type = (this as any).constructor.type;
         this._code = networkCode || Adapter._code || ('W').charCodeAt(0);
     }
@@ -26,7 +27,7 @@ export abstract class Adapter {
         return;
     }
 
-    public getNetworkByte() {
+    public getNetworkByte(): number {
         return this._code || Adapter._code;
     }
     
@@ -47,10 +48,6 @@ export abstract class Adapter {
     public abstract signData(bytes: Uint8Array): Promise<string>;
 
     public abstract getSeed(): Promise<string>;
-    
-    public getNetworkCode(): number {
-        return this._code;
-    };
 
     public static initOptions(options: { networkCode: number }) {
         Adapter._code = options.networkCode;

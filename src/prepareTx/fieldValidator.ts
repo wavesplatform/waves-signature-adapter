@@ -39,7 +39,7 @@ export const ERROR_MSG = {
     EMPTY_BASE64: 'field can be not empty base64"',
 };
 
-const isValidAddress = function (address: string, networkByte: number) {
+export const isValidAddress = function (address: string, networkByte: number) {
     if (!address || typeof address !== 'string') {
         throw new Error('Missing or invalid address');
     }
@@ -308,7 +308,7 @@ const timestamp = (options: IFieldOptions) => {
     required(options);
     const { value } = options;
     
-    if (value && !(value instanceof Date || typeof value === 'number' || +value)) {
+    if (isNaN(value) || value && !(value instanceof Date || typeof value === 'number' || +value)) {
         if (typeof value !== 'string' || isNaN(Date.parse(value as string))) {
             return error(options, ERROR_MSG.WRONG_TIMESTAMP);
         }
@@ -420,7 +420,7 @@ const transfers = (options: IFieldOptions) => {
     }
     
     //@ts-ignore
-    const errors = (value || []).map(({ recipient, amount }, index) => {
+    const errors = (value || []).map(({ recipient, amount, name }, index) => {
         const dataErrors = [];
         
         try {
@@ -432,7 +432,7 @@ const transfers = (options: IFieldOptions) => {
         try {
             aliasOrAddress({
                 ...options,
-                value: recipient,
+                value: recipient || name,
                 name: `${options.name}:${index}:recipient`,
                 optional: false
             });

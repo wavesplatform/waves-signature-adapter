@@ -12,8 +12,8 @@ export class SeedAdapter extends Adapter {
     public static type = AdapterType.Seed;
 
 
-    constructor(data: string | IUser) {
-        super();
+    constructor(data: string | IUser, networkCode?: string | number) {
+        super(networkCode);
         let seed;
 
         if (typeof data === 'string') {

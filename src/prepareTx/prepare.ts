@@ -195,7 +195,7 @@ export module prepare {
     }
     
     //@ts-ignore
-    export function signSchema(args: Array<{ name, field, processor, optional, type }>) {
+    export function signSchema(args: Array<{ name, field, processor, optional, type, optionalData }>) {
         //@ts-ignore
         return (data, validate = false) => {
             const errors: Array<any> = [];
@@ -206,6 +206,7 @@ export module prepare {
                         key: wrapped.to,
                         value: wrapped.from ? data[wrapped.from] : data,
                         optional: item.optional,
+                        optionalData: item.optionalData,
                         type: item.type,
                         name: item.name,
                     };

@@ -89,3 +89,27 @@ export const WETH = new Asset({
     'description': 'Ethereum Token',
     'height': 585888
 });
+
+export const Voyage = new Asset({
+    'id': '9JKjU6U2Ho71U7VWHvr14RB7iLpx2qYBtyUZqLpv6pVB',
+    'sender': '3PCdWLg27GMKprpwKcHqcWS2UwXWwQNRwag',
+    'timestamp': new Date(1555369015615),
+    'name': 'Voyage',
+    'quantity': 100000000000000000,
+    'reissuable': false,
+    'precision': 8,
+    'description': 'Voyage Token',
+    'height': 1484354
+});
+
+export const TBTC = new Asset({
+    'id': '9SxLVHaEGTeEjRiAMnEw74YWWndQDRw8SZhknK9EYoUd',
+    'sender': '3P9Typ8Wnoxt719juABnCeErU5wAvfcXAU9',
+    'timestamp': new Date(1553718649292),
+    'name': 'TBTC',
+    'quantity': 100000000,
+    'reissuable': true,
+    'precision': 8,
+    'description': 'Tokenomica BTC',
+    'height': 1456494
+});

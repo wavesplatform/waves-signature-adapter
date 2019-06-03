@@ -1,6 +1,5 @@
 import { BigNumber } from '@waves/bignumber';
 import { path } from 'ramda';
-import { parseTransactionBytes } from '@waves/signature-generator';
 import {
     IExchangeTransactionOrder,
     TTransaction,
@@ -62,9 +61,8 @@ export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNu
     };
 }
 
-export function currentFeeFactory(config: IFeeConfig): (bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => BigNumber {
-    return (bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => {
-        const tx: TTransaction<BigNumber> = parseTransactionBytes(bytes);
+export function currentFeeFactory(config: IFeeConfig): (tx: TTransaction<BigNumber>, bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => BigNumber {
+    return (tx: TTransaction<BigNumber>, bytes: Uint8Array, hasAccountScript: boolean, smartAssetIdList?: Array<string>) => {
         const accountFee = hasAccountScript ? config.smart_account_extra_fee : new BigNumber(0);
         const minFee: BigNumber = accountFee.add(getConfigProperty(tx.type, 'fee', config));
 

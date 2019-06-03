@@ -1,8 +1,6 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
-import './WavesKeeperAdapter';
 import { txs } from './transactionsData';
 import { verifySignature } from '@waves/waves-crypto';
-import './validators';
 
 const TEST_SEED = 'some test seed words without money, you can try check balance';
 
@@ -12,7 +10,7 @@ const checkTx = (type: keyof typeof txs, version: number) => {
     return {
         name: `Test ${txData.name} v.${version} transaction.`,
         check: () => {
-            const adapter = new SeedAdapter(TEST_SEED);
+            const adapter = new SeedAdapter(TEST_SEED, txData.network);
             const signable = adapter.makeSignable({
                 type,
                 data:  { ...data, version } as any
@@ -63,7 +61,16 @@ describe('Create data and signature check', () => {
         
         it('check script invocation signature', () => checkTx(SIGN_TYPE.SCRIPT_INVOCATION, 1).check());
         
-        
         it('check auth signature', () => checkTx(SIGN_TYPE.AUTH, 1).check());
+        
+        it('check coinomat signature', () => checkTx(SIGN_TYPE.COINOMAT_CONFIRMATION, 1).check());
+        
+        it('check matcher orders signature', () => checkTx(SIGN_TYPE.MATCHER_ORDERS, 1).check());
+        
+        it('check matcher cancel order signature', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 1).check());
+        
+        it('check matcher create order signature', () => checkTx(SIGN_TYPE.CREATE_ORDER, 1).check());
+        
+        it('check matcher create order 2 signature', () => checkTx(SIGN_TYPE.CREATE_ORDER, 2).check());
     });
 });

@@ -125,7 +125,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
             fieldsType.aliasOrAddress(networkByte)('recipient'),
             //@ts-ignore
-            fieldsType.attachment('attachment', null, processors.orString, true),
+            fieldsType.attachment()('attachment', null, processors.orString, true),
         ],
         [SIGN_TYPE.LEASE]: [
             fieldsType.string()('senderPublicKey', null, null, true),
