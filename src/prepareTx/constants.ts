@@ -178,14 +178,14 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             2: binary.serializeTx,
         },
         toNode: data => {
-            const tx = toNode(data, wavesTransactions.exchange);
+            const tx = toNode(data);
             const order1Sign = data.buyOrder.signature || data.buyOrder.proofs[0];
             const order1proofs = data.buyOrder.proofs ? data.buyOrder.proofs : data.buyOrder.signature;
             const order1 = { ...tx.buyOrder, signature: order1Sign, proofs: order1proofs };
             const order2Sign = data.sellOrder.signature || data.sellOrder.proofs[0];
             const order2proofs = data.sellOrder.proofs ? data.sellOrder.proofs : data.sellOrder.signature;
             const order2 = { ...tx.sellOrder, signature: order2Sign, proofs: order2proofs };
-            return { ...tx, order1, order2 };
+            return wavesTransactions.exchange({ ...tx, order1, order2 });
         },
         adapter: 'signTransaction'
     },

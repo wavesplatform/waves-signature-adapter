@@ -161,7 +161,11 @@ export class WavesKeeperAdapter extends Adapter {
         if (!this._api) {
             throw { code: 0, message: 'Install WavesKeeper' };
         }
-
+    
+        if (!(networkCode || Adapter._code)) {
+            throw { code: 5, message: 'Set adapter network code' };
+        }
+        
         let error, data;
         try {
             data = await this._api.publicState();
@@ -170,9 +174,9 @@ export class WavesKeeperAdapter extends Adapter {
         }
 
         if (!error && data) {
-            if (!data.locked && !data.account) {
+            if (!data.account) {
                 error = { code: 2, message: 'No accounts in waveskeeper' };
-            } else if (!data.locked && (!data.account.address || !isValidAddress(data.account.address, networkCode || Adapter._code))) {
+            } else if ((!data.account.address || !isValidAddress(data.account.address, networkCode || Adapter._code))) {
                 error = { code: 3, message: 'Selected network incorrect' };
             }
         }

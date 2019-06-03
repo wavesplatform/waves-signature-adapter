@@ -72,10 +72,12 @@ const keeperMock = {
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
+WavesKeeperAdapter.initOptions({ networkCode: 'W'.charCodeAt(0), extension: keeperMock });
+
+
 describe('WavesKeeper adapter test', () => {
 
     it('Test connect to extension', async () => {
-        WavesKeeperAdapter.setApiExtension(keeperMock);
         try {
             const users = await WavesKeeperAdapter.getUserList();
             const adapter = new WavesKeeperAdapter(users[0]);
