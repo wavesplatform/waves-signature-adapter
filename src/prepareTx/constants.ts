@@ -1,11 +1,12 @@
 import { IAdapterSignMethods } from './interfaces';
-import { binary, serializePrimitives } from '@waves/marshall';
+import { libs } from '@waves/waves-transactions';
 import * as wavesTransactions from '@waves/waves-transactions';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
 
-const { LEN, SHORT, STRING, LONG, BASE58_STRING } = serializePrimitives;
+const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
+const { binary } = libs.marshall;
 
 const toNode = (data: any, convert?: Function) => {
     const r = mlToNode(data);

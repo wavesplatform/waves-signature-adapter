@@ -4,6 +4,8 @@ import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
 import { libs } from '@waves/waves-transactions';
+import { convert } from '@waves/money-like-to-node';
+import { BigNumber } from '@waves/bignumber';
 
 const { base58encode, blake2b, verifySignature } = libs.crypto;
 
@@ -187,7 +189,7 @@ export class Signable {
         const data = await this.getSignData();
         await this.addMyProof();
         const proofs = this._proofs.slice();
-        return { ...data, proofs };
+        return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
     }
     
     private _makeSignPromise(): Signable {
