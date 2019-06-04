@@ -1,5 +1,5 @@
-import { getValidateSchema, IAdapterSignMethods, SIGN_TYPE, SIGN_TYPES, TSignData, prepare } from './prepareTx';
-import { currentFeeFactory, IFeeConfig, isEmpty, last } from './utils';
+import { getValidateSchema, IAdapterSignMethods, prepare, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
+import { currentFeeFactory, currentCreateOrderFactory, IFeeConfig, isEmpty, last } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
@@ -68,6 +68,13 @@ export class Signable {
         
         this._bytePromise = this.getSignData()
             .then(signData => SIGN_TYPES[forSign.type].getBytes[version](signData));
+    }
+    
+    public async getOrderFee(config: IFeeConfig, minOrderFee: BigNumber, hasMatcherScript: boolean, smartAssetIdList?: Array<string>) {
+        if (this._forSign.type === SIGN_TYPE.CREATE_ORDER) {
+            const currentFee = currentCreateOrderFactory(config, minOrderFee);
+            return  currentFee(await this.getDataForApi(), hasMatcherScript, smartAssetIdList)
+        }
     }
     
     public async getFee(config: IFeeConfig, hasScript: boolean, smartAssetIdList?: Array<string>) {
@@ -185,7 +192,7 @@ export class Signable {
         });
     }
     
-    public async getDataForApi(): Promise<object> {
+    public async getDataForApi() {
         const data = await this.getSignData();
         await this.addMyProof();
         const proofs = this._proofs.slice();

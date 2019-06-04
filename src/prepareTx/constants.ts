@@ -14,6 +14,11 @@ const toNode = (data: any, convert?: Function) => {
     return convert ? convert(r) : r;
 };
 
+const processScript = (srcScript: string | null) => {
+    const scriptText = (srcScript || '').replace('base64:', '');
+    return scriptText ? `base64:${scriptText}` : null;
+};
+
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
     ISSUE = 3,
@@ -61,7 +66,7 @@ export interface ITypesMap {
 }
 
 export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
-
+    
     [SIGN_TYPE.AUTH]: {
         getBytes: {
             1: (txData) => {
@@ -69,7 +74,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 const pBytes = LEN(SHORT)(STRING)('WavesWalletAuthentication');
                 const hostBytes = LEN(SHORT)(STRING)(host || '');
                 const dataBytes = LEN(SHORT)(STRING)(data || '');
-   
+                
                 return Uint8Array.from([
                     ...Array.from(pBytes),
                     ...Array.from(hostBytes),
@@ -85,7 +90,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 const { timestamp, prefix } = txData;
                 const pBytes = LEN(SHORT)(STRING)(prefix);
                 const timestampBytes = LONG(timestamp);
-        
+                
                 return Uint8Array.from([
                     ...Array.from(pBytes),
                     ...Array.from(timestampBytes),
@@ -100,7 +105,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 const { timestamp, senderPublicKey } = txData;
                 const pBytes = BASE58_STRING(senderPublicKey);
                 const timestampBytes = LONG(timestamp);
-        
+                
                 return Uint8Array.from([
                     ...Array.from(pBytes),
                     ...Array.from(timestampBytes),
@@ -124,7 +129,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 const { orderId, senderPublicKey } = txData;
                 const pBytes = BASE58_STRING(senderPublicKey);
                 const orderIdBytes = BASE58_STRING(orderId);
-        
+                
                 return Uint8Array.from([
                     ...Array.from(pBytes),
                     ...Array.from(orderIdBytes),
@@ -148,9 +153,14 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             2: binary.serializeTx,
         },
-        toNode: data => {
-            return toNode({ ...data, quantity: data.amount || data.quantity }, wavesTransactions.issue)
-        },
+        toNode: data => toNode(
+            {
+                ...data,
+                quantity: data.amount || data.quantity,
+                script: processScript(data.script),
+            },
+            wavesTransactions.issue
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.REISSUE]: {
@@ -221,7 +231,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             transfers: (data.transfers).map((item: any) => {
                 const recipient = processors.recipient(String.fromCharCode(networkByte))(item.name || item.recipient);
                 return { ...item, recipient };
-            }, ),
+            },),
             attachment: processors.attachment(data.attachment)
         }, wavesTransactions.massTransfer)),
         adapter: 'signTransaction'
@@ -239,10 +249,13 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
-        toNode: data => {
-            const script = (data.script || '').replace('base64:', '');
-            return toNode({ ...data, script: `base64:${script}` }, wavesTransactions.setScript);
-        },
+        toNode: data => toNode(
+            {
+                ...data,
+                script: processScript(data.script)
+            },
+            wavesTransactions.setScript
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SPONSORSHIP]: {
@@ -258,7 +271,12 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
-        toNode: data => toNode(data, wavesTransactions.setAssetScript),
+        toNode: data => toNode({
+                ...data,
+                script: processScript(data.script),
+            },
+            wavesTransactions.setAssetScript,
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SCRIPT_INVOCATION]: {
