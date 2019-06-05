@@ -15,7 +15,7 @@
     "@waves/ledger": "^3.4.0",
     "@waves/money-like-to-node": "0.0.6",
     "@waves/ts-types": "^0.2.0-beta-1",
-    "@waves/waves-transactions": "^3.8.1",
+    "@waves/waves-transactions": "^3.10.1",
     "ramda": "^0.25.0"
   },
   "scripts": {
