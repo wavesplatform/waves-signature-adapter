@@ -6,6 +6,7 @@ import {
     IDataTransaction,
     IMassTransferTransaction
 } from '@waves/ts-types';
+import { WAVES_ID } from './prepareTx';
 
 
 export function find<T>(some: Partial<T>, list: Array<T>) {
@@ -23,6 +24,11 @@ export function find<T>(some: Partial<T>, list: Array<T>) {
 export function isEmpty(some: unknown): some is undefined {
     return some == null;
 }
+
+export function normalizeAssetId(assetId: string) {
+    return assetId || WAVES_ID;
+}
+
 
 export function last<T>(list: Array<T>): T {
     return list[list.length - 1];

@@ -1,11 +1,20 @@
-import { getValidateSchema, IAdapterSignMethods, prepare, SIGN_TYPE, SIGN_TYPES, TSignData } from './prepareTx';
-import { currentFeeFactory, currentCreateOrderFactory, IFeeConfig, isEmpty, last } from './utils';
+import {
+    getValidateSchema,
+    IAdapterSignMethods,
+    prepare,
+    SIGN_TYPE,
+    SIGN_TYPES,
+    TSignData,
+    WAVES_ID
+} from './prepareTx';
+import { currentFeeFactory, currentCreateOrderFactory, IFeeConfig, isEmpty, last, normalizeAssetId } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
 import { libs } from '@waves/waves-transactions';
 import { convert } from '@waves/money-like-to-node';
 import { BigNumber } from '@waves/bignumber';
+import { TRANSACTION_TYPE_NUMBER } from '../dist/prepareTx';
 
 const { base58encode, blake2b, verifySignature } = libs.crypto;
 
@@ -73,7 +82,7 @@ export class Signable {
     public async getOrderFee(config: IFeeConfig, minOrderFee: BigNumber, hasMatcherScript: boolean, smartAssetIdList?: Array<string>) {
         if (this._forSign.type === SIGN_TYPE.CREATE_ORDER) {
             const currentFee = currentCreateOrderFactory(config, minOrderFee);
-            return  currentFee(await this.getDataForApi(), hasMatcherScript, smartAssetIdList)
+            return currentFee(await this.getDataForApi(), hasMatcherScript, smartAssetIdList)
         }
     }
     
@@ -103,6 +112,39 @@ export class Signable {
         return signData || dataForBytes;
     }
     
+    public async getAssetIds(): Promise<Array<string>> {
+        const transaction = await this.getSignData();
+        const hash = Object.create(null);
+        hash[WAVES_ID] = true;
+        hash[normalizeAssetId(transaction.feeAssetId)] = true;
+        
+        switch (transaction.type) {
+            case SIGN_TYPE.CREATE_ORDER:
+                hash[normalizeAssetId(transaction.matcherFeeAssetId)] = true;
+                hash[normalizeAssetId(transaction.assetPair.amountAsset)] = true;
+                hash[normalizeAssetId(transaction.assetPair.priceAsset)] = true;
+                break;
+            case TRANSACTION_TYPE_NUMBER.REISSUE:
+            case TRANSACTION_TYPE_NUMBER.BURN:
+            case TRANSACTION_TYPE_NUMBER.MASS_TRANSFER:
+            case TRANSACTION_TYPE_NUMBER.SPONSORSHIP:
+            case TRANSACTION_TYPE_NUMBER.TRANSFER:
+                hash[normalizeAssetId(transaction.assetId)] = true;
+                break;
+            case TRANSACTION_TYPE_NUMBER.EXCHANGE:
+                hash[normalizeAssetId(transaction.order1.assetPair.amountAsset)] = true;
+                hash[normalizeAssetId(transaction.order1.assetPair.priceAsset)] = true;
+                hash[normalizeAssetId(transaction.order1.matcherFeeAssetId)] = true;
+                hash[normalizeAssetId(transaction.order2.matcherFeeAssetId)] = true;
+                break;
+            case TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION:
+                transaction.payment.forEach((payment: { assetId: string }) => {
+                    hash[normalizeAssetId(payment.assetId)] = true;
+                });
+                break;
+        }
+        return Object.keys(hash);
+    }
     
     public sign2fa(options: ISign2faOptions): Promise<Signable> {
         const code = options.code;
@@ -221,6 +263,5 @@ export class Signable {
 
 export interface ISign2faOptions {
     code: string;
-    
     request(data: any): Promise<string>;
 }
