@@ -119,6 +119,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeOrder,
             1: binary.serializeOrder,
             2: binary.serializeOrder,
+            3: binary.serializeOrder,
         },
         toNode: data => toNode(data, wavesTransactions.order),
         adapter: 'signOrder'
