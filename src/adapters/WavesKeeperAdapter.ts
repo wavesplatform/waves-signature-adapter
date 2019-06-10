@@ -46,11 +46,6 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._initExtension();
         //@ts-ignore
         WavesKeeperAdapter.onUpdate((state) => {
-
-            if (state.txVersion) {
-                WavesKeeperAdapter._txVersion = state.txVersion;
-            }
-
             if (!state.locked && (!state.account || state.account.address !== this._address)) {
                 this._needDestroy = true;
                 //@ts-ignore
@@ -173,6 +168,10 @@ export class WavesKeeperAdapter extends Adapter {
         try {
             data = await this._api.publicState();
             WavesKeeperAdapter._updateState(data);
+    
+            if (data.txVersion) {
+                WavesKeeperAdapter._txVersion = data.txVersion;
+            }
         } catch (e) {
             error = { code: 1, message: 'No permissions' };
         }
@@ -194,7 +193,10 @@ export class WavesKeeperAdapter extends Adapter {
 
     public static async getUserList() {
         await WavesKeeperAdapter.isAvailable();
-        return WavesKeeperAdapter._api.publicState().then(({ account }) => [account]);
+        return WavesKeeperAdapter._api.publicState().then((data) => {
+            WavesKeeperAdapter._updateState(data);
+            return [data.account];
+        });
     }
 
     //@ts-ignore
@@ -244,7 +246,14 @@ export class WavesKeeperAdapter extends Adapter {
            return wavesApi.initialPromise.then((api: IWavesKeeper) => {
                 this._api = api;
                 this._api.on('update', WavesKeeperAdapter._updateState);
-                this._api.publicState().then(WavesKeeperAdapter._updateState)
+                this._api.publicState().then(state => {
+                    
+                    if (state.txVersion) {
+                        WavesKeeperAdapter._txVersion = state.txVersion;
+                    }
+                    
+                    WavesKeeperAdapter._updateState(state);
+                })
             });
         }
     }
