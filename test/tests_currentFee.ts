@@ -629,7 +629,7 @@ const ORDER: IExchangeTransactionOrder<BigNumber> = {
         priceAsset: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn'
     },
     orderType: 'sell'
-};
+} as any;
 
 interface ITestItem {
     data: TSignData,

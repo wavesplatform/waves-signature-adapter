@@ -121,7 +121,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             2: binary.serializeOrder,
             3: binary.serializeOrder,
         },
-        toNode: data => toNode(data, wavesTransactions.order),
+        toNode: data => {
+            data = { ...data, price: processors.toOrderPrice(data) };
+            return toNode(data, wavesTransactions.order)
+        },
         adapter: 'signOrder'
     },
     [SIGN_TYPE.CANCEL_ORDER]: {
