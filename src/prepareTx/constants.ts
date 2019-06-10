@@ -4,6 +4,7 @@ import * as wavesTransactions from '@waves/waves-transactions';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
+import { Money } from '@waves/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
@@ -122,7 +123,8 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             3: binary.serializeOrder,
         },
         toNode: data => {
-            data = { ...data, price: processors.toOrderPrice(data) };
+            const price =  processors.toOrderPrice(data);
+            data = { ...data, price: Money.fromCoins(price, data.price.asset) };
             return toNode(data, wavesTransactions.order)
         },
         adapter: 'signOrder'

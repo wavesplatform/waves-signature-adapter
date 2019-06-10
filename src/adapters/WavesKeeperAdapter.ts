@@ -63,7 +63,8 @@ export class WavesKeeperAdapter extends Adapter {
         try {
             await WavesKeeperAdapter.isAvailable(this.getNetworkByte());
             const data = await WavesKeeperAdapter._api.publicState();
-
+            WavesKeeperAdapter._updateState(data);
+            
             if (data.locked) {
                 return ignoreLocked ? Promise.resolve() : Promise.reject({ code: 4, msg: 'Keeper is locked' });
             }
@@ -80,7 +81,9 @@ export class WavesKeeperAdapter extends Adapter {
     public async isLocked() {
         await WavesKeeperAdapter.isAvailable();
         const data = await WavesKeeperAdapter._api.publicState();
-
+    
+        WavesKeeperAdapter._updateState(data);
+        
         if (data.locked) {
             return Promise.resolve();
         }
@@ -169,6 +172,7 @@ export class WavesKeeperAdapter extends Adapter {
         let error, data;
         try {
             data = await this._api.publicState();
+            WavesKeeperAdapter._updateState(data);
         } catch (e) {
             error = { code: 1, message: 'No permissions' };
         }
@@ -199,11 +203,7 @@ export class WavesKeeperAdapter extends Adapter {
         this.setApiExtension(options.extension);
         this._initExtension();
         try {
-            this._api.publicState().then(state => {
-                if (state.txVersion) {
-                    WavesKeeperAdapter._txVersion = state.txVersion;
-                }
-            });
+            this._api.publicState().then(WavesKeeperAdapter._updateState);
         } catch (e) {
 
         }

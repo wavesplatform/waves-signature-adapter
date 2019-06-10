@@ -309,7 +309,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                alias: 'some'
+                alias: '123123123123123123123123123343'
             }
         },
         hasScript: true,
