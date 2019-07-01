@@ -34,7 +34,7 @@ export const getValidateSchema = (networkByte: number) => {
             //@ts-ignore
             fieldsType.fromData()(null, 'price', processors.toOrderPrice),
             //@ts-ignore
-            fieldsType.numberLike()('matcherFee', null, processors.toBigNumber),
+            fieldsType.money()('matcherFee', null, processors.toBigNumber),
             //@ts-ignore
             fieldsType.timestamp()('expiration', null, processors.expiration),
             //@ts-ignore
