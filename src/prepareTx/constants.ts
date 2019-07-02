@@ -125,8 +125,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: data => {
             const price =  processors.toOrderPrice(data);
             data = { ...data, price: Money.fromCoins(price, data.price.asset) };
-            const toNodeData = toNode(data);
-            return { ...toNodeData, ...wavesTransactions.order(toNodeData) }
+            return toNode(data, wavesTransactions.order);
         },
         adapter: 'signOrder'
     },
