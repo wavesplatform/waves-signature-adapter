@@ -146,7 +146,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: data => ({
             orderId: data.orderId,
             sender: data.senderPublicKey,
-            signature: data.proofs[0]
+            signature: data.proofs && data.proofs[0]
         }),
     },
     [SIGN_TYPE.TRANSFER]: {
