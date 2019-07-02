@@ -238,7 +238,11 @@ export class Signable {
         const data = await this.getSignData();
         await this.addMyProof();
         const proofs = this._proofs.slice();
-        return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
+        try {
+            return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
+        } catch (e) {
+            return { ...data, proofs, signature: proofs[0] };
+        }
     }
     
     private _makeSignPromise(): Signable {
