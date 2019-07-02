@@ -142,7 +142,12 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 ]);
             },
         },
-        adapter: 'signRequest'
+        adapter: 'signRequest',
+        toNode: data => ({
+            orderId: data.orderId,
+            sender: data.senderPublicKey,
+            signature: data.proofs[0]
+        }),
     },
     [SIGN_TYPE.TRANSFER]: {
         getBytes: {
