@@ -16,7 +16,7 @@ import { convert } from '@waves/money-like-to-node';
 import { BigNumber } from '@waves/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
 
-const { base58encode, blake2b, verifySignature } = libs.crypto;
+const { base58Encode, blake2b, verifySignature } = libs.crypto;
 
 export class Signable {
     
@@ -173,7 +173,7 @@ export class Signable {
     }
     
     public getHash() {
-        return this._bytePromise.then(bytes => base58encode(blake2b(bytes)));
+        return this._bytePromise.then(bytes => base58Encode(blake2b(bytes)));
     }
     
     public getId(): Promise<string> {
@@ -184,7 +184,7 @@ export class Signable {
                 bytes = new Uint8Array([byteArr[0], ...byteArr.slice(36, -16)])
             }
             
-            return base58encode(blake2b(bytes))
+            return base58Encode(blake2b(bytes))
         });
     }
     

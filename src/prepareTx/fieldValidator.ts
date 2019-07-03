@@ -2,7 +2,7 @@ import { libs } from '@waves/waves-transactions';
 import { Money } from '@waves/data-entities';
 import { BigNumber } from '@waves/bignumber';
 
-const { stringToUint8Array, base58decode, keccak, blake2b } = libs.crypto;
+const { stringToBytes, base58Decode, keccak, blake2b } = libs.crypto;
 
 const TRANSFERS = {
     ATTACHMENT: 140
@@ -46,7 +46,7 @@ export const isValidAddress = function (address: string, networkByte: number) {
         throw new Error('Missing or invalid address');
     }
     
-    let addressBytes = base58decode(address);
+    let addressBytes = base58Decode(address);
     
     if (addressBytes[0] !== 1 || addressBytes[1] !== networkByte) {
         return false;
@@ -71,7 +71,7 @@ const isBase64 = (value: string): boolean => {
 
 //@ts-ignore
 const getBytesFromString = value => {
-    return stringToUint8Array(value);
+    return stringToBytes(value);
 };
 
 //@ts-ignore
@@ -296,7 +296,7 @@ const assetId = (options: IFieldOptions) => {
     let isAssetId = false;
     
     try {
-        isAssetId = base58decode(value.trim()).length === 32;
+        isAssetId = base58Decode(value.trim()).length === 32;
     } catch (e) {
         isAssetId = false;
     }

@@ -1,7 +1,7 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@waves/data-entities';
 import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
-import { base58decode } from '@waves/waves-crypto';
+import { base58Decode } from '@waves/waves-crypto';
 import { BigNumber } from '@waves/bignumber';
 
 
@@ -61,7 +61,7 @@ export const txs = {
             name: 'transfer',
             data: {
                 amount: Money.fromCoins(150200000, BtcAsset),
-                attachment: base58decode('7KeHm8BxCSPdAQe947Lxff'),
+                attachment: base58Decode('7KeHm8BxCSPdAQe947Lxff'),
                 fee: Money.fromCoins(10000, TORCorp),
                 recipient: '3PAs2qSeUAfgqSKS8LpZPKGYEjJKcud9Djr',
                 sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
@@ -130,7 +130,7 @@ export const txs = {
                         amount: Money.fromCoins(500, INSTANTCOIN),
                         name: '3P5bt6dBaafovNEZaiqehchHisx2QgU3pv4'
                     }],
-                attachment: base58decode('9phjj2o13msVqLm8PdmcpLzWbRNJi6oKCY4mSuEN5pKKtQtqQc5M6r16txhfyhqFrMG49Kva9LGR1E94zHikcBqEL2La3'),
+                attachment: base58Decode('9phjj2o13msVqLm8PdmcpLzWbRNJi6oKCY4mSuEN5pKKtQtqQc5M6r16txhfyhqFrMG49Kva9LGR1E94zHikcBqEL2La3'),
                 fee: Money.fromCoins(200000, WavesAsset),
                 sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
                 senderPublicKey: '6Dugmm8rP7UsEZ1vN3y6s8MY2tfW5aGeJzpkozSR4rk5',
@@ -397,7 +397,7 @@ export const txs = {
             },
             id: '6o4iPH2dTgZzajmtg4vzYuUBV8nocKsh1mB8Nb7YrFNw',
             proof: 'CuvYBVak3JPHsQaAKvijDr1g5WkEpbvP3uoXbQxZXbbAs4Q3BrvqtTsE46bceRmaSUmyXw2DNRWkbwfGZFkMkbv'
-        },
+        }
     },
     
     [SIGN_TYPE.CREATE_ORDER]: {

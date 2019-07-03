@@ -4,7 +4,7 @@ import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const Seed = seedUtils.Seed;
-const signWithPrivateKey = libs.crypto.signWithPrivateKey;
+const signWithPrivateKey = libs.crypto.signBytes;
 
 export class SeedAdapter extends Adapter {
 

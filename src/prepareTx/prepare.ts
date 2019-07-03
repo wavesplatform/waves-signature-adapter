@@ -4,7 +4,7 @@ import { libs } from '@waves/waves-transactions';
 import { VALIDATORS } from './fieldValidator';
 
 export const WAVES_ID = 'WAVES';
-const { stringToUint8Array, base58encode } = libs.crypto;
+const { stringToBytes, base58Encode } = libs.crypto;
 
 
 //@ts-ignore
@@ -121,10 +121,10 @@ export module prepare {
             let value = data;
             
             if (typeof data === 'string') {
-                value = stringToUint8Array(data);
+                value = stringToBytes(data);
             }
             
-            return base58encode(Uint8Array.from(value as ArrayLike<number>));
+            return base58Encode(Uint8Array.from(value as ArrayLike<number>));
         }
         
         export function addValue(value: any) {

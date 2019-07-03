@@ -132,9 +132,9 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.CANCEL_ORDER]: {
         getBytes: {
             1: (txData) => {
-                const { orderId, sender } = txData;
-                const pBytes = BASE58_STRING(sender);
-                const orderIdBytes = BASE58_STRING(orderId);
+                const { orderId, id, senderPublicKey, sender } = txData;
+                const pBytes = BASE58_STRING(senderPublicKey || sender);
+                const orderIdBytes = BASE58_STRING(id || orderId);
                 
                 return Uint8Array.from([
                     ...Array.from(pBytes),
@@ -146,6 +146,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         toNode: data => ({
             orderId: data.orderId,
             sender: data.senderPublicKey,
+            senderPublicKey: data.senderPublicKey,
             signature: data.proofs && data.proofs[0]
         }),
     },
