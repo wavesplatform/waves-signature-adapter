@@ -66,6 +66,17 @@ export interface ITypesMap {
     toNode?: (data: any, networkByte: number) => any;
 }
 
+const getCancelOrderBytes = (txData: any) => {
+    const { orderId, id, senderPublicKey, sender } = txData;
+    const pBytes = BASE58_STRING(senderPublicKey || sender);
+    const orderIdBytes = BASE58_STRING(id || orderId);
+    
+    return Uint8Array.from([
+        ...Array.from(pBytes),
+        ...Array.from(orderIdBytes),
+    ]);
+};
+
 export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     
     [SIGN_TYPE.AUTH]: {
@@ -131,16 +142,8 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.CANCEL_ORDER]: {
         getBytes: {
-            1: (txData) => {
-                const { orderId, id, senderPublicKey, sender } = txData;
-                const pBytes = BASE58_STRING(senderPublicKey || sender);
-                const orderIdBytes = BASE58_STRING(id || orderId);
-                
-                return Uint8Array.from([
-                    ...Array.from(pBytes),
-                    ...Array.from(orderIdBytes),
-                ]);
-            },
+            0: getCancelOrderBytes,
+            1: getCancelOrderBytes,
         },
         adapter: 'signRequest',
         toNode: data => ({

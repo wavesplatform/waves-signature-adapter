@@ -388,6 +388,15 @@ export const txs = {
     },
     
     [SIGN_TYPE.CANCEL_ORDER]: {
+        0: {
+            name: 'cancel order',
+            data: {
+                id: "GwaYg9pVvFonAXM2afaojQuDJyssJVEJPUjnY1bqhvfs",
+                senderPublicKey: "2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr",
+            },
+            proof: "5UQa5pdm3dysTDc8iPXKcM5DxE2rfyWs759xNUCffLJTeCh3Q89exkonWWWzE2rjVnp3deVq78X5XAvCJGA8F6NJ",
+            id: 'EipnRjs8AeYYRKGRPUTy2rxMVaBjt1atJjFDD6vFqtN7'
+        },
         1: {
             name: 'cancel order request',
             data: {

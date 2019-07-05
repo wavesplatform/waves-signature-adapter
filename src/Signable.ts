@@ -103,7 +103,8 @@ export class Signable {
         const dataForBytes = {
             ...this._preparedData,
             senderPublicKey,
-            sender, ...this._forSign.data,
+            sender,
+            ...this._forSign.data,
             type: this._forSign.type
         };
         const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;

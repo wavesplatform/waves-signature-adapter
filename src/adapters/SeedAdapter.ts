@@ -32,7 +32,7 @@ export class SeedAdapter extends Adapter {
             [SIGN_TYPE.AUTH]: [1],
             [SIGN_TYPE.MATCHER_ORDERS]: [1],
             [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
-            [SIGN_TYPE.CANCEL_ORDER]: [1],
+            [SIGN_TYPE.CANCEL_ORDER]: [0, 1],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
             [SIGN_TYPE.ISSUE]: [2],
             [SIGN_TYPE.TRANSFER]: [2],
@@ -84,7 +84,7 @@ export class SeedAdapter extends Adapter {
     }
 
     private _sign(bytes: Uint8Array): Promise<string> {
-        return Promise.resolve(signWithPrivateKey(bytes, this.seed.keyPair.privateKey));
+        return Promise.resolve(signWithPrivateKey(this.seed.keyPair, bytes));
     }
 
     public static isAvailable() {

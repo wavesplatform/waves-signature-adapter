@@ -15,9 +15,10 @@ const checkTx = (type: keyof typeof txs, version: number) => {
                 type,
                 data:  { ...data, version } as any
             } as any);
-            return Promise.all([signable.getBytes(), signable.getId(), signable.getSignData(), signable.getSignature()])
-                .then(([bytes, id, signedData, signature]) => {
+            return Promise.all([adapter.getPublicKey(), signable.getBytes(), signable.getId(), signable.getSignData(), signable.getSignature()])
+                .then(([pubk, bytes, id, signedData, signature]) => {
                     expect(checkCryptoGen(signedData.senderPublicKey)(bytes, txData.proof)).toBe(true);
+                    expect(checkCryptoGen(pubk)(bytes, signature)).toBe(true);
                     expect(id).toEqual(txData.id);
                 });
         }
@@ -66,6 +67,8 @@ describe('Create data and signature check', () => {
         it('check coinomat signature', () => checkTx(SIGN_TYPE.COINOMAT_CONFIRMATION, 1).check());
         
         it('check matcher orders signature', () => checkTx(SIGN_TYPE.MATCHER_ORDERS, 1).check());
+    
+        it('check matcher cancel order signature 0', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 0).check());
         
         it('check matcher cancel order signature', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 1).check());
         
