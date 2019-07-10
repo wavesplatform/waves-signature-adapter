@@ -4,7 +4,8 @@ import {
     IExchangeTransactionOrder,
     TTransaction,
     IDataTransaction,
-    IMassTransferTransaction
+    IMassTransferTransaction,
+    IIssueTransaction
 } from '@waves/ts-types';
 import { WAVES_ID } from './prepareTx';
 
@@ -73,7 +74,6 @@ export function currentFeeFactory(config: IFeeConfig): (tx: TTransaction<BigNumb
         const minFee: BigNumber = accountFee.add(getConfigProperty(tx.type, 'fee', config));
 
         switch (tx.type) {
-            case TRANSACTION_TYPE.ISSUE:
             case TRANSACTION_TYPE.CANCEL_LEASE:
             case TRANSACTION_TYPE.ALIAS:
             case TRANSACTION_TYPE.LEASE:
@@ -89,10 +89,28 @@ export function currentFeeFactory(config: IFeeConfig): (tx: TTransaction<BigNumb
                 return minFee.add(getMassTransferFee(tx, config, smartAssetIdList || []));
             case TRANSACTION_TYPE.DATA:
                 return accountFee.add(getDataFee(bytes, tx, config));
+            case TRANSACTION_TYPE.ISSUE:
+                return getIssueFee(tx, accountFee, config);
             default:
                 throw new Error('Wrong transaction type!');
         }
     };
+}
+
+function isNFT(tx: IIssueTransaction<BigNumber> & { precision?: number }): boolean {
+    const { quantity, precision, decimals, reissuable } = tx;
+    const nftQuantity = new BigNumber(quantity).eq(1);
+    const nftPrecision = new BigNumber(precision || decimals || 0).eq(0);
+    return !reissuable && nftPrecision && nftQuantity;
+}
+
+function getIssueFee(tx: IIssueTransaction<BigNumber> & { precision?: number } , accountFee: BigNumber, config: IFeeConfig) : BigNumber {
+    const minFee: BigNumber = accountFee.plus(getConfigProperty(tx.type, 'fee', config));
+    if (isNFT(tx)) {
+        return accountFee.add(getConfigProperty(tx.type, 'nftFee', config));
+    } else {
+        return minFee;
+    }
 }
 
 function getSmartAssetFeeByAssetId(assetId: string | null, config: IFeeConfig, smartAssetIdList: Array<string>): BigNumber {
@@ -136,4 +154,5 @@ export interface IFeeConfigItem {
     add_smart_account_fee: boolean;
     min_price_step: BigNumber;
     fee: BigNumber;
+    nftFee: BigNumber;
 }

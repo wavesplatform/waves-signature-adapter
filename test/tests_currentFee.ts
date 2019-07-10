@@ -16,7 +16,8 @@ const CONFIG = {
             'add_smart_asset_fee': true,
             'add_smart_account_fee': true,
             'min_price_step': new BigNumber(100000),
-            'fee': new BigNumber(100000)
+            'fee': new BigNumber(100000),
+            'nftFee': new BigNumber(100000)
         },
         '3': {
             'fee': new BigNumber(100000000)
