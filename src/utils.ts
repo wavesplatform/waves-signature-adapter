@@ -105,7 +105,7 @@ function isNFT(tx: IIssueTransaction<BigNumber> & { precision?: number }): boole
 }
 
 function getIssueFee(tx: IIssueTransaction<BigNumber> & { precision?: number } , accountFee: BigNumber, config: IFeeConfig) : BigNumber {
-    const minFee: BigNumber = accountFee.plus(getConfigProperty(tx.type, 'fee', config));
+    const minFee: BigNumber = accountFee.add(getConfigProperty(tx.type, 'fee', config));
     if (isNFT(tx)) {
         return accountFee.add(getConfigProperty(tx.type, 'nftFee', config));
     } else {
