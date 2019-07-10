@@ -76,7 +76,7 @@ export class LedgerAdapter extends Adapter {
         return {
             [SIGN_TYPE.AUTH]: [1],
             [SIGN_TYPE.MATCHER_ORDERS]: [1],
-            [SIGN_TYPE.CREATE_ORDER]: [1, 2],
+            [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
             [SIGN_TYPE.CANCEL_ORDER]: [1],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
             [SIGN_TYPE.ISSUE]: [2],

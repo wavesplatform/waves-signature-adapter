@@ -1,15 +1,24 @@
-import {
-    MATCHER_BYTES_GENERATOR_MAP,
-    BYTES_GENERATORS_MAP,
-    StringWithLength,
-    generate,
-    ISignatureGeneratorConstructor,
-    Int
-} from '@waves/signature-generator';
-import { IAdapterSignMethods, IAuthData } from './interfaces';
-import { binary } from '@waves/marshall';
+import { IAdapterSignMethods } from './interfaces';
+import { libs } from '@waves/waves-transactions';
+import * as wavesTransactions from '@waves/waves-transactions';
+import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
-import recipient = prepare.processors.recipient;
+import processors = prepare.processors;
+import { Money } from '@waves/data-entities';
+
+const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
+const { binary } = libs.marshall;
+
+const toNode = (data: any, convert?: Function) => {
+    const r = mlToNode(data);
+    r.timestamp = (new Date(r.timestamp)).getTime();
+    return convert ? convert(r) : r;
+};
+
+const processScript = (srcScript: string | null) => {
+    const scriptText = (srcScript || '').replace('base64:', '');
+    return scriptText ? `base64:${scriptText}` : null;
+};
 
 export enum TRANSACTION_TYPE_NUMBER {
     SEND_OLD = 2,
@@ -52,138 +61,245 @@ export enum SIGN_TYPE {
 }
 
 export interface ITypesMap {
-    signatureGenerator: Record<number, ISignatureGeneratorConstructor<any>>;
+    getBytes: Record<number, (data: any) => Uint8Array>;
     adapter: keyof IAdapterSignMethods;
+    toNode?: (data: any, networkByte: number) => any;
 }
 
-export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
+const getCancelOrderBytes = (txData: any) => {
+    const { orderId, id, senderPublicKey, sender } = txData;
+    const pBytes = BASE58_STRING(senderPublicKey || sender);
+    const orderIdBytes = BASE58_STRING(id || orderId);
+    
+    return Uint8Array.from([
+        ...Array.from(pBytes),
+        ...Array.from(orderIdBytes),
+    ]);
+};
 
+export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
+    
     [SIGN_TYPE.AUTH]: {
-        signatureGenerator: {
-            0: generate<IAuthData>([
-                new StringWithLength('prefix'),
-                new StringWithLength('host'),
-                new StringWithLength('data')
-            ]),
-            1: generate<IAuthData>([
-                new StringWithLength('prefix'),
-                new StringWithLength('host'),
-                new StringWithLength('data')
-            ])
+        getBytes: {
+            1: (txData) => {
+                const { host, data } = txData;
+                const pBytes = LEN(SHORT)(STRING)('WavesWalletAuthentication');
+                const hostBytes = LEN(SHORT)(STRING)(host || '');
+                const dataBytes = LEN(SHORT)(STRING)(data || '');
+                
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(hostBytes),
+                    ...Array.from(dataBytes)
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: {
-        signatureGenerator: {
-            0: generate([
-                new StringWithLength('prefix'),
-                new Int('timestamp', 8)
-            ]),
-            1: generate([
-                new StringWithLength('prefix'),
-                new Int('timestamp', 8)
-            ])
+        getBytes: {
+            1: (txData) => {
+                const { timestamp, prefix } = txData;
+                const pBytes = LEN(SHORT)(STRING)(prefix);
+                const timestampBytes = LONG(timestamp);
+                
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(timestampBytes),
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.MATCHER_ORDERS]: {
-        signatureGenerator: {
-            0: MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER[1],
-            ...MATCHER_BYTES_GENERATOR_MAP.AUTH_ORDER
+        getBytes: {
+            1: (txData) => {
+                const { timestamp, senderPublicKey } = txData;
+                const pBytes = BASE58_STRING(senderPublicKey);
+                const timestampBytes = LONG(timestamp);
+                
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(timestampBytes),
+                ]);
+            },
         },
         adapter: 'signRequest'
     },
     [SIGN_TYPE.CREATE_ORDER]: {
-        signatureGenerator: {
-            0: MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER[1],
-            ...MATCHER_BYTES_GENERATOR_MAP.CREATE_ORDER
+        getBytes: {
+            0: binary.serializeOrder,
+            1: binary.serializeOrder,
+            2: binary.serializeOrder,
+            3: binary.serializeOrder,
+        },
+        toNode: data => {
+            const price =  processors.toOrderPrice(data);
+            data = { ...data, price: Money.fromCoins(price, data.price.asset) };
+            return toNode(data, wavesTransactions.order);
         },
         adapter: 'signOrder'
     },
     [SIGN_TYPE.CANCEL_ORDER]: {
-        signatureGenerator: {
-            0: MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER[1],
-            ...MATCHER_BYTES_GENERATOR_MAP.CANCEL_ORDER
+        getBytes: {
+            0: getCancelOrderBytes,
+            1: getCancelOrderBytes,
         },
-        adapter: 'signRequest'
+        adapter: 'signRequest',
+        toNode: data => ({
+            orderId: data.orderId,
+            sender: data.senderPublicKey,
+            senderPublicKey: data.senderPublicKey,
+            signature: data.proofs && data.proofs[0]
+        }),
     },
     [SIGN_TYPE.TRANSFER]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.TRANSFER],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: (data, networkByte: number) => (toNode({
+            ...data,
+            recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient),
+            attachment: processors.attachment(data.attachment),
+        }, wavesTransactions.transfer)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.ISSUE]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.ISSUE],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => toNode(
+            {
+                ...data,
+                quantity: data.amount || data.quantity,
+                script: processScript(data.script),
+            },
+            wavesTransactions.issue
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.REISSUE]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.REISSUE],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => {
+            const quantity = data.amount || data.quantity;
+            return toNode({ ...data, quantity }, wavesTransactions.reissue);
+        },
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.BURN]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.BURN],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => {
+            const quantity = data.amount || data.quantity;
+            return toNode({ ...data, quantity }, wavesTransactions.burn);
+        },
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.EXCHANGE]: {
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.EXCHANGE],
+        getBytes: {
+            0: binary.serializeTx,
+            2: binary.serializeTx,
+        },
+        toNode: data => {
+            const tx = toNode(data);
+            const order1Sign = data.buyOrder.signature || data.buyOrder.proofs[0];
+            const order1proofs = data.buyOrder.proofs ? data.buyOrder.proofs : data.buyOrder.signature;
+            const order1 = { ...tx.buyOrder, signature: order1Sign, proofs: order1proofs };
+            const order2Sign = data.sellOrder.signature || data.sellOrder.proofs[0];
+            const order2proofs = data.sellOrder.proofs ? data.sellOrder.proofs : data.sellOrder.signature;
+            const order2 = { ...tx.sellOrder, signature: order2Sign, proofs: order2proofs };
+            return wavesTransactions.exchange({ ...tx, order1, order2 });
+        },
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.LEASE]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.LEASE],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => toNode(data, wavesTransactions.lease),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.CANCEL_LEASING],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => toNode(data, wavesTransactions.cancelLease),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.CREATE_ALIAS],
+        getBytes: {
+            2: binary.serializeTx,
+        },
+        toNode: data => ({ ...toNode(data, wavesTransactions.alias), chainId: data.chainId }),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.MASS_TRANSFER],
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
+        },
+        toNode: (data, networkByte: number) => (toNode({
+            ...data,
+            transfers: (data.transfers).map((item: any) => {
+                const recipient = processors.recipient(String.fromCharCode(networkByte))(item.name || item.recipient);
+                return { ...item, recipient };
+            },),
+            attachment: processors.attachment(data.attachment)
+        }, wavesTransactions.massTransfer)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.DATA]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.DATA],
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
+        },
+        toNode: data => toNode(data, wavesTransactions.data),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_SCRIPT]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_SCRIPT],
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
+        },
+        toNode: data => toNode(
+            {
+                ...data,
+                script: processScript(data.script)
+            },
+            wavesTransactions.setScript
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SPONSORSHIP]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SPONSORSHIP],
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
+        },
+        toNode: data => toNode(data, wavesTransactions.sponsorship),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SET_ASSET_SCRIPT]: {
-        //@ts-ignore
-        signatureGenerator: BYTES_GENERATORS_MAP[TRANSACTION_TYPE_NUMBER.SET_ASSET_SCRIPT],
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
+        },
+        toNode: data => toNode({
+                ...data,
+                script: processScript(data.script),
+            },
+            wavesTransactions.setAssetScript,
+        ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.SCRIPT_INVOCATION]: {
-        //@ts-ignore
-        signatureGenerator: {
-            1: ((data: any) => {
-                return {
-                    getBytes: () => new Promise((res) => {
-                        data.dApp = recipient(data.dApp);
-                        const bin = binary.serializeTx(data);
-                        return res(bin)
-                    })
-                };
-            }) as any
+        getBytes: {
+            0: binary.serializeTx,
+            1: binary.serializeTx,
         },
+        toNode: data => toNode(data, wavesTransactions.invokeScript),
         adapter: 'signTransaction'
     },
 };

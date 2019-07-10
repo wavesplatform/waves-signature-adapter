@@ -1,6 +1,6 @@
 import { SIGN_TYPE } from './constants';
-import { IDATA_ENTRY } from '@waves/signature-generator/src/signatureFactory/interface';
-import { Money, BigNumber } from '@waves/data-entities';
+import { Money } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
 
 export interface IARGS_ENTRY {
     type: string;
@@ -242,6 +242,12 @@ export interface IMassTransfer extends ICreateTxData {
     assetId: string;
     transfers: Array<{ recipient: string; amount: string  | number | BigNumber | Money; }>;
     attachment?: string;
+}
+
+export interface IDATA_ENTRY {
+    key: string;
+    type: string;
+    value: any;
 }
 
 export interface IData extends ICreateTxData {

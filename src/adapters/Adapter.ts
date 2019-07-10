@@ -1,5 +1,4 @@
 import { AdapterType } from '../config';
-import { config } from '@waves/signature-generator';
 import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { Signable } from '../Signable';
 
@@ -7,10 +6,13 @@ import { Signable } from '../Signable';
 export abstract class Adapter {
 
     public type: string;
+    protected _code: number;
     protected static _code: number;
 
-    protected constructor() {
+    protected constructor(networkCode?: string | number) {
+        networkCode = typeof networkCode === 'string' ? networkCode.charCodeAt(0) : networkCode;
         this.type = (this as any).constructor.type;
+        this._code = networkCode || Adapter._code || ('W').charCodeAt(0);
     }
 
     public makeSignable(forSign: TSignData): Signable {
@@ -25,6 +27,10 @@ export abstract class Adapter {
         return;
     }
 
+    public getNetworkByte(): number {
+        return this._code || Adapter._code;
+    }
+    
     public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;
 
     public abstract getPublicKey(): Promise<string>;
@@ -44,8 +50,7 @@ export abstract class Adapter {
     public abstract getSeed(): Promise<string>;
 
     public static initOptions(options: { networkCode: number }) {
-        this._code = options.networkCode;
-        config.set({ networkByte: options.networkCode });
+        Adapter._code = options.networkCode;
     }
 
     public static type: AdapterType = AdapterType.Seed;

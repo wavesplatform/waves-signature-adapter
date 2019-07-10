@@ -1,17 +1,19 @@
 import { Adapter, IUser } from './Adapter';
 import { AdapterType } from '../config';
-import { Seed, utils } from '@waves/signature-generator';
+import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
+const Seed = seedUtils.Seed;
+const signWithPrivateKey = libs.crypto.signBytes;
 
 export class SeedAdapter extends Adapter {
 
-    private seed: Seed;
+    private seed: seedUtils.Seed;
     public static type = AdapterType.Seed;
 
 
-    constructor(data: string | IUser) {
-        super();
+    constructor(data: string | IUser, networkCode?: string | number) {
+        super(networkCode);
         let seed;
 
         if (typeof data === 'string') {
@@ -22,21 +24,21 @@ export class SeedAdapter extends Adapter {
             seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
         }
 
-        this.seed = new Seed(seed);
+        this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
         return {
             [SIGN_TYPE.AUTH]: [1],
             [SIGN_TYPE.MATCHER_ORDERS]: [1],
-            [SIGN_TYPE.CREATE_ORDER]: [1, 2],
-            [SIGN_TYPE.CANCEL_ORDER]: [1],
+            [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
+            [SIGN_TYPE.CANCEL_ORDER]: [0, 1],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
             [SIGN_TYPE.ISSUE]: [2],
             [SIGN_TYPE.TRANSFER]: [2],
             [SIGN_TYPE.REISSUE]: [2],
             [SIGN_TYPE.BURN]: [2],
-            [SIGN_TYPE.EXCHANGE]: [1, 2],
+            [SIGN_TYPE.EXCHANGE]: [0, 2],
             [SIGN_TYPE.LEASE]: [2],
             [SIGN_TYPE.CANCEL_LEASING]: [2],
             [SIGN_TYPE.CREATE_ALIAS]: [2],
@@ -82,7 +84,7 @@ export class SeedAdapter extends Adapter {
     }
 
     private _sign(bytes: Uint8Array): Promise<string> {
-        return Promise.resolve(utils.crypto.buildTransactionSignature(bytes, this.seed.keyPair.privateKey));
+        return Promise.resolve(signWithPrivateKey(this.seed.keyPair, bytes));
     }
 
     public static isAvailable() {

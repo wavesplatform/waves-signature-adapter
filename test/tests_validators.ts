@@ -1,10 +1,14 @@
 import { SeedAdapter } from '../src/adapters';
-import { Asset, Money, BigNumber } from '@waves/data-entities';
+import { Asset, Money } from '@waves/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
-import { Seed } from '@waves/signature-generator';
+import { BigNumber } from '@waves/bignumber';
+import { seedUtils } from '@waves/waves-transactions';
+
+const Seed = seedUtils.Seed;
 
 const getError = (e: Error) => JSON.parse(e.message);
+
 const testSeed = 'some test seed words without money on mainnet';
 const seed = new Seed(testSeed);
 const testAsset = new Asset({
@@ -90,7 +94,6 @@ describe('Check validators', () => {
     });
     
     describe('check transfer validations', () => {
-        
         const data = {
             amount: Money.fromTokens(1, testAsset),
             fee: Money.fromTokens(0.0001, testAsset),

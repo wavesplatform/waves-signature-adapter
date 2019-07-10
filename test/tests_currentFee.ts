@@ -1,7 +1,10 @@
-import { BigNumber, Asset, Money } from '@waves/data-entities';
-import { Seed } from '@waves/signature-generator';
-import { Signable, currentFeeFactory, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
+import { Asset, Money } from '@waves/data-entities';
+import { BigNumber } from '@waves/bignumber';
+import { seedUtils } from '@waves/waves-transactions';
+import { Signable, currentCreateOrderFactory, SeedAdapter, TSignData, SIGN_TYPE } from '../src';
 import { IExchangeTransactionOrder } from '@waves/ts-types';
+
+const Seed = seedUtils.Seed;
 
 const seed = Seed.create();
 
@@ -307,7 +310,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                alias: 'some'
+                alias: '123123123123123123123123123343'
             }
         },
         hasScript: true,
@@ -627,7 +630,7 @@ const ORDER: IExchangeTransactionOrder<BigNumber> = {
         priceAsset: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn'
     },
     orderType: 'sell'
-};
+} as any;
 
 interface ITestItem {
     data: TSignData,
@@ -636,7 +639,6 @@ interface ITestItem {
     fee: BigNumber;
 }
 
-const currentFee = currentFeeFactory(CONFIG);
 
 describe('Current fee list', () => {
 
@@ -647,9 +649,7 @@ describe('Current fee list', () => {
         it(`Test item with type ${item.data.type}, ${scriptInfo}, № ${index + 1}`, done => {
 
             const signable = new Signable(item.data, new SeedAdapter('dsafsdaf dsa fsdf sa'));
-            signable.getBytes().then((bytes: Uint8Array) => {
-                const fee = currentFee(bytes, item.hasScript, item.smartAssetIdList);
-
+            signable.getFee(CONFIG, item.hasScript, item.smartAssetIdList).then((fee) => {
                 expect(fee.toFixed()).toBe(item.fee.toFixed());
                 done();
             });

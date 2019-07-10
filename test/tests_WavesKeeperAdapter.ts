@@ -1,6 +1,7 @@
 import { WavesKeeperAdapter } from '../src/adapters/WavesKeeperAdapter';
-import { Asset, Money, BigNumber } from '@waves/data-entities';
+import { Asset, Money } from '@waves/data-entities';
 import { TRANSACTION_TYPE_NUMBER } from '../src/prepareTx';
+import { BigNumber } from '@waves/bignumber';
 
 const testAsset = new Asset({
     precision: 5,
@@ -71,10 +72,12 @@ const keeperMock = {
 
 keeperMock.initialPromise = Promise.resolve(keeperMock) as any;
 
+WavesKeeperAdapter.initOptions({ networkCode: 'W'.charCodeAt(0), extension: keeperMock });
+
+
 describe('WavesKeeper adapter test', () => {
 
     it('Test connect to extension', async () => {
-        WavesKeeperAdapter.setApiExtension(keeperMock);
         try {
             const users = await WavesKeeperAdapter.getUserList();
             const adapter = new WavesKeeperAdapter(users[0]);
@@ -120,6 +123,30 @@ describe('WavesKeeper adapter test', () => {
             }
         };
 
+        try {
+            WavesKeeperAdapter.setApiExtension(keeperMock);
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            const signable = adapter.makeSignable(data as any);
+            const result = await signable.getDataForApi() as any;
+            expect(result.proofs[0]).toBe('realProof');
+        } catch (e) {
+            expect(e).toBe('Done');
+        }
+    });
+    
+    it('Test convert UInt8Array transfer', async () => {
+        
+        const data = {
+            type: 4,
+            data: {
+                fee: new Money(0.1, testAsset),
+                amount: new Money(1, testAsset),
+                recipient: 'test',
+                attachment: new Uint8Array([1,2,3,4])
+            }
+        };
+        
         try {
             WavesKeeperAdapter.setApiExtension(keeperMock);
             const users = await WavesKeeperAdapter.getUserList();
