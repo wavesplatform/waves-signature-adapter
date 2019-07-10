@@ -169,7 +169,6 @@ describe('Check validators', () => {
         });
         
         it('invalid transfer attachment', () => {
-            debugger;
             const signData = {
                 type: SIGN_TYPE.TRANSFER,
                 data: { ...data, attachment: {} }
