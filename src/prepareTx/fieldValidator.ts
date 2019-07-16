@@ -65,6 +65,9 @@ export const isValidAddress = function (address: string, networkByte: number) {
 };
 
 const isBase64 = (value: string): boolean => {
+    if (value === '') {
+        return true;
+    }
     const regExp = /^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$/;
     return regExp.test(value);
 };
