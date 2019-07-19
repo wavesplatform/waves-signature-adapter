@@ -235,10 +235,16 @@ export class Signable {
         });
     }
     
-    public async getDataForApi() {
+    public async getDataForApi(options?: { noSign: boolean }) {
         const data = await this.getSignData();
-        await this.addMyProof();
-        const proofs = this._proofs.slice();
+        const { noSign } = options || Object.create(null);
+        
+        if (!noSign) {
+            await this.addMyProof();
+        }
+        
+        const proofs = (this._proofs || []).slice();
+        
         try {
             return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
         } catch (e) {
