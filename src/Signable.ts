@@ -235,13 +235,10 @@ export class Signable {
         });
     }
     
-    public async getDataForApi(options?: { noSign: boolean }) {
+    public async getDataForApi() {
         const data = await this.getSignData();
-        const { noSign } = options || Object.create(null);
         
-        if (!noSign) {
-            await this.addMyProof();
-        }
+        await this.addMyProof();
         
         const proofs = (this._proofs || []).slice();
         
