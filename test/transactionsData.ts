@@ -1,9 +1,10 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@waves/data-entities';
 import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
-import { base58Decode } from '@waves/waves-crypto';
+import { libs } from '@waves/waves-transactions';
 import { BigNumber } from '@waves/bignumber';
 
+const { base58Decode } = libs.crypto;
 
 export const txs = {
     [SIGN_TYPE.ISSUE]: {

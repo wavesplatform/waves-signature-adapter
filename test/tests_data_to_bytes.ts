@@ -1,6 +1,8 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
 import { txs } from './transactionsData';
-import { verifySignature } from '@waves/waves-crypto';
+import { libs } from '@waves/waves-transactions';
+
+const { verifySignature } = libs.crypto;
 
 const TEST_SEED = 'some test seed words without money, you can try check balance';
 

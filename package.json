@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "5.1.0",
+  "version": "5.1.8",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "license": "MIT",
@@ -13,9 +13,9 @@
     "@waves/bignumber": "^0.0.1",
     "@waves/data-entities": "^2.0.0",
     "@waves/ledger": "^3.4.0",
-    "@waves/money-like-to-node": "0.0.8",
-    "@waves/ts-types": "^0.2.0-beta-8",
-    "@waves/waves-transactions": "^3.12.1",
+    "@waves/money-like-to-node": "0.0.10",
+    "@waves/ts-types": "^0.2.0",
+    "@waves/waves-transactions": "^3.14.3",
     "ramda": "^0.25.0"
   },
   "scripts": {

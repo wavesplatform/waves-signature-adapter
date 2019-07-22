@@ -237,8 +237,11 @@ export class Signable {
     
     public async getDataForApi() {
         const data = await this.getSignData();
+        
         await this.addMyProof();
-        const proofs = this._proofs.slice();
+        
+        const proofs = (this._proofs || []).slice();
+        
         try {
             return convert({ ...data, proofs }, (item) => new BigNumber(item as string));
         } catch (e) {

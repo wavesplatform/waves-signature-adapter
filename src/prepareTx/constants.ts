@@ -219,7 +219,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             2: binary.serializeTx,
         },
-        toNode: data => toNode(data, wavesTransactions.lease),
+        toNode: (data, networkByte: number) => (toNode({
+            ...data,
+            recipient: processors.recipient(String.fromCharCode(networkByte))(data.recipient),
+        }, wavesTransactions.lease)),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
@@ -243,6 +246,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         },
         toNode: (data, networkByte: number) => (toNode({
             ...data,
+            assetId: data.assetId || data.transfers[0].amount.asset.id,
             transfers: (data.transfers).map((item: any) => {
                 const recipient = processors.recipient(String.fromCharCode(networkByte))(item.name || item.recipient);
                 return { ...item, recipient };
@@ -299,7 +303,10 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: binary.serializeTx,
             1: binary.serializeTx,
         },
-        toNode: data => toNode(data, wavesTransactions.invokeScript),
+        toNode: (data, networkByte: number) => (toNode({
+            ...data,
+            dApp: processors.recipient(String.fromCharCode(networkByte))(data.dApp)
+        }, wavesTransactions.invokeScript)),
         adapter: 'signTransaction'
     },
 };
