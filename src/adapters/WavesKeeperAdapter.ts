@@ -2,6 +2,7 @@ import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
 import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
+import { equals } from 'ramda';
 
 const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.AUTH]: [1],
@@ -30,6 +31,7 @@ export class WavesKeeperAdapter extends Adapter {
     public static type = AdapterType.WavesKeeper;
     public static adapter: WavesKeeperAdapter;
     private static _onUpdateCb: Array<(...args: Array<any>) => any> = [];
+    private static _state: any;
     private _onDestoryCb = [];
     private _needDestroy = false;
     private _address: string;
@@ -238,6 +240,10 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     private static _updateState(state: any) {
+        if (equals(WavesKeeperAdapter._state, state)) {
+            return;
+        }
+        
         for (const cb of WavesKeeperAdapter._onUpdateCb) {
             cb(state);
         }
