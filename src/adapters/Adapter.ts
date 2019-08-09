@@ -30,7 +30,7 @@ export abstract class Adapter {
     public getNetworkByte(): number {
         return this._code || Adapter._code;
     }
-    
+
     public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;
 
     public abstract getPublicKey(): Promise<string>;
@@ -76,6 +76,7 @@ export interface IAdapterConstructor {
 
 export interface IUser {
     encryptedSeed: string;
+    encryptedPrivateKey: string;
     password: string;
     encryptionRounds: number;
 }
