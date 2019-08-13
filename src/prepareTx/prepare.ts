@@ -1,14 +1,14 @@
-import { Money, AssetPair, OrderPrice } from '@waves/data-entities';
-import { BigNumber } from '@waves/bignumber';
-import { libs } from '@waves/waves-transactions';
+import { Money, AssetPair, OrderPrice } from '@bancoin/data-entities';
+import { BigNumber } from '@bancoin/bignumber';
+import { libs } from '@bancoin/bancoin-transactions';
 import { VALIDATORS } from './fieldValidator';
 
-export const WAVES_ID = 'WAVES';
+export const BCT_ID = 'Bancoin';
 const { stringToBytes, base58Encode } = libs.crypto;
 
 
 //@ts-ignore
-const normalizeAssetId = id => id === WAVES_ID ? '' : id;
+const normalizeAssetId = id => id === BCT_ID ? '' : id;
 
 interface ICall { function: string, args?: Array<any> }
 
@@ -244,6 +244,6 @@ export module prepare {
     }
     
     export function idToNode(id: string): string {
-        return id === WAVES_ID ? '' : id;
+        return id === BCT_ID ? '' : id;
     }
 }

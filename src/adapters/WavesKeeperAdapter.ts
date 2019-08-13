@@ -25,19 +25,19 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.SCRIPT_INVOCATION]: [1]
 };
 
-export class WavesKeeperAdapter extends Adapter {
+export class BancoinKeeperAdapter extends Adapter {
 
-    public static type = AdapterType.WavesKeeper;
-    public static adapter: WavesKeeperAdapter;
+    public static type = AdapterType.BancoinKeeper;
+    public static adapter: BancoinKeeperAdapter;
     private static _onUpdateCb: Array<(...args: Array<any>) => any> = [];
     private _onDestoryCb = [];
     private _needDestroy = false;
     private _address: string;
     private _pKey: string;
     private static _txVersion: typeof DEFAULT_TX_VERSIONS = DEFAULT_TX_VERSIONS;
-    private static _getApiCb: () => IWavesKeeper;
+    private static _getApiCb: () => IBancoinKeeper;
 
-    private static _api: IWavesKeeper;
+    private static _api: IBancoinKeeper;
 
     private handleUpdate = (state: any) => {
         if (!state.locked && (!state.account || state.account.address !== this._address)) {
@@ -45,7 +45,7 @@ export class WavesKeeperAdapter extends Adapter {
             //@ts-ignore
             this._onDestoryCb.forEach(cb => cb());
             this._onDestoryCb = [];
-            WavesKeeperAdapter.offUpdate(this.handleUpdate);
+            BancoinKeeperAdapter.offUpdate(this.handleUpdate);
         }
     };
 
@@ -53,16 +53,16 @@ export class WavesKeeperAdapter extends Adapter {
         super(networkCode);
         this._address = address;
         this._pKey = publicKey;
-        WavesKeeperAdapter._initExtension();
+        BancoinKeeperAdapter._initExtension();
         //@ts-ignore
-        WavesKeeperAdapter.onUpdate(this.handleUpdate);
+        BancoinKeeperAdapter.onUpdate(this.handleUpdate);
     }
 
     public async isAvailable(ignoreLocked = false): Promise<void> {
         try {
-            await WavesKeeperAdapter.isAvailable(this.getNetworkByte());
-            const data = await WavesKeeperAdapter._api.publicState();
-            WavesKeeperAdapter._updateState(data);
+            await BancoinKeeperAdapter.isAvailable(this.getNetworkByte());
+            const data = await BancoinKeeperAdapter._api.publicState();
+            BancoinKeeperAdapter._updateState(data);
 
             if (data.locked) {
                 return ignoreLocked ? Promise.resolve() : Promise.reject({ code: 4, msg: 'Keeper is locked' });
@@ -78,10 +78,10 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public async isLocked() {
-        await WavesKeeperAdapter.isAvailable();
-        const data = await WavesKeeperAdapter._api.publicState();
+        await BancoinKeeperAdapter.isAvailable();
+        const data = await BancoinKeeperAdapter._api.publicState();
 
-        WavesKeeperAdapter._updateState(data);
+        BancoinKeeperAdapter._updateState(data);
 
         if (data.locked) {
             return Promise.resolve();
@@ -89,7 +89,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
-        return WavesKeeperAdapter._txVersion;
+        return BancoinKeeperAdapter._txVersion;
     }
 
     //@ts-ignore
@@ -117,13 +117,13 @@ export class WavesKeeperAdapter extends Adapter {
     //@ts-ignore
     public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
         await this.isAvailable(true);
-        return await WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
+        return await BancoinKeeperAdapter._api.signRequest(BancoinKeeperAdapter._serializedData(signData));
     }
 
     //@ts-ignore
     public async signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
         await this.isAvailable(true);
-        const dataStr = await WavesKeeperAdapter._api.signTransaction(WavesKeeperAdapter._serializedData(signData));
+        const dataStr = await BancoinKeeperAdapter._api.signTransaction(BancoinKeeperAdapter._serializedData(signData));
         const { proofs, signature } = JSON.parse(dataStr);
         return signature || proofs.pop();
     }
@@ -134,13 +134,13 @@ export class WavesKeeperAdapter extends Adapter {
         let promise;
         switch (signData.type) {
             case SIGN_TYPE.CREATE_ORDER:
-                promise = WavesKeeperAdapter._api.signOrder(WavesKeeperAdapter._serializedData(signData));
+                promise = BancoinKeeperAdapter._api.signOrder(BancoinKeeperAdapter._serializedData(signData));
                 break;
             case SIGN_TYPE.CANCEL_ORDER:
-                promise = WavesKeeperAdapter._api.signCancelOrder(WavesKeeperAdapter._serializedData(signData));
+                promise = BancoinKeeperAdapter._api.signCancelOrder(BancoinKeeperAdapter._serializedData(signData));
                 break;
             default:
-                return WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
+                return BancoinKeeperAdapter._api.signRequest(BancoinKeeperAdapter._serializedData(signData));
         }
 
         const dataStr = await promise;
@@ -158,10 +158,10 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static async isAvailable(networkCode?: number) {
-        await WavesKeeperAdapter._initExtension();
+        await BancoinKeeperAdapter._initExtension();
 
         if (!this._api) {
-            throw { code: 0, message: 'Install WavesKeeper' };
+            throw { code: 0, message: 'Install BancoinKeeper' };
         }
 
         if (!(networkCode || Adapter._code)) {
@@ -171,10 +171,10 @@ export class WavesKeeperAdapter extends Adapter {
         let error, data;
         try {
             data = await this._api.publicState();
-            WavesKeeperAdapter._updateState(data);
+            BancoinKeeperAdapter._updateState(data);
 
             if (data.txVersion) {
-                WavesKeeperAdapter._txVersion = data.txVersion;
+                BancoinKeeperAdapter._txVersion = data.txVersion;
             }
         } catch (e) {
             error = { code: 1, message: 'No permissions' };
@@ -182,7 +182,7 @@ export class WavesKeeperAdapter extends Adapter {
 
         if (!error && data) {
             if (!data.account) {
-                error = { code: 2, message: 'No accounts in waveskeeper' };
+                error = { code: 2, message: 'No accounts in Bancoinkeeper' };
             } else if ((!data.account.address || !isValidAddress(data.account.address, networkCode || Adapter._code))) {
                 error = { code: 3, message: 'Selected network incorrect' };
             }
@@ -196,9 +196,9 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public static async getUserList() {
-        await WavesKeeperAdapter.isAvailable();
-        return WavesKeeperAdapter._api.publicState().then((data) => {
-            WavesKeeperAdapter._updateState(data);
+        await BancoinKeeperAdapter.isAvailable();
+        return BancoinKeeperAdapter._api.publicState().then((data) => {
+            BancoinKeeperAdapter._updateState(data);
             return [data.account];
         });
     }
@@ -209,7 +209,7 @@ export class WavesKeeperAdapter extends Adapter {
         this.setApiExtension(options.extension);
         this._initExtension();
         try {
-            this._api.publicState().then(WavesKeeperAdapter._updateState);
+            this._api.publicState().then(BancoinKeeperAdapter._updateState);
         } catch (e) {
 
         }
@@ -226,40 +226,40 @@ export class WavesKeeperAdapter extends Adapter {
             extensionCb = () => extension;
         }
 
-        WavesKeeperAdapter._getApiCb = extensionCb;
+        BancoinKeeperAdapter._getApiCb = extensionCb;
     }
 
     public static onUpdate(cb: any) {
-        WavesKeeperAdapter._onUpdateCb.push(cb);
+        BancoinKeeperAdapter._onUpdateCb.push(cb);
     }
 
     public static offUpdate(func: any) {
-        WavesKeeperAdapter._onUpdateCb = WavesKeeperAdapter._onUpdateCb.filter(f => f !== func)
+        BancoinKeeperAdapter._onUpdateCb = BancoinKeeperAdapter._onUpdateCb.filter(f => f !== func)
     }
 
     private static _updateState(state: any) {
-        for (const cb of WavesKeeperAdapter._onUpdateCb) {
+        for (const cb of BancoinKeeperAdapter._onUpdateCb) {
             cb(state);
         }
     }
 
     private static _initExtension() {
-        if (WavesKeeperAdapter._api || !WavesKeeperAdapter._getApiCb) {
-            return WavesKeeperAdapter._api.initialPromise;
+        if (BancoinKeeperAdapter._api || !BancoinKeeperAdapter._getApiCb) {
+            return BancoinKeeperAdapter._api.initialPromise;
         }
 
-        const wavesApi = WavesKeeperAdapter._getApiCb();
-        if (wavesApi) {
-           return wavesApi.initialPromise.then((api: IWavesKeeper) => {
+        const BancoinApi = BancoinKeeperAdapter._getApiCb();
+        if (bancoinApi) {
+           return bancoinApi.initialPromise.then((api: IBancoinKeeper) => {
                 this._api = api;
-                this._api.on('update', WavesKeeperAdapter._updateState);
+                this._api.on('update', BancoinKeeperAdapter._updateState);
                 this._api.publicState().then(state => {
 
                     if (state.txVersion) {
-                        WavesKeeperAdapter._txVersion = state.txVersion;
+                        BancoinKeeperAdapter._txVersion = state.txVersion;
                     }
 
-                    WavesKeeperAdapter._updateState(state);
+                    BancoinKeeperAdapter._updateState(state);
                 })
             });
         }
@@ -275,7 +275,7 @@ export class WavesKeeperAdapter extends Adapter {
 }
 
 
-interface IWavesKeeper {
+interface IBancoinKeeper {
     getSignVersions?: () => Record<SIGN_TYPE, Array<number>>;
     auth: (data: IAuth) => Promise<IAuthData>;
     signTransaction: (data: TSignData) => Promise<any>;
@@ -285,7 +285,7 @@ interface IWavesKeeper {
     signBytes: (data: any) => Promise<string>;
     publicState: () => Promise<any>;
     on: (name: string, cb: any) => Promise<any>;
-    initialPromise: Promise<IWavesKeeper>;
+    initialPromise: Promise<IBancoinKeeper>;
 }
 
 interface IAuth {

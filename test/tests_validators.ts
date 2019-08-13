@@ -1,9 +1,9 @@
 import { SeedAdapter } from '../src/adapters';
-import { Asset, Money } from '@waves/data-entities';
+import { Asset, Money } from '@bancoin/data-entities';
 import { SIGN_TYPE } from '../src/prepareTx';
 import { ERROR_MSG } from '../src/prepareTx/fieldValidator';
-import { BigNumber } from '@waves/bignumber';
-import { seedUtils } from '@waves/waves-transactions';
+import { BigNumber } from '@bancoin/bignumber';
+import { seedUtils } from '@bancoin/bancoin-transactions';
 
 const Seed = seedUtils.Seed;
 

@@ -1,10 +1,10 @@
-import { Asset } from '@waves/data-entities';
+import { Asset } from '@bancoin/data-entities';
 
 
-export const WavesAsset = new Asset({
-    ticker: 'WAVES',
-    id: 'WAVES',
-    name: 'Waves',
+export const BancoinAsset = new Asset({
+    ticker: 'BCT',
+    id: 'BCT',
+    name: 'Bancoin',
     precision: 8,
     description: '',
     height: 0,
@@ -49,7 +49,7 @@ export const INSTANTCOIN = new Asset({
     quantity: 10000000,
     reissuable: true,
     precision: 2,
-    description: 'INSTANTCOIN a token that is been build on the Waves platform. Subscribe on the website & social media for more upcoming updates.',
+    description: 'INSTANTCOIN a token that is been build on the Bancoin platform. Subscribe on the website & social media for more upcoming updates.',
     height: 851542
 });
 
@@ -62,7 +62,7 @@ export const Beatz = new Asset({
     quantity: 1000000000000000000,
     reissuable: false,
     precision: 8,
-    description: 'Beatz by waves will contribute to the future of Web 3.0 by building a decentralized music platform allowing all users from across the globe to publish their music whether your at home in your shower or a world class music studio you can publish your music and allow users from around the world to purchase it via Beatz by waves .',
+    description: 'Beatz by bancoin will contribute to the future of Web 3.0 by building a decentralized music platform allowing all users from across the globe to publish their music whether your at home in your shower or a world class music studio you can publish your music and allow users from around the world to purchase it via Beatz by bancoin .',
     height: 1538724
 });
 

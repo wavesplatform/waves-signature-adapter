@@ -1,6 +1,6 @@
 import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
-import { WavesLedger } from '@waves/ledger';
+import { BancoinLedger } from '@bancoin/ledger';
 import { SIGN_TYPE } from '../prepareTx';
 
 
@@ -110,9 +110,9 @@ export class LedgerAdapter extends Adapter {
         return LedgerAdapter._ledger.getPaginationUsersData(from, to);
     }
 
-    public static initOptions(options: IWavesLedger) {
+    public static initOptions(options: IBancoinLedger) {
         Adapter.initOptions(options);
-        this._ledger = new WavesLedger( options );
+        this._ledger = new BancoinLedger( options );
     }
 
     public static isAvailable() {
@@ -131,7 +131,7 @@ export class LedgerAdapter extends Adapter {
     }
 }
 
-interface IWavesLedger  {
+interface IBancoinLedger  {
     networkCode: number;
     debug?: boolean;
     openTimeout?: number;

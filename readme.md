@@ -3,18 +3,18 @@
 ## Installation
 
 ```bash
-$ npm install --save @waves/signature-adapter
+$ npm install --save @bancoin/signature-adapter
 ```
 
 ## Usage
 ```typescript
-import { SeedAdapter, SIGN_TYPE } from '@waves/signature-adapter';
-import { Money, Asset } from '@waves/data-entities';
+import { SeedAdapter, SIGN_TYPE } from '@bancoin/signature-adapter';
+import { Money, Asset } from '@bancoin/data-entities';
 
 const asset = new Asset({
-   ticker: 'WAVES',
-   id: 'WAVES',
-   name: 'Waves',
+   ticker: 'BCT',
+   id: 'BCT',
+   name: 'Bancoin',
    precision: 8,
    description: '',
    height: 0,
@@ -55,20 +55,20 @@ encryptedSeed {string} - seed phrase encoded with passwords
 password {string} - password that is encrypted seed phrase
 encryptionRounds {number} - encryption complexity
 
-For change network byte use @waves/signature-generator config:
+For change network byte use @bancoin/signature-generator config:
 
 ```typescript
-import { config } from '@waves/signature-generator';
+import { config } from '@bancoin/signature-generator';
 
 config.set('networkByte', 'T'.charCodeAt(0))
 ```
 
-*If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters. See the documentation @waves/signature-generator for more details*
+*If you use seed phrase to create SeedAdapter note that the minimum length of a phrase is 15 characters. See the documentation @bancoin/signature-generator for more details*
 
 Example of creation SeedAdapter with seed phrase:
 
 ```typescript
-import { SeedAdapter } from '@waves/signature-adapter';
+import { SeedAdapter } from '@bancoin/signature-adapter';
 
 const adapter = new SeedAdapter('some seed phrase more 15 chars');
 ```
@@ -88,7 +88,7 @@ Where ‘from’ is wallet ID in the Ledger from which to start receiving data, 
 
 Example:
 ```typescript
-import { LedgerAdapter } from '@waves/signature-adapter';
+import { LedgerAdapter } from '@bancoin/signature-adapter';
 
 LedgerAdapter.getUserList().then(([userData]) => new LedgerAdapter(userData));
 ```
@@ -124,7 +124,7 @@ Accepts byte array for signing, returns promise with a signature. This method is
 Returns the seed phrase or an error If adapter is not able to return it (in case of  LedgerAdapter)
 
 - makeSignable(signData): Signable;
-Accepts data for signature (Visit [interfaces](https://github.com/wavesplatform/waves-signature-adapter/blob/master/src/prepareTx/interfaces.ts) for more information about “TSignData” interface) and returns an instance of the Signable class
+Accepts data for signature (Visit [interfaces](https://github.com/bancoinplatform/bancoin-signature-adapter/blob/master/src/prepareTx/interfaces.ts) for more information about “TSignData” interface) and returns an instance of the Signable class
 
 
 
@@ -134,7 +134,7 @@ Accepts data for signature (Visit [interfaces](https://github.com/wavesplatform/
 Returns a copy of the object data transferred for signature
 
 - getSignData(): Promise\<object\>;
-Returns data for signing as received for making signature [@waves/signature-generator](https://github.com/wavesplatform/waves-signature-generator)
+Returns data for signing as received for making signature [@bancoin/signature-generator](https://github.com/bancoinplatform/bancoin-signature-generator)
 
 - addProof(proof: string): Signable;
 Accepts the signature for adding it to the signature list. Signature list is used for "getDataForApi" method

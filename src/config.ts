@@ -1,18 +1,18 @@
 import { SeedAdapter } from './adapters/SeedAdapter';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
-import { WavesKeeperAdapter } from './adapters';
+import { BancoinKeeperAdapter } from './adapters';
 import {PrivateKeyAdapter} from "./adapters/PrivateKeyAdapter";
 
 export const enum AdapterType {
     Seed = 'seed',
     PrivateKey = 'privateKey',
-    WavesKeeper = 'wavesKeeper',
+    BancoinKeeper = 'BancoinKeeper',
     Ledger = 'ledger',
     Tresor = 'tresor'
 }
 
 export const adapterPriorityList = [
-    AdapterType.WavesKeeper,
+    AdapterType.BancoinKeeper,
     AdapterType.Ledger,
     AdapterType.Tresor,
     AdapterType.Seed,
@@ -22,6 +22,6 @@ export const adapterPriorityList = [
 export const adapterList = [
     SeedAdapter,
     LedgerAdapter,
-    WavesKeeperAdapter,
+    BancoinKeeperAdapter,
     PrivateKeyAdapter
 ];

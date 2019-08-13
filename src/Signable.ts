@@ -5,15 +5,15 @@ import {
     SIGN_TYPE,
     SIGN_TYPES,
     TSignData,
-    WAVES_ID
+    BCT_ID
 } from './prepareTx';
 import { currentFeeFactory, currentCreateOrderFactory, IFeeConfig, isEmpty, last, normalizeAssetId } from './utils';
 import { Adapter } from './adapters';
 import { ERRORS } from './constants';
 import { SignError } from './SignError';
-import { libs } from '@waves/waves-transactions';
-import { convert } from '@waves/money-like-to-node';
-import { BigNumber } from '@waves/bignumber';
+import { libs } from '@bancoin/bancoin-transactions';
+import { convert } from '@bancoin/money-like-to-node';
+import { BigNumber } from '@bancoin/bignumber';
 import { TRANSACTION_TYPE_NUMBER } from './prepareTx';
 
 const { base58Encode, blake2b, verifySignature } = libs.crypto;
@@ -116,7 +116,7 @@ export class Signable {
     public async getAssetIds(): Promise<Array<string>> {
         const transaction = await this.getSignData();
         const hash = Object.create(null);
-        hash[WAVES_ID] = true;
+        hash[BCT_ID] = true;
         hash[normalizeAssetId(transaction.feeAssetId)] = true;
         
         switch (transaction.type) {

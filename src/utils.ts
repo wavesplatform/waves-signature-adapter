@@ -1,4 +1,4 @@
-import { BigNumber } from '@waves/bignumber';
+import { BigNumber } from '@bancoin/bignumber';
 import { path } from 'ramda';
 import {
     IExchangeTransactionOrder,
@@ -6,8 +6,8 @@ import {
     IDataTransaction,
     IMassTransferTransaction,
     IIssueTransaction
-} from '@waves/ts-types';
-import { WAVES_ID } from './prepareTx';
+} from '@bancoin/ts-types';
+import { BCT_ID } from './prepareTx';
 
 
 export function find<T>(some: Partial<T>, list: Array<T>) {
@@ -27,7 +27,7 @@ export function isEmpty(some: unknown): some is undefined {
 }
 
 export function normalizeAssetId(assetId: string) {
-    return assetId || WAVES_ID;
+    return assetId || BCT_ID;
 }
 
 

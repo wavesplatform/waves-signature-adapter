@@ -1,6 +1,6 @@
 import { Adapter, IUser } from './Adapter';
 import { AdapterType } from '../config';
-import { seedUtils, libs } from '@waves/waves-transactions';
+import { seedUtils, libs } from '@bancoin/bancoin-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
 const publicKey = libs.crypto.publicKey;

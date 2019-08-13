@@ -12,7 +12,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
         [SIGN_TYPE.AUTH]: [
-            fieldsType.string()('prefix', null, processors.addValue('WavesWalletAuthentication'), true),
+            fieldsType.string()('prefix', null, processors.addValue('BancoinWalletAuthentication'), true),
             fieldsType.string()('host'),
             fieldsType.string()('data'),
         ],

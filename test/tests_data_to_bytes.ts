@@ -1,6 +1,6 @@
 import { SeedAdapter, SIGN_TYPE } from '../src/index';
 import { txs } from './transactionsData';
-import { libs } from '@waves/waves-transactions';
+import { libs } from '@bancoin/bancoin-transactions';
 
 const { verifySignature } = libs.crypto;
 
