@@ -249,8 +249,8 @@ export class BancoinKeeperAdapter extends Adapter {
         }
 
         const BancoinApi = BancoinKeeperAdapter._getApiCb();
-        if (bancoinApi) {
-           return bancoinApi.initialPromise.then((api: IBancoinKeeper) => {
+        if (BancoinApi) {
+           return BancoinApi.initialPromise.then((api: IBancoinKeeper) => {
                 this._api = api;
                 this._api.on('update', BancoinKeeperAdapter._updateState);
                 this._api.publicState().then(state => {
