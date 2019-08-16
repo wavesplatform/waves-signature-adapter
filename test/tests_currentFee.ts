@@ -47,17 +47,17 @@ const CONFIG = {
     }
 };
 
-const BCT_ASSET = new Asset({
+const WAVES_ASSET = new Asset({
     precision: 8,
-    id: 'BCT',
+    id: 'WAVES',
     quantity: new BigNumber('1000000000000000'),
-    description: 'Bancoin token',
+    description: 'Waves token',
     height: 0,
-    name: 'Bancoin',
+    name: 'Waves',
     reissuable: false,
     sender: seed.address,
     timestamp: new Date(),
-    ticker: 'BCT'
+    ticker: 'WAVES'
 });
 
 const TEST_ASSET = new Asset({
@@ -79,7 +79,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.TRANSFER,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET)
             }
@@ -93,7 +93,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.TRANSFER,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET)
             }
@@ -107,7 +107,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.TRANSFER,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET)
             }
@@ -121,7 +121,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.ISSUE,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, WAVES_ASSET),
                 name: 'My Asset',
                 description: 'My asset description',
                 quantity: new BigNumber(500),
@@ -138,7 +138,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.ISSUE,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, WAVES_ASSET),
                 name: 'My Asset',
                 description: 'My asset description',
                 quantity: new BigNumber(500),
@@ -156,7 +156,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
                 reissuable: true
             }
@@ -171,7 +171,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
                 reissuable: true
             }
@@ -186,7 +186,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
                 reissuable: true
             }
@@ -201,7 +201,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
             }
         },
@@ -215,7 +215,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
             }
         },
@@ -229,7 +229,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
             }
         },
@@ -242,7 +242,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.LEASE,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
                 recipient: seed.address
             }
@@ -256,7 +256,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.LEASE,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
                 recipient: seed.address
             }
@@ -270,7 +270,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.CANCEL_LEASING,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 leaseId: TEST_ASSET.id
             }
         },
@@ -283,7 +283,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.CANCEL_LEASING,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 leaseId: TEST_ASSET.id
             }
         },
@@ -296,7 +296,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.CREATE_ALIAS,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 alias: 'some'
             }
         },
@@ -309,7 +309,7 @@ const TEST_LIST: Array<ITestItem> = [
             type: SIGN_TYPE.CREATE_ALIAS,
             data: {
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 alias: '123123123123123123123123123343'
             }
         },
@@ -324,7 +324,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -342,7 +342,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -360,7 +360,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -378,7 +378,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -399,7 +399,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -420,7 +420,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -441,7 +441,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -465,7 +465,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -489,7 +489,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 totalAmount: new Money(1, TEST_ASSET),
                 timestamp: Date.now(),
-                fee: new Money(CONFIG.calculate_fee_rules.default.fee, BCT_ASSET),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
@@ -510,7 +510,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.DATA,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 data: [
                     { key: 'test', type: 'string', value: '123' }
@@ -525,7 +525,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.DATA,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 data: [
                     { key: 'test', type: 'string', value: '123' }
@@ -540,7 +540,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SET_SCRIPT,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 script: ''
             }
@@ -553,7 +553,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SET_SCRIPT,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 script: ''
             }
@@ -566,7 +566,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SPONSORSHIP,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 minSponsoredAssetFee: new Money(1, TEST_ASSET)
             }
@@ -579,7 +579,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SPONSORSHIP,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 minSponsoredAssetFee: new Money(1, TEST_ASSET)
             }
@@ -592,7 +592,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SET_ASSET_SCRIPT,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
                 script: 'base64:AQa3b8tH'
@@ -606,7 +606,7 @@ const TEST_LIST: Array<ITestItem> = [
         data: {
             type: SIGN_TYPE.SET_ASSET_SCRIPT,
             data: {
-                fee: new Money(1, BCT_ASSET),
+                fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
                 script: 'base64:AQa3b8tH'

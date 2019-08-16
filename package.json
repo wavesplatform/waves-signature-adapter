@@ -10,12 +10,12 @@
   },
   "dependencies": {
     "@types/ramda": "^0.25.46",
-    "@bancoin/bignumber": "^0.0.1",
-    "@bancoin/data-entities": "^2.0.0",
-    "@bancoin/ledger": "^3.4.0",
-    "@bancoin/money-like-to-node": "0.0.10",
-    "@bancoin/ts-types": "^0.2.0",
-    "@bancoin/bancoin-transactions": "^3.16.3",
+    "@bancoin/bignumber": "git://github.com/Bancoinplatform/bignumber.git#2e3717a",
+    "@bancoin/data-entities": "git://github.com/Bancoinplatform/bancoin-data-entities.git#92c78f7",
+    "@bancoin/ledger": "git://github.com/Bancoinplatform/bancoin-ledger-js.git#e4b2d41",
+    "@bancoin/money-like-to-node": "git://github.com/Bancoinplatform/money-like-to-node.git#31c696c",
+    "@bancoin/ts-types": "git://github.com/Bancoinplatform/ts-types.git#62399c3",
+    "@bancoin/bancoin-transactions": "git://github.com/Bancoinplatform/bancoin-transactions.git#3ef9915",
     "ramda": "^0.25.0"
   },
   "scripts": {
@@ -23,10 +23,7 @@
     "compile": "tsc",
     "browserify": "node_modules/.bin/browserify dist/index.js -s bancoinSignatureAdapter -u @bancoin/bancoin-crypto -u @bancoin/bignumber -u @bancoin/bancoin-transactions -u @bancoin/data-entities -u @bancoin/marshall -u @bancoin/ledger -o dist/signature-adapter.js",
     "build": "npm run compile && npm run browserify && npm run uglify",
-    "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
-    "postpublish": "git push",
-    "postversion": "npm publish",
-    "prepare": "npm run build"
+    "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js"
   },
   "devDependencies": {
     "@types/jest": "^23.3.2",

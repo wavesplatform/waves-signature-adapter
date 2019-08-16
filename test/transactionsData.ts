@@ -1,6 +1,6 @@
 import { SIGN_TYPE } from '../src/prepareTx';
 import { Money } from '@bancoin/data-entities';
-import { BtcAsset, TORCorp, INSTANTCOIN, BancoinAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
+import { BtcAsset, TORCorp, INSTANTCOIN, WavesAsset, Aracoin, WETH, Voyage, TBTC } from './assets';
 import { libs } from '@bancoin/bancoin-transactions';
 import { BigNumber } from '@bancoin/bignumber';
 
@@ -18,7 +18,7 @@ export const txs = {
                 precision: 2,
                 reissuable: true,
                 script: null,
-                fee: Money.fromCoins(100000000, BancoinAsset),
+                fee: Money.fromCoins(100000000, WavesAsset),
                 timestamp: 1558497371511,
                 version: 2,
             },
@@ -34,7 +34,7 @@ export const txs = {
                 quantity: new BigNumber('900000000000'),
                 reissuable: true,
                 senderPublicKey: 'CMxBthD1FH5kB597UY54jP3Q4LJr6LVnTFyajcEEkG46',
-                fee: Money.fromTokens(1, BancoinAsset),
+                fee: Money.fromTokens(1, WavesAsset),
                 timestamp: new Date('2019-05-13T15:45:14.160Z'),
                 version: 2,
             },
@@ -49,7 +49,7 @@ export const txs = {
                 senderPublicKey: 'BzeniWrmnD1qjoFjVnrYbSXwoiYNpKvaTkhpgwySM31Q',
                 assetId: 'GouQ4XCiunWv8A8zJ6BCB9yyWHyFHREiqkuNYiATjJeW',
                 amount: new BigNumber(1000000000000000000),
-                fee: Money.fromCoins(100000, BancoinAsset),
+                fee: Money.fromCoins(100000, WavesAsset),
                 timestamp: new Date(1558588376106),
                 version: 2,
             },
@@ -80,8 +80,8 @@ export const txs = {
             data: {
                 recipient: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
                 senderPublicKey: '7QFRujJgBczYVM8Ey5hyAZeqVDNN56Fn1FFxAnjkiUnc',
-                amount: Money.fromTokens(3.14220034, BancoinAsset),
-                fee: Money.fromTokens(0.001, BancoinAsset),
+                amount: Money.fromTokens(3.14220034, WavesAsset),
+                fee: Money.fromTokens(0.001, WavesAsset),
                 timestamp: new Date('2019-05-23T12:36:04.304Z'),
                 version: 2,
             },
@@ -95,7 +95,7 @@ export const txs = {
             data: {
                 senderPublicKey: '4KZsRyZ9LVNBz6PM4CMLvEVm5oz3JepjUDuFumHx7oGJ',
                 leaseId: 'Ag6o9tTqT85AxAwWxzbWR9MEBzxptGjM2h59sGNNPzeT',
-                fee: Money.fromTokens(0.001, BancoinAsset),
+                fee: Money.fromTokens(0.001, WavesAsset),
                 timestamp: '2019-05-23T12:28:53.064Z',
                 version: 2,
             },
@@ -111,7 +111,7 @@ export const txs = {
                 version: 2,
                 senderPublicKey: '5Dw7m2P8BJ9DsFWgKx5YN1ngPcKzrNrswYrqjMnFe1t8',
                 alias: 'yes2yunos',
-                fee: Money.fromCoins(100000, BancoinAsset),
+                fee: Money.fromCoins(100000, WavesAsset),
             },
             id: 'FPPLnwckHW7koBLsuThp1rHB8PbZMzpySzndy6ziUga4',
             proof: '78VKQC7nvmMC6rfSDKX7kqoJ8UUAffeF8ScU6GevsMKHL2mgRDPiL2zLGumETZxCurdbDABDCzxNTwAAyTozFCD',
@@ -132,7 +132,7 @@ export const txs = {
                         name: '3P5bt6dBaafovNEZaiqehchHisx2QgU3pv4'
                     }],
                 attachment: base58Decode('9phjj2o13msVqLm8PdmcpLzWbRNJi6oKCY4mSuEN5pKKtQtqQc5M6r16txhfyhqFrMG49Kva9LGR1E94zHikcBqEL2La3'),
-                fee: Money.fromCoins(200000, BancoinAsset),
+                fee: Money.fromCoins(200000, WavesAsset),
                 sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
                 senderPublicKey: '6Dugmm8rP7UsEZ1vN3y6s8MY2tfW5aGeJzpkozSR4rk5',
                 timestamp: 1558529580270,
@@ -149,7 +149,7 @@ export const txs = {
                 version: 1,
                 timestamp: '2019-05-17T16:02:48.062Z',
                 senderPublicKey: '4q1NnuNeQAxsEnukCsAmkgaZR9fx8nLuexSBy8TVXgQr',
-                fee: Money.fromTokens(0.001, BancoinAsset),
+                fee: Money.fromTokens(0.001, WavesAsset),
                 data: [
                     {
                         key: '3P6TxorzdA6yEG4orVU3Z7GbSeh4oq7k1Ko',
@@ -167,7 +167,7 @@ export const txs = {
             name: 'exchange',
             data: {
                 senderPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
-                fee: Money.fromCoins(300000, BancoinAsset),
+                fee: Money.fromCoins(300000, WavesAsset),
                 timestamp: 1512075551784,
                 version: 1,
                 buyOrder: {
@@ -178,7 +178,7 @@ export const txs = {
                     matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
                     orderType: 'buy',
                     amount: Money.fromCoins(1230364480, WETH),
-                    price: Money.fromCoins(8971734818, BancoinAsset),
+                    price: Money.fromCoins(8971734818, WavesAsset),
                     timestamp: 1512075437685,
                     expiration: 1512161837685,
                     matcherFee: 300000,
@@ -199,7 +199,7 @@ export const txs = {
                     },
                     orderType: 'sell',
                     amount: Money.fromCoins(49816000, WETH),
-                    price: Money.fromCoins(8971734818, BancoinAsset),
+                    price: Money.fromCoins(8971734818, WavesAsset),
                     timestamp: 1512075546319,
                     expiration: 1513803546319,
                     matcherFee: 300000,
@@ -222,7 +222,7 @@ export const txs = {
             data: {
                 'type': 7,
                 'senderPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
-                'fee': Money.fromCoins(300000, BancoinAsset),
+                'fee': Money.fromCoins(300000, WavesAsset),
                 'timestamp': 1559218968473,
                 'version': 2,
                 'buyOrder': {
@@ -233,10 +233,10 @@ export const txs = {
                     'matcherPublicKey': '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
                     'orderType': 'buy',
                     'amount': Money.fromCoins(139538564044, Voyage),
-                    'price': Money.fromCoins(105, BancoinAsset),
+                    'price': Money.fromCoins(105, WavesAsset),
                     'timestamp': 1559218968424,
                     'expiration': 1559219033424,
-                    'matcherFee': Money.fromCoins(300000, BancoinAsset),
+                    'matcherFee': Money.fromCoins(300000, WavesAsset),
                     'signature': 'SrzSabfBaGFyw1Ex6S7X4BH6mtujgwVxBMKNwcPb2wsyzTrkAzipybjAZcyoBdkEhBoUooUAUPGmHqFcffcTaVG',
                     'proofs': [
                         'SrzSabfBaGFyw1Ex6S7X4BH6mtujgwVxBMKNwcPb2wsyzTrkAzipybjAZcyoBdkEhBoUooUAUPGmHqFcffcTaVG'
@@ -254,17 +254,17 @@ export const txs = {
                     },
                     'orderType': 'sell',
                     'amount': Money.fromCoins(139538564044000, Voyage),
-                    'price': Money.fromCoins(105, BancoinAsset),
+                    'price': Money.fromCoins(105, WavesAsset),
                     'timestamp': 1559218958940,
                     'expiration': 1559219023940,
-                    'matcherFee': Money.fromCoins(300000, BancoinAsset),
+                    'matcherFee': Money.fromCoins(300000, WavesAsset),
                     'signature': '3TSrKc3EnZtnULQKDGBW6fMQqqPFZoRzy4fC7n637dHXhHhs9K61mTwAkmXnq8M5sTV4Y7eG7fq1YFUCJVEWVLjC',
                     'proofs': [
                         '3TSrKc3EnZtnULQKDGBW6fMQqqPFZoRzy4fC7n637dHXhHhs9K61mTwAkmXnq8M5sTV4Y7eG7fq1YFUCJVEWVLjC'
                     ]
                 },
                 'amount': Money.fromCoins(139538095239, Voyage),
-                'price': Money.fromCoins(105, BancoinAsset),
+                'price': Money.fromCoins(105, WavesAsset),
                 'buyMatcherFee': Money.fromCoins(299998, Voyage),
                 'sellMatcherFee': Money.fromCoins(299, Voyage),
             },
@@ -278,7 +278,7 @@ export const txs = {
             data: {
                 timestamp: '2019-05-23T01:51:16.417Z',
                 version: 1,
-                fee: Money.fromCoins(100000000, BancoinAsset),
+                fee: Money.fromCoins(100000000, WavesAsset),
                 senderPublicKey: '2Dmh69GXHWkrM1zT5khG3FeRJmQBACBjPU3sdYz3qC5A',
                 minSponsoredAssetFee: Money.fromCoins(100000000000, Aracoin)
             },
@@ -294,7 +294,7 @@ export const txs = {
                 version: 1,
                 senderPublicKey: 'F2FdoxwSbGAHLcRBBNun7uSBvA9L5RvYWkwHHBc5UHqN',
                 script: 'base64:AgQAAAAJaHMxUHVia2V5AQAAACDQVb7HZxGcCjyEGUrIyKkyXvBUTCbTPFHtnRsj8pRfDQQAAAAJaHMyUHVia2V5AQAAACB9+8rXSKq9JZuI77yDN3Gwa1ube2kjCtazzXaevbq1LgQAAAAJaHMxU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAFAAAACWhzMVB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAQAAAAJaHMyU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAEFAAAACWhzMlB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAkAAGcAAAACCQAAZAAAAAIFAAAACWhzMVNpZ25lZAUAAAAJaHMyU2lnbmVkAAAAAAAAAAACG6WDNQ==',
-                fee: Money.fromCoins(1000000, BancoinAsset),
+                fee: Money.fromCoins(1000000, WavesAsset),
             },
             id: '7KP47taMi46pfcEJFPYpneJojH6Li4efWrsEtqsqS3pN',
             proof: '5MUYQnEZMXa3dqdN1c6r8CwJTG3qy9UxTg5g3gTuj2M6dRsPx3Bf23Jxx7sYa1UKtYmGbVYNu5qDPhzSafYSKE33',
@@ -305,7 +305,7 @@ export const txs = {
             name: 'set asset script',
             data: {
                 senderPublicKey: '3Zogxgq7Gcw82HVnxBopx7qhWMjJYt55t98XC1hDSMR5',
-                fee: Money.fromCoins(100000000, BancoinAsset),
+                fee: Money.fromCoins(100000000, WavesAsset),
                 timestamp: 1555958479625,
                 version: 1,
                 assetId: 'HFW1aho3BGGZd4yFUmANaj38PjCYh2J2xm1WzKy4Td6G',
@@ -336,8 +336,8 @@ export const txs = {
                 },
                 'dApp': '3MqQ9ihYKGehfUnXYf5WmkYSZUD71ByeCQe',
                 'feeAssetId': null,
-                'fee': Money.fromCoins(500000, BancoinAsset),
-                'payment': [Money.fromCoins('1400500000', BancoinAsset)
+                'fee': Money.fromCoins(500000, WavesAsset),
+                'payment': [Money.fromCoins('1400500000', WavesAsset)
                 ],
                 'id': 'F3NKXW84ADWjZUdSRHJRNrdGx6eDkGv4R3u1S6xpBPAm',
                 'type': 16,
@@ -416,8 +416,8 @@ export const txs = {
                 senderPublicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr',
                 orderType: 'sell',
                 price: Money.fromTokens('0.00030665', BtcAsset),
-                amount: Money.fromTokens('0.05186534', BancooinAsset),
-                matcherFee: Money.fromTokens('0.00300000', BancoinAsset),
+                amount: Money.fromTokens('0.05186534', WavesAsset),
+                matcherFee: Money.fromTokens('0.00300000', WavesAsset),
                 matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
                 expiration: 1561795622165,
                 version: 1,
@@ -432,11 +432,11 @@ export const txs = {
                 'senderPublicKey': 'Cb92PCaMeimQmmK1dSaoUro3j8YhskKhH89JWdmsCkQX',
                 'matcherPublicKey': 'E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W',
                 'orderType': 'buy',
-                'amount': Money.fromCoins(71841490, BancoinAsset),
+                'amount': Money.fromCoins(71841490, WavesAsset),
                 'price': Money.fromCoins(30800, TBTC),
                 'timestamp': 1559291009514,
                 'expiration': 1561796609514,
-                'matcherFee': Money.fromCoins(700000, BancoinAsset),
+                'matcherFee': Money.fromCoins(700000, WavesAsset),
             },
             id: 'FbjthDRAWRxETe9pjgpX3Fi6cBWRzVM5jgitsHaZ7sbj',
             proof: '63N2ogYfxnWA2CYKAKzGrRCR7DDmnqCS1rhfRsseWGFufZvHXkmeiYYBp83CbtKzKAawtzviLYUeYhDuLfw3v3KA'
