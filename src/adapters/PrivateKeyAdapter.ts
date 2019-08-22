@@ -28,6 +28,7 @@ export class PrivateKeyAdapter extends Adapter {
 
         this.publicKey = publicKey({ privateKey: this.privateKey });
         this.address = address({ publicKey: this.publicKey }, this._code);
+        this._isDestroyed = false;
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {

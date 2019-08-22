@@ -7,6 +7,7 @@ export abstract class Adapter {
 
     public type: string;
     protected _code: number;
+    protected _isDestroyed = true;
     protected static _code: number;
 
     protected constructor(networkCode?: string | number) {
@@ -29,6 +30,10 @@ export abstract class Adapter {
 
     public getNetworkByte(): number {
         return this._code || Adapter._code;
+    }
+
+    public isDestroyed(): boolean {
+        return this._isDestroyed;
     }
 
     public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;

@@ -25,6 +25,7 @@ export class SeedAdapter extends Adapter {
         }
 
         this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
+        this._isDestroyed = false;
     }
 
     public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
