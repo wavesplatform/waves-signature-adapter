@@ -39,19 +39,25 @@ export class WavesKeeperAdapter extends Adapter {
 
     private static _api: IWavesKeeper;
 
+    private handleUpdate = (state: any) => {
+        if (!state.locked && (!state.account || state.account.address !== this._address)) {
+            this._needDestroy = true;
+            this._isDestroyed = true;
+            //@ts-ignore
+            this._onDestoryCb.forEach(cb => cb());
+            this._onDestoryCb = [];
+            WavesKeeperAdapter.offUpdate(this.handleUpdate);
+        }
+    };
+
     constructor({ address, publicKey }: any, networkCode?: number|string) {
         super(networkCode);
         this._address = address;
         this._pKey = publicKey;
         WavesKeeperAdapter._initExtension();
         //@ts-ignore
-        WavesKeeperAdapter.onUpdate((state) => {
-            if (!state.locked && (!state.account || state.account.address !== this._address)) {
-                this._needDestroy = true;
-                //@ts-ignore
-                this._onDestoryCb.forEach(cb => cb());
-            }
-        });
+        WavesKeeperAdapter.onUpdate(this.handleUpdate);
+        this._isDestroyed = false;
     }
 
     public async isAvailable(ignoreLocked = false): Promise<void> {
@@ -59,7 +65,7 @@ export class WavesKeeperAdapter extends Adapter {
             await WavesKeeperAdapter.isAvailable(this.getNetworkByte());
             const data = await WavesKeeperAdapter._api.publicState();
             WavesKeeperAdapter._updateState(data);
-            
+
             if (data.locked) {
                 return ignoreLocked ? Promise.resolve() : Promise.reject({ code: 4, msg: 'Keeper is locked' });
             }
@@ -76,9 +82,9 @@ export class WavesKeeperAdapter extends Adapter {
     public async isLocked() {
         await WavesKeeperAdapter.isAvailable();
         const data = await WavesKeeperAdapter._api.publicState();
-    
+
         WavesKeeperAdapter._updateState(data);
-        
+
         if (data.locked) {
             return Promise.resolve();
         }
@@ -159,16 +165,16 @@ export class WavesKeeperAdapter extends Adapter {
         if (!this._api) {
             throw { code: 0, message: 'Install WavesKeeper' };
         }
-    
+
         if (!(networkCode || Adapter._code)) {
             throw { code: 5, message: 'Set adapter network code' };
         }
-        
+
         let error, data;
         try {
             data = await this._api.publicState();
             WavesKeeperAdapter._updateState(data);
-    
+
             if (data.txVersion) {
                 WavesKeeperAdapter._txVersion = data.txVersion;
             }
@@ -229,13 +235,16 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._onUpdateCb.push(cb);
     }
 
+    public static offUpdate(func: any) {
+        WavesKeeperAdapter._onUpdateCb = WavesKeeperAdapter._onUpdateCb.filter(f => f !== func)
+    }
 
     private static _updateState(state: any) {
         for (const cb of WavesKeeperAdapter._onUpdateCb) {
             cb(state);
         }
     }
-    
+
     private static _initExtension() {
         if (WavesKeeperAdapter._api || !WavesKeeperAdapter._getApiCb) {
             return WavesKeeperAdapter._api.initialPromise;
@@ -247,24 +256,24 @@ export class WavesKeeperAdapter extends Adapter {
                 this._api = api;
                 this._api.on('update', WavesKeeperAdapter._updateState);
                 this._api.publicState().then(state => {
-                    
+
                     if (state.txVersion) {
                         WavesKeeperAdapter._txVersion = state.txVersion;
                     }
-                    
+
                     WavesKeeperAdapter._updateState(state);
                 })
             });
         }
     }
-    
+
     private static _serializedData(data: any) {
         return JSON.parse(
             JSON.stringify(data, (key, value) => value instanceof Uint8Array ? Array.from(value) : value)
         );
     }
-    
-    
+
+
 }
 
 

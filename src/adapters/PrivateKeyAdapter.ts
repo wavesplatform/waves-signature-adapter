@@ -3,28 +3,31 @@ import { AdapterType } from '../config';
 import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
 
-const Seed = seedUtils.Seed;
+const publicKey = libs.crypto.publicKey;
+const address = libs.crypto.address;
 const signWithPrivateKey = libs.crypto.signBytes;
 
-export class SeedAdapter extends Adapter {
+export class PrivateKeyAdapter extends Adapter {
 
-    private seed: seedUtils.Seed;
-    public static type = AdapterType.Seed;
+    private privateKey: string = '';
+    private address: string = '';
+    private publicKey: string = '';
+    public static type = AdapterType.PrivateKey;
 
 
     constructor(data: string | IUser, networkCode?: string | number) {
         super(networkCode);
-        let seed;
 
         if (typeof data === 'string') {
-            seed = data;
+            this.privateKey = data;
         } else {
             const user = <IUser>data;
             const encryptionRounds = user.encryptionRounds;
-            seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
+            this.privateKey = seedUtils.Seed.decryptSeedPhrase(user.encryptedPrivateKey, user.password, encryptionRounds);
         }
 
-        this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
+        this.publicKey = publicKey({ privateKey: this.privateKey });
+        this.address = address({ publicKey: this.publicKey }, this._code);
         this._isDestroyed = false;
     }
 
@@ -52,20 +55,21 @@ export class SeedAdapter extends Adapter {
         };
     }
 
+
+    public getSeed() {
+        return Promise.reject(Error('Method "getSeed" is not available!'));
+    }
+
     public getPublicKey(): Promise<string> {
-        return Promise.resolve(this.seed.keyPair.publicKey);
+        return Promise.resolve(this.publicKey);
     }
 
     public getPrivateKey(): Promise<string> {
-        return Promise.resolve(this.seed.keyPair.privateKey);
+        return Promise.resolve(this.privateKey);
     }
 
     public getAddress(): Promise<string> {
-        return Promise.resolve(this.seed.address);
-    }
-
-    public getSeed(): Promise<string> {
-        return Promise.resolve(this.seed.phrase);
+        return Promise.resolve(this.address);
     }
 
     public signRequest(bytes: Uint8Array): Promise<string> {
@@ -85,7 +89,7 @@ export class SeedAdapter extends Adapter {
     }
 
     private _sign(bytes: Uint8Array): Promise<string> {
-        return Promise.resolve(signWithPrivateKey(this.seed.keyPair, bytes));
+        return Promise.resolve(signWithPrivateKey({ privateKey: this.privateKey }, bytes));
     }
 
     public static isAvailable() {

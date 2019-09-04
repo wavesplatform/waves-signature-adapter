@@ -23,6 +23,8 @@ export class LedgerAdapter extends Adapter {
         if (!this._currentUser) {
             throw 'No selected user';
         }
+
+        this._isDestroyed = false;
     }
 
     public isAvailable() {
@@ -44,7 +46,7 @@ export class LedgerAdapter extends Adapter {
     public getAdapterVersion() {
         return LedgerAdapter._ledger.getVersion();
     }
-    
+
     public signRequest(bytes: Uint8Array): Promise<string> {
         return  this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes));
@@ -101,6 +103,7 @@ export class LedgerAdapter extends Adapter {
             //@ts-ignore
             .then(user => {
                 if (user.address !== this._currentUser.address) {
+                    this._isDestroyed = true;
                     throw {error: 'Invalid ledger'};
                 }
             });
