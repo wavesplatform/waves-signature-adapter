@@ -44,6 +44,7 @@ export class WavesKeeperAdapter extends Adapter {
     private handleUpdate = (state: any) => {
         if (!state.locked && (!state.account || state.account.address !== this._address)) {
             this._needDestroy = true;
+            this._isDestroyed = true;
             //@ts-ignore
             this._onDestoryCb.forEach(cb => cb());
             this._onDestoryCb = [];
@@ -58,6 +59,7 @@ export class WavesKeeperAdapter extends Adapter {
         WavesKeeperAdapter._initExtension();
         //@ts-ignore
         WavesKeeperAdapter.onUpdate(this.handleUpdate);
+        this._isDestroyed = false;
     }
 
     public async isAvailable(ignoreLocked = false): Promise<void> {
