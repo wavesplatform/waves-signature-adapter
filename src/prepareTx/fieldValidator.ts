@@ -548,6 +548,10 @@ const call = (options: IFieldOptions) => {
     
     string(functionValue);
     
+    if (value.function === '') {
+        error(functionValue, ERROR_MSG.REQUIRED);
+    }
+    
     const argsValue = {
         key: 'call.args',
         value: value.args,

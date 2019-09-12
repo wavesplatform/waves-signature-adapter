@@ -42,7 +42,7 @@ export class PrivateKeyAdapter extends Adapter {
             [SIGN_TYPE.TRANSFER]: [2],
             [SIGN_TYPE.REISSUE]: [2],
             [SIGN_TYPE.BURN]: [2],
-            [SIGN_TYPE.EXCHANGE]: [0, 2],
+            [SIGN_TYPE.EXCHANGE]: [0, 1, 2],
             [SIGN_TYPE.LEASE]: [2],
             [SIGN_TYPE.CANCEL_LEASING]: [2],
             [SIGN_TYPE.CREATE_ALIAS]: [2],

@@ -200,7 +200,8 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.EXCHANGE]: {
         getBytes: {
-            0: binary.serializeTx,
+            0: (data) => binary.serializeTx({ ...data, version: 1 }),
+            1: binary.serializeTx,
             2: binary.serializeTx,
         },
         toNode: data => {
