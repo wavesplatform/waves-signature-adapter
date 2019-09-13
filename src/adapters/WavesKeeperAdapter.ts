@@ -113,7 +113,12 @@ export class WavesKeeperAdapter extends Adapter {
     public getAddress() {
         return Promise.resolve(this._address);
     }
-
+    
+    public getEncodedSeed() {
+        return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
+    }
+    
+    
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }

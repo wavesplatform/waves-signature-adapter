@@ -69,7 +69,11 @@ export class LedgerAdapter extends Adapter {
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes));
     }
-
+    
+    public getEncodedSeed() {
+        return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
+    }
+    
     public getPrivateKey() {
         return Promise.reject('No private key');
     }

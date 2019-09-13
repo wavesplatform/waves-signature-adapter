@@ -1,4 +1,4 @@
-import { Adapter, IUser } from './Adapter';
+import { Adapter, IPrivateKeyUser, IUser } from './Adapter';
 import { AdapterType } from '../config';
 import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
@@ -21,9 +21,9 @@ export class PrivateKeyAdapter extends Adapter {
         if (typeof data === 'string') {
             this.privateKey = data;
         } else {
-            const user = <IUser>data;
+            const user = data as IPrivateKeyUser;
             const encryptionRounds = user.encryptionRounds;
-            this.privateKey = seedUtils.Seed.decryptSeedPhrase(user.encryptedPrivateKey, user.password, encryptionRounds);
+            this.privateKey = seedUtils.Seed.decryptSeedPhrase(user.encryptedPrivateKey || '', user.password, encryptionRounds);
         }
 
         this.publicKey = publicKey({ privateKey: this.privateKey });
@@ -54,7 +54,11 @@ export class PrivateKeyAdapter extends Adapter {
             [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
         };
     }
-
+    
+    
+    public getEncodedSeed() {
+        return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
+    }
 
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));

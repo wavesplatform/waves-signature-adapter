@@ -8,6 +8,8 @@ const signWithPrivateKey = libs.crypto.signBytes;
 
 export class SeedAdapter extends Adapter {
 
+    public isEncoded: boolean = false;
+    private readonly encodedSeed: string|null = null;
     private seed: seedUtils.Seed;
     public static type = AdapterType.Seed;
 
@@ -23,8 +25,23 @@ export class SeedAdapter extends Adapter {
             const encryptionRounds = user.encryptionRounds;
             seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
         }
-
+    
+        try {
+            if (/^base58:/.test(seed)) {
+                const encodedSeed = seed.replace('base58:', '');
+                seed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));
+                this.encodedSeed = encodedSeed;
+                this.isEncoded = true;
+            }
+        } catch (e) {
+        }
+    
+        if (!this.encodedSeed) {
+            this.encodedSeed = libs.crypto.base58Encode(libs.crypto.stringToBytes(seed));
+        }
+    
         this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
+        
         this._isDestroyed = false;
     }
 
@@ -51,7 +68,11 @@ export class SeedAdapter extends Adapter {
             [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
         };
     }
-
+    
+    public getEncodedSeed(): Promise<string> {
+        return Promise.resolve(this.encodedSeed as string);
+    }
+    
     public getPublicKey(): Promise<string> {
         return Promise.resolve(this.seed.keyPair.publicKey);
     }
