@@ -1,4 +1,4 @@
-import { Adapter, IUser } from './Adapter';
+import { Adapter, IUser, ISeedUser } from './Adapter';
 import { AdapterType } from '../config';
 import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
@@ -21,7 +21,7 @@ export class SeedAdapter extends Adapter {
         if (typeof data === 'string') {
             seed = data;
         } else {
-            const user = <IUser>data;
+            const user = <ISeedUser>data;
             const encryptionRounds = user.encryptionRounds;
             seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
         }
