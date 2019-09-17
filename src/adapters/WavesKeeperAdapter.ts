@@ -2,7 +2,7 @@ import { Adapter } from './Adapter';
 import { AdapterType } from '../config';
 import { SIGN_TYPE, TSignData } from '../prepareTx';
 import { isValidAddress } from '../prepareTx/fieldValidator';
-import { equals } from 'ramda';
+import equals = require('ramda/src/equals');
 
 const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.AUTH]: [1],
