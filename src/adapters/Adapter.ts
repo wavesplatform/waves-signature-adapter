@@ -53,6 +53,8 @@ export abstract class Adapter {
     public abstract signData(bytes: Uint8Array): Promise<string>;
 
     public abstract getSeed(): Promise<string>;
+    
+    public abstract getEncodedSeed(): Promise<string>;
 
     public static initOptions(options: { networkCode: number }) {
         Adapter._code = options.networkCode;
@@ -79,12 +81,20 @@ export interface IAdapterConstructor {
     isAvailable(): Promise<boolean>;
 }
 
-export interface IUser {
+export interface ISeedUser {
     encryptedSeed: string;
+    password: string;
+    encryptionRounds?: number;
+}
+
+export interface IPrivateKeyUser {
     encryptedPrivateKey: string;
     password: string;
-    encryptionRounds: number;
+    encryptionRounds?: number;
 }
+
+
+export type IUser = ISeedUser|IPrivateKeyUser;
 
 export interface IProofData {
     profs?: Array<string>;

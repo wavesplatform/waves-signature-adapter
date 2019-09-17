@@ -1,4 +1,4 @@
-import { Adapter, IUser } from './Adapter';
+import { Adapter, IUser, ISeedUser } from './Adapter';
 import { AdapterType } from '../config';
 import { seedUtils, libs } from '@waves/waves-transactions';
 import { SIGN_TYPE } from '../prepareTx';
@@ -8,6 +8,8 @@ const signWithPrivateKey = libs.crypto.signBytes;
 
 export class SeedAdapter extends Adapter {
 
+    public isEncoded: boolean = false;
+    private readonly encodedSeed: string|null = null;
     private seed: seedUtils.Seed;
     public static type = AdapterType.Seed;
 
@@ -19,12 +21,27 @@ export class SeedAdapter extends Adapter {
         if (typeof data === 'string') {
             seed = data;
         } else {
-            const user = <IUser>data;
+            const user = <ISeedUser>data;
             const encryptionRounds = user.encryptionRounds;
             seed = Seed.decryptSeedPhrase(user.encryptedSeed, user.password, encryptionRounds);
         }
-
+    
+        try {
+            if (/^base58:/.test(seed)) {
+                const encodedSeed = seed.replace('base58:', '');
+                seed = libs.crypto.bytesToString(libs.crypto.base58Decode(encodedSeed));
+                this.encodedSeed = encodedSeed;
+                this.isEncoded = true;
+            }
+        } catch (e) {
+        }
+    
+        if (!this.encodedSeed) {
+            this.encodedSeed = libs.crypto.base58Encode(libs.crypto.stringToBytes(seed));
+        }
+    
         this.seed = new Seed(seed, String.fromCharCode(this.getNetworkByte()));
+        
         this._isDestroyed = false;
     }
 
@@ -39,7 +56,7 @@ export class SeedAdapter extends Adapter {
             [SIGN_TYPE.TRANSFER]: [2],
             [SIGN_TYPE.REISSUE]: [2],
             [SIGN_TYPE.BURN]: [2],
-            [SIGN_TYPE.EXCHANGE]: [0, 2],
+            [SIGN_TYPE.EXCHANGE]: [0, 1, 2],
             [SIGN_TYPE.LEASE]: [2],
             [SIGN_TYPE.CANCEL_LEASING]: [2],
             [SIGN_TYPE.CREATE_ALIAS]: [2],
@@ -51,7 +68,11 @@ export class SeedAdapter extends Adapter {
             [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
         };
     }
-
+    
+    public getEncodedSeed(): Promise<string> {
+        return Promise.resolve(this.encodedSeed as string);
+    }
+    
     public getPublicKey(): Promise<string> {
         return Promise.resolve(this.seed.keyPair.publicKey);
     }

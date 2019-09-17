@@ -35,19 +35,19 @@ describe('Create data and signature check', () => {
     describe('Check transactions', () => {
     
         it('check issure signature', () => checkTx(SIGN_TYPE.ISSUE, 2).check());
-        
+
         it('check reissure signature', () => checkTx(SIGN_TYPE.REISSUE, 2).check());
-        
+
         it('check burn signature', () => checkTx(SIGN_TYPE.BURN, 2).check());
-        
+
         it('check lease signature', () => checkTx(SIGN_TYPE.LEASE, 2).check());
-        
+
         it('check cancel lease signature', () => checkTx(SIGN_TYPE.CANCEL_LEASING, 2).check());
-        
+
         it('check create alias signature', () => checkTx(SIGN_TYPE.CREATE_ALIAS, 2).check());
-        
+
         it('check transfer from node signature', () => checkTx(SIGN_TYPE.TRANSFER, 2).check());
-    
+
         it('check mass transfer from node signature', () => checkTx(SIGN_TYPE.MASS_TRANSFER, 1).check());
         
         it('check exchange signature', () => checkTx(SIGN_TYPE.EXCHANGE, 0).check());
