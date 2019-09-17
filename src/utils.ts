@@ -1,5 +1,8 @@
+///<reference path="../ramda-usage.d.ts"/>
+
+
 import { BigNumber } from '@waves/bignumber';
-import { path } from 'ramda';
+import path = require('ramda/src/path');
 import {
     IExchangeTransactionOrder,
     TTransaction,
@@ -104,7 +107,7 @@ function isNFT(tx: IIssueTransaction<BigNumber> & { precision?: number }): boole
     return !reissuable && nftPrecision && nftQuantity;
 }
 
-function getIssueFee(tx: IIssueTransaction<BigNumber> & { precision?: number } , accountFee: BigNumber, config: IFeeConfig) : BigNumber {
+function getIssueFee(tx: IIssueTransaction<BigNumber> & { precision?: number }, accountFee: BigNumber, config: IFeeConfig): BigNumber {
     const minFee: BigNumber = accountFee.add(getConfigProperty(tx.type, 'fee', config));
     if (isNFT(tx)) {
         return accountFee.add(getConfigProperty(tx.type, 'nftFee', config));
