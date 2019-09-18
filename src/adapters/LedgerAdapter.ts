@@ -103,7 +103,7 @@ export class LedgerAdapter extends Adapter {
     }
 
     protected _isMyLedger() {
-        return LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
+        const promise = LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
             //@ts-ignore
             .then(user => {
                 if (user.address !== this._currentUser.address) {
@@ -111,6 +111,12 @@ export class LedgerAdapter extends Adapter {
                     throw {error: 'Invalid ledger'};
                 }
             });
+        
+        promise.catch((e: any) => {
+            console.warn(e);
+        });
+        
+        return promise;
     }
 
     public static getUserList(from: Number = 1, to: Number = 1) {
