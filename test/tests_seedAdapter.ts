@@ -95,6 +95,18 @@ describe('WSeed adapter test', () => {
     
         expect(eSeed === encodedSeed.replace('base58:', '')).toBeTruthy();
         expect(() => adapter.getSeed().then(data => data.length > 0)).toBeTruthy()
+    });
+    
+    
+    it('Create adapter from non stringable data', async () => {
+        
+        const encodedSeed = 'base58:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+        const adapter = new SeedAdapter(encodedSeed, 'T');
+        
+        const eSeed = await adapter.getEncodedSeed();
+        
+        expect(eSeed === encodedSeed.replace('base58:', '')).toBeTruthy();
+        expect(() => adapter.getSeed().then(data => data.length > 0)).toBeTruthy()
     })
     
 });
