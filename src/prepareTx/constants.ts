@@ -44,6 +44,7 @@ export enum SIGN_TYPE {
     CREATE_ORDER = 1002,
     CANCEL_ORDER = 1003,
     COINOMAT_CONFIRMATION = 1004,
+    WAVES_CONFIRMATION = 1005,
     ISSUE = 3,
     TRANSFER = 4,
     REISSUE = 5,
@@ -103,6 +104,21 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
                 const pBytes = LEN(SHORT)(STRING)(prefix);
                 const timestampBytes = LONG(timestamp);
                 
+                return Uint8Array.from([
+                    ...Array.from(pBytes),
+                    ...Array.from(timestampBytes),
+                ]);
+            },
+        },
+        adapter: 'signRequest'
+    },
+    [SIGN_TYPE.WAVES_CONFIRMATION]: {
+        getBytes: {
+            1: (txData) => {
+                const { timestamp, publicKey } = txData;
+                const pBytes = BASE58_STRING(publicKey);
+                const timestampBytes = LONG(timestamp);
+    
                 return Uint8Array.from([
                     ...Array.from(pBytes),
                     ...Array.from(timestampBytes),

@@ -387,7 +387,17 @@ export const txs = {
             proof: '5zWuPQNs8QD7uGWiNLCLjHgFVYwzbyUXTb8bPaQgirfV6AEmdhVUqgmcbSgxJn2YgL3yuQjAZ9TuQrSsb16w9GMc'
         }
     },
-    
+    [SIGN_TYPE.WAVES_CONFIRMATION]: {
+        1: {
+            name: 'waves confirmation request',
+            data: {
+                timestamp: 1560812209521,
+                publicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh'
+            },
+            id: '7Ehybg7fHc613Dar7v2KpUP5Vz2fgsDKc5pJwfUhp3Lg',
+            proof: '5zWuPQNs8QD7uGWiNLCLjHgFVYwzbyUXTb8bPaQgirfV6AEmdhVUqgmcbSgxJn2YgL3yuQjAZ9TuQrSsb16w9GMc'
+        }
+    },
     [SIGN_TYPE.CANCEL_ORDER]: {
         0: {
             name: 'cancel order',
