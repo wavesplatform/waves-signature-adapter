@@ -22,7 +22,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
         [SIGN_TYPE.WAVES_CONFIRMATION]: [
-            fieldsType.string()('pupblicKey', null, processors.addValue('Coinomat'), true),
+            fieldsType.publicKey()('publicKey', 'publicKey', null, true),
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],

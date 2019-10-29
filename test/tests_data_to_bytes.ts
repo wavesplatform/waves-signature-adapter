@@ -69,6 +69,8 @@ describe('Create data and signature check', () => {
         it('check coinomat signature', () => checkTx(SIGN_TYPE.COINOMAT_CONFIRMATION, 1).check());
         
         it('check matcher orders signature', () => checkTx(SIGN_TYPE.MATCHER_ORDERS, 1).check());
+        
+        it('check waves auth signature', () => checkTx(SIGN_TYPE.WAVES_CONFIRMATION, 1).check());
     
         it('check matcher cancel order signature 0', () => checkTx(SIGN_TYPE.CANCEL_ORDER, 0).check());
         
