@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "5.4.0",
+  "version": "5.7.1",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "license": "MIT",
@@ -12,10 +12,10 @@
     "@types/ramda": "^0.25.46",
     "@waves/bignumber": "^0.0.1",
     "@waves/data-entities": "^2.0.0",
-    "@waves/ledger": "^3.4.0",
+    "@waves/ledger": "^3.5.1",
     "@waves/money-like-to-node": "0.0.10",
     "@waves/ts-types": "^0.2.0",
-    "@waves/waves-transactions": "^3.17.0",
+    "@waves/waves-transactions": "^3.22.2",
     "ramda": "^0.25.0"
   },
   "scripts": {
@@ -24,7 +24,7 @@
     "browserify": "node_modules/.bin/browserify dist/index.js -s wavesSignatureAdapter -u @waves/waves-crypto -u @waves/bignumber -u @waves/waves-transactions -u @waves/data-entities -u @waves/marshall -u @waves/ledger -o dist/signature-adapter.js",
     "build": "npm run compile && npm run browserify && npm run uglify",
     "uglify": "node_modules/.bin/uglifyjs dist/signature-adapter.js -o dist/signature-adapter.min.js",
-    "postpublish": "git push",
+    "postpublish": "git push origin HEAD",
     "postversion": "npm publish",
     "prepare": "npm run build"
   },

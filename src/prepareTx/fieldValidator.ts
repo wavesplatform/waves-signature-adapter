@@ -39,6 +39,8 @@ export const ERROR_MSG = {
     NOT_HTTPS_URL: 'field can be url with https protocol',
     BASE64: 'field can be base64 string with prefix "base64:"',
     EMPTY_BASE64: 'field can be not empty base64"',
+    BASE58: 'field can be base58 string',
+    PUB_KEY: 'field can be base58 publicKey',
 };
 
 export const isValidAddress = function (address: string, networkByte: number) {
@@ -512,6 +514,28 @@ const binary = (options: IFieldOptions) => {
     }
 };
 
+const publicKey = (options: IFieldOptions) => {
+    required(options);
+    
+    const { value = '' } = options;
+    
+    if (!value || typeof value !== 'string') {
+        error(options, ERROR_MSG.PUB_KEY);
+    }
+     let pk;
+    try {
+       pk = base58Decode(value);
+    } catch (e) {
+        error(options, ERROR_MSG.BASE58);
+    }
+    
+    if (pk && pk.length === 32) {
+        return void 0;
+    }
+    
+    error(options, ERROR_MSG.PUB_KEY);
+};
+
 
 const script = (options: IFieldOptions) => {
     binary(options);
@@ -616,6 +640,7 @@ export const VALIDATORS = {
     precision,
     call,
     payment,
+    publicKey,
 };
 
 

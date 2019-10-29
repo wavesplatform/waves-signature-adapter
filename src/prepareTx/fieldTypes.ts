@@ -9,6 +9,7 @@ const fieldFactory = (type, optionalData?) => (fromField, toField = fromField, p
 });
 export const string = (data?: any) => fieldFactory('string');
 export const asset = (data?: any) => fieldFactory('assetId');
+export const publicKey = (data?: any) => fieldFactory('publicKey');
 export const assetName = (data?: any) => fieldFactory('assetName');
 export const assetDescription = (data?: any) => fieldFactory('assetDescription');
 export const precision = (data?: any) => fieldFactory('precision');
