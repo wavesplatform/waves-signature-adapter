@@ -252,7 +252,10 @@ export class Signable {
     private _makeSignPromise(): Signable {
         if (!this._signPromise) {
             this._signPromise = this._bytePromise.then(bytes => {
-                return this._adapter[this._signMethod](bytes, this._getAmountPrecision(), this._forSign);
+                if(this._signMethod == "signRequest")
+                    return this._adapter.signRequest(bytes, this._forSign)
+                else
+                    return this._adapter[this._signMethod](bytes, this._getAmountPrecision(), this._forSign);
             });
             
             this._signPromise.catch(() => {
