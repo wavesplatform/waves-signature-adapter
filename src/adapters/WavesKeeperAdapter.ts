@@ -77,6 +77,9 @@ export class WavesKeeperAdapter extends Adapter {
                 return Promise.resolve();
             }
         } catch (e) {
+            if (e.code === 3) {
+                return Promise.reject({ ...e })
+            }
         }
 
         return Promise.reject({ code: 5, msg: 'Keeper has another active account' });
@@ -114,12 +117,12 @@ export class WavesKeeperAdapter extends Adapter {
     public getAddress() {
         return Promise.resolve(this._address);
     }
-    
+
     public getEncodedSeed() {
         return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
     }
-    
-    
+
+
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
@@ -251,7 +254,7 @@ export class WavesKeeperAdapter extends Adapter {
         if (equals(WavesKeeperAdapter._state, state)) {
             return;
         }
-        
+
         for (const cb of WavesKeeperAdapter._onUpdateCb) {
             cb(state);
         }
