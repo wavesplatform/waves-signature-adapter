@@ -130,6 +130,11 @@ export class WavesKeeperAdapter extends Adapter {
     //@ts-ignore
     public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
         await this.isAvailable(true);
+        
+        if (signData && signData.type === 'customData') {
+            return (await WavesKeeperAdapter._api.signCustomData(signData)).signature;
+        }
+    
         return await WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
     }
 
@@ -162,8 +167,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     public async signData(bytes: Uint8Array): Promise<string> {
-        await this.isAvailable(true);
-        return Promise.resolve(''); //TODO
+        throw new Error('Method "signData" is not available!');
     }
 
     public getPrivateKey() {
@@ -299,7 +303,13 @@ interface IWavesKeeper {
     signOrder: (data: any) => Promise<any>;
     signCancelOrder: (data: any) => Promise<any>;
     signRequest: (data: any) => Promise<string>;
-    signBytes: (data: any) => Promise<string>;
+    signCustomData: (data: any) => Promise<{
+        version: number;
+        binary: string;
+        publicKey: string;
+        hash: string;
+        signature: string;
+    }>;
     publicState: () => Promise<any>;
     on: (name: string, cb: any) => Promise<any>;
     initialPromise: Promise<IWavesKeeper>;

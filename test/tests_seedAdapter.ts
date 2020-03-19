@@ -1,5 +1,6 @@
 import { SeedAdapter } from '../src/adapters/SeedAdapter';
-import { libs } from '@waves/waves-transactions';
+import { libs, serializeCustomData } from '@waves/waves-transactions';
+import fetch from 'node-fetch';
 
 describe('WSeed adapter test', () => {
     
@@ -71,8 +72,8 @@ describe('WSeed adapter test', () => {
     });
     
     it('Create adapter from base58 seed with strange simbols', async () => {
-        const encoded = libs.crypto.base58Encode([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,256,0,0]);
-        const trueSeed = libs.crypto.bytesToString([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,256,0,0]);
+        const encoded = libs.crypto.base58Encode([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 256, 0, 0]);
+        const trueSeed = libs.crypto.bytesToString([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 256, 0, 0]);
         const seed = `base58:${encoded}`;
         const adapter = new SeedAdapter(seed, 'T');
         const address = await adapter.getAddress();
@@ -92,11 +93,10 @@ describe('WSeed adapter test', () => {
         const adapter = new SeedAdapter(encodedSeed, 'T');
         
         const eSeed = await adapter.getEncodedSeed();
-    
+        
         expect(eSeed === encodedSeed.replace('base58:', '')).toBeTruthy();
         expect(() => adapter.getSeed().then(data => data.length > 0)).toBeTruthy()
     });
-    
     
     it('Create adapter from non stringable data', async () => {
         
@@ -107,6 +107,54 @@ describe('WSeed adapter test', () => {
         
         expect(eSeed === encodedSeed.replace('base58:', '')).toBeTruthy();
         expect(() => adapter.getSeed().then(data => data.length > 0)).toBeTruthy()
-    })
+    });
     
-});
+    it('signCustomData - string', async () => {
+        const seed = '1234567890123456789123456789';
+        const adapter = new SeedAdapter(seed, 'W');
+        const data = await adapter.signCustomData('test');
+        const pk = await adapter.getPublicKey();
+        const binary = serializeCustomData(
+            { version: 1, binary: libs.crypto.base64Encode(libs.crypto.stringToBytes('test')) }
+        );
+        expect(libs.crypto.verifySignature(pk, binary, data)).toBe(true);
+    });
+    
+    it('sign Api Token Data - string', async () => {
+        const seed = '1234567890123456789123456789';
+        const adapter = new SeedAdapter(seed, 'W');
+        const { clientId, publicKey, seconds, signature, networkByte } = await adapter.signApiTokenData('testClient', Date.now() + 10000);
+        
+        const str = `${networkByte}:${clientId}:${seconds}`;
+        const data = {
+            version: 1,
+            binary: libs.crypto.base64Encode(libs.crypto.stringToBytes(str))
+        };
+        const binary = serializeCustomData(data as any);
+        
+        expect(libs.crypto.verifySignature(publicKey, binary, signature));
+        
+        return await fetch('https://api.waves.exchange/v1/oauth2/token', {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/x-www-form-urlencoded'
+            },
+            body: [
+                "grant_type=password",
+                "scope=general",
+                `username=${encodeURIComponent(publicKey)}`,
+                "password=" + encodeURIComponent(`${seconds}:${signature}`),
+                `client_id=${clientId}`
+            ].join('&')
+        }).then(
+            (req: any) => {
+                if (req.status !== 200) {
+                    throw new Error('Invalid data')
+                }
+                return req.json()
+            }
+        )
+    });
+    
+})
+;
