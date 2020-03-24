@@ -130,7 +130,7 @@ export class WavesKeeperAdapter extends Adapter {
     //@ts-ignore
     public async signRequest(bytes: Uint8Array, _?, signData?): Promise<string> {
         await this.isAvailable(true);
-        
+        signData = signData || _ || {};
         if (signData && signData.type === 'customData') {
             return (await WavesKeeperAdapter._api.signCustomData(signData)).signature;
         }
