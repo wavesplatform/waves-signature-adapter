@@ -1,6 +1,6 @@
 {
   "name": "@waves/signature-adapter",
-  "version": "5.8.1",
+  "version": "5.10.0",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "license": "MIT",
@@ -9,10 +9,10 @@
     "url": "https://github.com/wavesplatform/waves-signature-adapter"
   },
   "dependencies": {
-    "@types/ramda": "^0.25.46",
+    "@types/ramda": "^0﻿.25.46",
     "@waves/bignumber": "^0.0.1",
     "@waves/data-entities": "^2.0.0",
-    "@waves/ledger": "^3.5.1",
+    "@waves/ledger": "^3.6.1",
     "@waves/money-like-to-node": "0.0.10",
     "@waves/ts-types": "^0.2.0",
     "@waves/waves-transactions": "^3.25.1",
@@ -31,7 +31,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.2",
     "@types/node-fetch": "^2.5.5",
-    "browserify": "^16.2.3",
+    "browserify": "^16.5.1",
     "jest": "^24.8.0",
     "node-fetch": "^2.6.0",
     "ts-jest": "^23.10.3",
