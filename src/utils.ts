@@ -141,7 +141,7 @@ function getMassTransferFee(tx: IMassTransferTransaction<BigNumber>, config: IFe
 
 function getConfigProperty<T extends keyof IFeeConfigItem>(type: number, propertyName: T, config: IFeeConfig): IFeeConfigItem[T] {
     const value = path(['calculate_fee_rules', type, propertyName], config) as IFeeConfigItem[T];
-    return isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value;
+    return isEmpty(value) ? path(['calculate_fee_rules', 'default', propertyName], config) : value as any;
 }
 
 export interface IFeeConfig {
