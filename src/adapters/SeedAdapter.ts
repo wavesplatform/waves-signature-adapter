@@ -97,6 +97,14 @@ export class SeedAdapter extends Adapter {
         return Promise.resolve(this.encodedSeed as string);
     }
     
+    public getSyncAddress(): string {
+        return this.seed.address;
+    }
+    
+    public getSyncPublicKey(): string {
+        return this.seed.keyPair.publicKey;
+    }
+    
     public getPublicKey(): Promise<string> {
         return Promise.resolve(this.seed.keyPair.publicKey);
     }

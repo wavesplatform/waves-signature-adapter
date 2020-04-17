@@ -109,7 +109,15 @@ export class WavesKeeperAdapter extends Adapter {
         //@ts-ignore
         this._onDestoryCb.push(cb);
     }
-
+    
+    public getSyncAddress(): string {
+        return this._address;
+    }
+    
+    public getSyncPublicKey(): string {
+        return this._pKey;
+    }
+    
     public getPublicKey() {
         return Promise.resolve(this._pKey);
     }

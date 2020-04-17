@@ -30,7 +30,15 @@ export class LedgerAdapter extends Adapter {
     public isAvailable() {
         return this._isMyLedger();
     }
-
+    
+    public getSyncAddress(): string {
+        return this._currentUser.address;
+    }
+    
+    public getSyncPublicKey(): string {
+        return this._currentUser.publicKey;
+    }
+    
     public getPublicKey() {
         return Promise.resolve(this._currentUser.publicKey);
     }

@@ -64,7 +64,15 @@ export class PrivateKeyAdapter extends Adapter {
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
-
+    
+    public getSyncAddress(): string {
+        return this.address;
+    }
+    
+    public getSyncPublicKey(): string {
+        return this.publicKey;
+    }
+    
     public getPublicKey(): Promise<string> {
         return Promise.resolve(this.publicKey);
     }
