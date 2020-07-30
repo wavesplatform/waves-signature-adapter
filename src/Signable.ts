@@ -58,7 +58,7 @@ export class Signable {
         }
         
         const version = this._forSign.data.version;
-        
+
         if (!availableVersions.includes(version)) {
             throw new SignError(`Can\'t sign data with type "${this.type}" and version "${version}"`, ERRORS.VERSION_IS_NOT_SUPPORTED);
         }

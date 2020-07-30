@@ -1,6 +1,7 @@
 import { IAdapterSignMethods } from './interfaces';
 import { libs } from '@waves/waves-transactions';
 import * as wavesTransactions from '@waves/waves-transactions';
+import { txToProtoBytes } from '@waves/waves-transactions/dist/proto-serialize';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
 import processors = prepare.processors;
@@ -284,6 +285,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: data => toNode(
             {
