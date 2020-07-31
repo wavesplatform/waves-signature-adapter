@@ -1,6 +1,7 @@
 import { Adapter } from './Adapter';
-import { AdapterType, TX_VERSIONS } from '../config';
+import { AdapterType } from '../config';
 import { WavesLedger } from '@waves/ledger';
+import { SIGN_TYPE } from '../prepareTx/constants';
 
 export class LedgerAdapter extends Adapter {
 
@@ -83,9 +84,31 @@ export class LedgerAdapter extends Adapter {
     public getPrivateKey() {
         return Promise.reject('No private key');
     }
-
-    public getSignVersions() {
-        return TX_VERSIONS;
+    
+    public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+        return {
+            [SIGN_TYPE.AUTH]: [1],	
+            [SIGN_TYPE.MATCHER_ORDERS]: [1],	
+            [SIGN_TYPE.WAVES_CONFIRMATION]: [1],	
+            [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],	
+            [SIGN_TYPE.CANCEL_ORDER]: [1],	
+            [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],	
+            [SIGN_TYPE.ISSUE]: [2],	
+            [SIGN_TYPE.TRANSFER]: [2],	
+            [SIGN_TYPE.REISSUE]: [2],	
+            [SIGN_TYPE.BURN]: [2],	
+            [SIGN_TYPE.EXCHANGE]: [0,1,2],	
+            [SIGN_TYPE.LEASE]: [2],	
+            [SIGN_TYPE.CANCEL_LEASING]: [2],	
+            [SIGN_TYPE.CREATE_ALIAS]: [2],	
+            [SIGN_TYPE.MASS_TRANSFER]: [1],	
+            [SIGN_TYPE.DATA]: [1],	
+            [SIGN_TYPE.SET_SCRIPT]: [1],	
+            [SIGN_TYPE.SPONSORSHIP]: [1],	
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],	
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
+            [SIGN_TYPE.UPDATE_ASSET_INFO]: []
+        };
     }
 
     protected _isMyLedger() {
