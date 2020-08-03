@@ -1,13 +1,14 @@
 import { IAdapterSignMethods } from './interfaces';
-import { libs } from '@waves/waves-transactions';
+import { libs, protoPerialize } from '@waves/waves-transactions';
 import * as wavesTransactions from '@waves/waves-transactions';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
+import { Money } from '@waves/data-entities';
 import { prepare } from './prepare';
 import processors = prepare.processors;
-import { Money } from '@waves/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
+const { txToProtoBytes } = protoPerialize
 
 const toNode = (data: any, convert?: Function) => {
     const r = mlToNode(data);
@@ -172,6 +173,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.TRANSFER]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: (data, networkByte: number) => (toNode({
             ...data,
@@ -183,6 +185,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.ISSUE]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => toNode(
             {
@@ -197,6 +200,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.REISSUE]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => {
             const quantity = data.amount || data.quantity;
@@ -207,6 +211,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.BURN]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => {
             const quantity = data.amount || data.quantity;
@@ -219,6 +224,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             0: (data) => binary.serializeTx({ ...data, version: 1 }),
             1: binary.serializeTx,
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => {
             const tx = toNode(data);
@@ -235,6 +241,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.LEASE]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: (data, networkByte: number) => (toNode({
             ...data,
@@ -245,6 +252,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.CANCEL_LEASING]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => toNode(data, wavesTransactions.cancelLease),
         adapter: 'signTransaction'
@@ -252,6 +260,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     [SIGN_TYPE.CREATE_ALIAS]: {
         getBytes: {
             2: binary.serializeTx,
+            3: txToProtoBytes
         },
         toNode: data => ({ ...toNode(data, wavesTransactions.alias), chainId: data.chainId }),
         adapter: 'signTransaction'
@@ -260,6 +269,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: (data, networkByte: number) => (toNode({
             ...data,
@@ -276,6 +286,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: data => toNode(data, wavesTransactions.data),
         adapter: 'signTransaction'
@@ -284,6 +295,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: data => toNode(
             {
@@ -298,6 +310,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: data => toNode(data, wavesTransactions.sponsorship),
         adapter: 'signTransaction'
@@ -306,6 +319,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: data => toNode({
                 ...data,
@@ -319,6 +333,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         getBytes: {
             0: binary.serializeTx,
             1: binary.serializeTx,
+            2: txToProtoBytes
         },
         toNode: (data, networkByte: number) => (toNode({
             ...data,

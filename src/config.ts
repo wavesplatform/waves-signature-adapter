@@ -2,6 +2,7 @@ import { SeedAdapter } from './adapters/SeedAdapter';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
 import { WavesKeeperAdapter } from './adapters';
 import {PrivateKeyAdapter} from "./adapters/PrivateKeyAdapter";
+import { SIGN_TYPE } from './prepareTx';
 
 export const enum AdapterType {
     Seed = 'seed',
@@ -25,3 +26,4 @@ export const adapterList = [
     WavesKeeperAdapter,
     PrivateKeyAdapter
 ];
+
