@@ -54,7 +54,8 @@ export const TRANSACTION_TYPE = { // TODO Remove after refactor ts-types lib
     SET_SCRIPT: 13 as 13,
     SPONSORSHIP: 14 as 14,
     SET_ASSET_SCRIPT: 15 as 15,
-    SCRIPT_INVOCATION: 16 as 16
+    SCRIPT_INVOCATION: 16 as 16,
+    UPDATE_ASSET_INFO: 17 as 17,
 };
 
 export function currentCreateOrderFactory(config: IFeeConfig, minOrderFee: BigNumber): (order: IExchangeTransactionOrder<BigNumber>, hasMatcherScript?: boolean, smartAssetIdList?: Array<string>) => BigNumber {
