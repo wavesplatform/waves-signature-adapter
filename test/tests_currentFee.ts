@@ -81,8 +81,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
-                amount: new Money(1, TEST_ASSET),
-                version: 2
+                amount: new Money(1, TEST_ASSET)
             }
         },
         hasScript: true,
@@ -96,8 +95,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
-                amount: new Money(1, TEST_ASSET),
-                version: 2
+                amount: new Money(1, TEST_ASSET)
             }
         },
         hasScript: false,
@@ -111,8 +109,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
-                amount: new Money(1, TEST_ASSET),
-                version: 2
+                amount: new Money(1, TEST_ASSET)
             }
         },
         hasScript: true,
@@ -129,8 +126,7 @@ const TEST_LIST: Array<ITestItem> = [
                 description: 'My asset description',
                 quantity: new BigNumber(500),
                 precision: 1,
-                reissuable: true,
-                version: 2
+                reissuable: true
             }
         },
         hasScript: false,
@@ -147,8 +143,7 @@ const TEST_LIST: Array<ITestItem> = [
                 description: 'My asset description',
                 quantity: new BigNumber(500),
                 precision: 1,
-                reissuable: true,
-                version: 2
+                reissuable: true
             }
         },
         hasScript: true,
@@ -163,8 +158,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
-                reissuable: true,
-                version: 2
+                reissuable: true
             }
         },
         hasScript: true,
@@ -179,8 +173,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
-                reissuable: true,
-                version: 2
+                reissuable: true
             }
         },
         hasScript: false,
@@ -195,8 +188,7 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
                 quantity: new BigNumber(500),
-                reissuable: true,
-                version: 2
+                reissuable: true
             }
         },
         hasScript: true,
@@ -211,7 +203,6 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
-                version: 2
             }
         },
         hasScript: false,
@@ -226,7 +217,6 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
-                version: 2
             }
         },
         hasScript: true,
@@ -241,7 +231,6 @@ const TEST_LIST: Array<ITestItem> = [
                 assetId: TEST_ASSET.id,
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
-                version: 2
             }
         },
         hasScript: true,
@@ -255,8 +244,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
-                recipient: seed.address,
-                version: 2
+                recipient: seed.address
             }
         },
         hasScript: false,
@@ -270,8 +258,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 amount: new BigNumber(500),
-                recipient: seed.address,
-                version: 2
+                recipient: seed.address
             }
         },
         hasScript: true,
@@ -284,8 +271,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                leaseId: TEST_ASSET.id,
-                version: 2
+                leaseId: TEST_ASSET.id
             }
         },
         hasScript: false,
@@ -298,8 +284,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                leaseId: TEST_ASSET.id,
-                version: 2
+                leaseId: TEST_ASSET.id
             }
         },
         hasScript: true,
@@ -312,8 +297,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                alias: 'some',
-                version: 2
+                alias: 'some'
             }
         },
         hasScript: false,
@@ -326,8 +310,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 timestamp: Date.now(),
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
-                alias: '123123123123123123123123123343',
-                version: 2
+                alias: '123123123123123123123123123343'
             }
         },
         hasScript: true,
@@ -345,8 +328,7 @@ const TEST_LIST: Array<ITestItem> = [
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -364,8 +346,7 @@ const TEST_LIST: Array<ITestItem> = [
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -383,8 +364,7 @@ const TEST_LIST: Array<ITestItem> = [
                 transfers: [{
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: true,
@@ -405,8 +385,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -427,8 +406,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -449,8 +427,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: true,
@@ -474,8 +451,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -499,8 +475,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: false,
@@ -524,8 +499,7 @@ const TEST_LIST: Array<ITestItem> = [
                 }, {
                     amount: 1,
                     recipient: seed.address
-                }],
-                version: 1
+                }]
             }
         },
         hasScript: true,
@@ -540,8 +514,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 data: [
                     { key: 'test', type: 'string', value: '123' }
-                ],
-                version: 1
+                ]
             }
         },
         hasScript: false,
@@ -556,8 +529,7 @@ const TEST_LIST: Array<ITestItem> = [
                 timestamp: Date.now(),
                 data: [
                     { key: 'test', type: 'string', value: '123' }
-                ],
-                version: 1
+                ]
             }
         },
         hasScript: true,
@@ -570,8 +542,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
-                script: '',
-                version: 1
+                script: ''
             }
         },
         hasScript: false,
@@ -584,8 +555,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
-                script: '',
-                version: 1
+                script: ''
             }
         },
         hasScript: true,
@@ -598,8 +568,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
-                minSponsoredAssetFee: new Money(1, TEST_ASSET),
-                version: 1
+                minSponsoredAssetFee: new Money(1, TEST_ASSET)
             }
         },
         hasScript: false,
@@ -612,8 +581,7 @@ const TEST_LIST: Array<ITestItem> = [
             data: {
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
-                minSponsoredAssetFee: new Money(1, TEST_ASSET),
-                version: 1
+                minSponsoredAssetFee: new Money(1, TEST_ASSET)
             }
         },
         hasScript: true,
@@ -627,8 +595,7 @@ const TEST_LIST: Array<ITestItem> = [
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                script: 'base64:AQa3b8tH',
-                version: 1
+                script: 'base64:AQa3b8tH'
             }
         },
         hasScript: false,
@@ -642,8 +609,7 @@ const TEST_LIST: Array<ITestItem> = [
                 fee: new Money(1, WAVES_ASSET),
                 timestamp: Date.now(),
                 assetId: TEST_ASSET.id,
-                script: 'base64:AQa3b8tH',
-                version: 1
+                script: 'base64:AQa3b8tH'
             }
         },
         hasScript: true,
