@@ -35,28 +35,29 @@ export class PrivateKeyAdapter extends Adapter {
         return {
             [SIGN_TYPE.AUTH]: [1],
             [SIGN_TYPE.MATCHER_ORDERS]: [1],
-            [SIGN_TYPE.WAVES_CONFIRMATION]: [1],
             [SIGN_TYPE.CREATE_ORDER]: [1, 2, 3],
             [SIGN_TYPE.CANCEL_ORDER]: [0, 1],
             [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
-            [SIGN_TYPE.ISSUE]: [2],
-            [SIGN_TYPE.TRANSFER]: [2],
-            [SIGN_TYPE.REISSUE]: [2],
-            [SIGN_TYPE.BURN]: [2],
-            [SIGN_TYPE.EXCHANGE]: [0, 1, 2],
-            [SIGN_TYPE.LEASE]: [2],
-            [SIGN_TYPE.CANCEL_LEASING]: [2],
-            [SIGN_TYPE.CREATE_ALIAS]: [2],
-            [SIGN_TYPE.MASS_TRANSFER]: [1],
-            [SIGN_TYPE.DATA]: [1],
-            [SIGN_TYPE.SET_SCRIPT]: [1],
-            [SIGN_TYPE.SPONSORSHIP]: [1],
-            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
-            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
+            [SIGN_TYPE.WAVES_CONFIRMATION]: [1],
+            [SIGN_TYPE.TRANSFER]: [2, 3],
+            [SIGN_TYPE.ISSUE]: [2, 3],
+            [SIGN_TYPE.REISSUE]: [2, 3],
+            [SIGN_TYPE.BURN]: [2, 3],
+            [SIGN_TYPE.EXCHANGE]: [0, 1, 2, 3],
+            [SIGN_TYPE.LEASE]: [2, 3],
+            [SIGN_TYPE.CANCEL_LEASING]: [2, 3],
+            [SIGN_TYPE.CREATE_ALIAS]: [2, 3],
+            [SIGN_TYPE.MASS_TRANSFER]: [1, 2],
+            [SIGN_TYPE.DATA]: [1, 2],
+            [SIGN_TYPE.SET_SCRIPT]: [1, 2],
+            [SIGN_TYPE.SPONSORSHIP]: [1, 2],
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1, 2],
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1, 2],
+            [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
         };
     }
-    
-    
+
+
     public getEncodedSeed() {
         return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
     }
@@ -64,15 +65,15 @@ export class PrivateKeyAdapter extends Adapter {
     public getSeed() {
         return Promise.reject(Error('Method "getSeed" is not available!'));
     }
-    
+
     public getSyncAddress(): string {
         return this.address;
     }
-    
+
     public getSyncPublicKey(): string {
         return this.publicKey;
     }
-    
+
     public getPublicKey(): Promise<string> {
         return Promise.resolve(this.publicKey);
     }

@@ -30,15 +30,15 @@ export class LedgerAdapter extends Adapter {
     public isAvailable() {
         return this._isMyLedger();
     }
-    
+
     public getSyncAddress(): string {
         return this._currentUser.address;
     }
-    
+
     public getSyncPublicKey(): string {
         return this._currentUser.publicKey;
     }
-    
+
     public getPublicKey() {
         return Promise.resolve(this._currentUser.publicKey);
     }
@@ -77,11 +77,11 @@ export class LedgerAdapter extends Adapter {
         return this._isMyLedger()
             .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes));
     }
-    
+
     public getEncodedSeed() {
         return Promise.reject(Error('Method "getEncodedSeed" is not available!'));
     }
-    
+
     public getPrivateKey() {
         return Promise.reject('No private key');
     }
@@ -107,7 +107,8 @@ export class LedgerAdapter extends Adapter {
             [SIGN_TYPE.SET_SCRIPT]: [1],
             [SIGN_TYPE.SPONSORSHIP]: [1],
             [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
-            [SIGN_TYPE.SCRIPT_INVOCATION]: [1]
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
+            [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
         };
     }
 
@@ -120,11 +121,11 @@ export class LedgerAdapter extends Adapter {
                     throw {error: 'Invalid ledger'};
                 }
             });
-        
+
         promise.catch((e: any) => {
             console.warn(e);
         });
-        
+
         return promise;
     }
 

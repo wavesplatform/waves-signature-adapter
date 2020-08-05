@@ -105,6 +105,18 @@ export const getValidateSchema = (networkByte: number) => {
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
+        [SIGN_TYPE.UPDATE_ASSET_INFO]: [
+            fieldsType.number()('type', null, processors.addValue(() => SIGN_TYPE.UPDATE_ASSET_INFO), true),
+            fieldsType.string()('senderPublicKey', null, null, true),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
+            //@ts-ignore
+            fieldsType.numberLike()('fee', null, processors.toBigNumber),
+            //@ts-ignore
+            fieldsType.timestamp()('timestamp', null, processors.timestamp),
+            fieldsType.asset()('assetId'),
+            fieldsType.assetName()('name'),
+            fieldsType.assetDescription()('description'),
+        ],
         [SIGN_TYPE.SPONSORSHIP]: [
             fieldsType.string()('senderPublicKey', null, null, true),
             //@ts-ignore
@@ -207,7 +219,7 @@ export const getValidateSchema = (networkByte: number) => {
         [SIGN_TYPE.SCRIPT_INVOCATION]: [
             fieldsType.number()('type', null, processors.addValue(() => SIGN_TYPE.SCRIPT_INVOCATION), true),
             fieldsType.number()('version', null, processors.addValue(() => 1), true),
-            
+
             fieldsType.string()('senderPublicKey', null, null, true),
             fieldsType.aliasOrAddress(networkByte)('dApp'),
             //@ts-ignore
