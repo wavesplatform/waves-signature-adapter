@@ -99,7 +99,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.asset()('assetId'),
             //@ts-ignore
-            fieldsType.numberLike()('amount', 'quantity', processors.toBigNumber),
+            fieldsType.numberLike()(['amount', 'quantity'], 'amount', processors.toBigNumber),
             //@ts-ignore
             fieldsType.numberLike()('fee', null, processors.toBigNumber),
             //@ts-ignore

@@ -73,6 +73,21 @@ export const txs = {
             id: 'ETVSu3zPHGTh3JEyVGe48jEDgFYhm4KwMeKgvQdAQUyz',
             proof: '5mUv1RbNy3ToQyTMWtRT2WSLLBHoAFaWxXqrk1vjv38ytEPgZG5U694JgyeJKKuxKz8ZvUfFYUhYAZLatPn7Bumo'
         },
+        3: {
+            name: 'transfer',
+            data: {
+                amount: Money.fromCoins(150200000, BtcAsset),
+                attachment: base58Decode('7KeHm8BxCSPdAQe947Lxff'),
+                fee: Money.fromCoins(10000, TORCorp),
+                recipient: '3PAs2qSeUAfgqSKS8LpZPKGYEjJKcud9Djr',
+                sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                timestamp: new Date(1553167249572),
+                version: 3
+            },
+            id: 'WZjJQMMSRMcBrXrD4RGcuxfFXF7U7kuAa19hZhhXVhZ',
+            proof: '49ay6SEP9yX5csaJhhHNc5DprhvM6NtNrC8YTCys3sjkVKhhzPJFUzvkur9sN4kynaadj4soWD8LK5U2u1t6bMhj'
+        },
     },
     [SIGN_TYPE.LEASE]: {
         2: {
@@ -140,6 +155,29 @@ export const txs = {
             },
             id: '4stWtcwjq16ZbpwjTP9tJvWFRgsKgHhqnPx6PjskaWEH',
             proof: '45rAeooSYbb4UtxfBfBxnQR6vBdud6KiLG77vMCUX6ibKKT4APeVFPZhbMT35JG8sxLhXc55WRw2iKbxZSuFWBDy'
+        },
+        2: {
+            name: 'mass transfer',
+            data: {
+                totalAmount: Money.fromCoins(1000, INSTANTCOIN),
+                transfers: [
+                    {
+                        amount: Money.fromCoins(500, INSTANTCOIN),
+                        name: '3PAMHc8zS6aAG5j6fMQ56cuU9iuFQWfCCf6'
+                    },
+                    {
+                        amount: Money.fromCoins(500, INSTANTCOIN),
+                        name: '3P5bt6dBaafovNEZaiqehchHisx2QgU3pv4'
+                    }],
+                attachment: base58Decode('9phjj2o13msVqLm8PdmcpLzWbRNJi6oKCY4mSuEN5pKKtQtqQc5M6r16txhfyhqFrMG49Kva9LGR1E94zHikcBqEL2La3'),
+                fee: Money.fromCoins(200000, WavesAsset),
+                sender: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                timestamp: 1558529580270,
+                version: 2,
+            },
+            id: 'AwVbDAKd86Wvg5ZGmF3g7c2cfY6HdMryAx6FykjvRPs3',
+            proof: '2dnP6gjzVQpRYT4R2hnAQjcYL71FPZJoTfc74CvHqt25UYRgTFryk9azr1RypWXfnfiyzr6qN18ut8Vwc7GMQHh2'
         }
     },
     [SIGN_TYPE.DATA]: {
