@@ -82,7 +82,6 @@ const TEST_LIST: Array<ITestItem> = [
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET),
-                version: 2
             }
         },
         hasScript: true,
@@ -97,7 +96,6 @@ const TEST_LIST: Array<ITestItem> = [
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET),
-                version: 2
             }
         },
         hasScript: false,
@@ -112,7 +110,6 @@ const TEST_LIST: Array<ITestItem> = [
                 fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
                 recipient: seed.address,
                 amount: new Money(1, TEST_ASSET),
-                version: 2
             }
         },
         hasScript: true,
@@ -346,7 +343,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -365,7 +361,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -384,7 +379,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: true,
@@ -406,7 +400,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -428,7 +421,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -450,7 +442,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: true,
@@ -475,7 +466,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -500,7 +490,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: false,
@@ -525,7 +514,6 @@ const TEST_LIST: Array<ITestItem> = [
                     amount: 1,
                     recipient: seed.address
                 }],
-                version: 1
             }
         },
         hasScript: true,

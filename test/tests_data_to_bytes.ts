@@ -48,8 +48,12 @@ describe('Create data and signature check', () => {
 
         it('check transfer from node signature', () => checkTx(SIGN_TYPE.TRANSFER, 2).check());
 
+        it('check transfer from node signature', () => checkTx(SIGN_TYPE.TRANSFER, 3).check());
+
         it('check mass transfer from node signature', () => checkTx(SIGN_TYPE.MASS_TRANSFER, 1).check());
-        
+
+        it('check mass transfer from node signature', () => checkTx(SIGN_TYPE.MASS_TRANSFER, 2).check());
+
         it('check exchange signature', () => checkTx(SIGN_TYPE.EXCHANGE, 0).check());
         
         it('check exchange v2 signature', () => checkTx(SIGN_TYPE.EXCHANGE, 2).check());

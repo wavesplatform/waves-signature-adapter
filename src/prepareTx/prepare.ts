@@ -78,8 +78,8 @@ export module prepare {
             return toBigNumber(some).toString();
         }
         
-        export function toSponsorshipFee(moeny: Money): BigNumber {
-            const coins = moeny.getCoins();
+        export function toSponsorshipFee(money: Money): BigNumber {
+            const coins = money.getCoins();
             if (coins.eq(0)) {
                 //@ts-ignore
                 return null;
@@ -171,7 +171,14 @@ export module prepare {
         //@ts-ignore
         return { from, to, cb };
     }
-    
+
+    const findValue = (fromKey: string | string[], data: Record<string, string>) => {
+        if (!Array.isArray(fromKey)) {
+            return data[fromKey];
+        }
+        return data[fromKey.find(key => data[key]) || fromKey[0]];
+    }
+
     export interface IWrappedFunction {
         from: string;
         to: string;
@@ -202,10 +209,11 @@ export module prepare {
             const errors: Array<any> = [];
             const prepareData = args.map((item) => {
                     const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
-                    
+                    const value = wrapped.from ? findValue(wrapped.from, data) : data;
+
                     const validateOptions = {
                         key: wrapped.to,
-                        value: wrapped.from ? data[wrapped.from] : data,
+                        value: value,
                         optional: item.optional,
                         optionalData: item.optionalData,
                         type: item.type,

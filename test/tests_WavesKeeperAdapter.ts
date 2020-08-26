@@ -120,7 +120,6 @@ describe('WavesKeeper adapter test', () => {
                 amount: new Money(1, testAsset),
                 recipient: 'test',
                 attachment: '',
-                version: 2
             }
         };
 
@@ -145,7 +144,6 @@ describe('WavesKeeper adapter test', () => {
                 amount: new Money(1, testAsset),
                 recipient: 'test',
                 attachment: new Uint8Array([1,2,3,4]),
-                version: 2
             }
         };
 
