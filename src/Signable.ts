@@ -108,8 +108,9 @@ export class Signable {
             type: this._forSign.type
         };
         const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
+        // console.log('dataForBytes', dataForBytes);
         const signData = convert && convert(dataForBytes, this._adapter.getNetworkByte());
-        
+        // console.log('signData', signData);
         return signData || dataForBytes;
     }
     
