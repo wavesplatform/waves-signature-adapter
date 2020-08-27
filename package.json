@@ -13,7 +13,7 @@
     "@waves/bignumber": "^1.0.0",
     "@waves/data-entities": "^2.0.3",
     "@waves/ledger": "^3.6.1",
-    "@waves/money-like-to-node": "0.0.10",
+    "@waves/money-like-to-node": "0.1.0-0",
     "@waves/ts-types": "^0.2.0",
     "@waves/waves-transactions": "^4.0.0-beta.24",
     "ramda": "^0.25.0"
