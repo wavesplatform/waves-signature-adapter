@@ -6,7 +6,7 @@ export { isValidAddress } from './prepareTx/fieldValidator';
 export * from './config';
 export * from './Signable';
 export * from './constants';
-export * from './utils';
+
 
 import { Adapter } from './adapters';
 import { adapterPriorityList, adapterList, AdapterType } from './config';
