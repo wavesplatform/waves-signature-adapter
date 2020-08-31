@@ -45,7 +45,7 @@ export const txs = {
     },
     [SIGN_TYPE.REISSUE]: {
         2: {
-            name: 'reissure',
+            name: 'reissue',
             data: {
                 assetId: 'CUrS6BkWPJVniWE7zh8LyN7PYehMa5WxSKUz3jaGdU2C',
                 quantity: new BigNumber('900000000000'),
@@ -57,6 +57,20 @@ export const txs = {
             },
             id: 'ApcQrPa5yE4PnS9h8aPWEfQpGBPcPP6j5czn6KPRcksc',
             proof: '5Gs7WhnoTALmA2rff6EyA3xM2tH8TFtfKgmEJdMEfFnDUiDnppTCWKgvXrdHRVBeE7g8yq6KJSxa2ZJ6C73BR7zg'
+        },
+        3: {
+            name: 'reissue',
+            data: {
+                assetId: 'CUrS6BkWPJVniWE7zh8LyN7PYehMa5WxSKUz3jaGdU2C',
+                quantity: new BigNumber('900000000000'),
+                reissuable: true,
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                fee: Money.fromTokens(1, WavesAsset),
+                timestamp: new Date('2019-05-13T15:45:14.160Z'),
+                version: 3,
+            },
+            id: 'HswuFaP3VdUPaTXA4M86kbUDafqPabzjGVefZFuPayBL',
+            proof: '3CetGnxnfa5HMpTHbZuCUx6VDisiy6xtWoDZQppjs3TAoBRbTyE8fEaNFQeKqydtCnWfn6P5uuYsWBGPnMDFSLqm'
         }
     },
     [SIGN_TYPE.BURN]: {
@@ -72,6 +86,19 @@ export const txs = {
             },
             id: 'EDpiFv8RL9B4o8HvG9uXeocerZ8eiUQ7W1VjGwr9Ld1X',
             proof: '5dZqaWVrEtC4QFdwsrTQmfnL4ivPdLA8Trmz8FvhNYax4V1apQxfMqaxEHmVKhyyTCX73ahzuFMx3AjbypFYpjg4',
+        },
+        3: {
+            name: 'burn',
+            data: {
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                assetId: 'GouQ4XCiunWv8A8zJ6BCB9yyWHyFHREiqkuNYiATjJeW',
+                amount: new BigNumber(1000000000000000000),
+                fee: Money.fromCoins(100000, WavesAsset),
+                timestamp: new Date(1558588376106),
+                version: 3,
+            },
+            id: '6QeRyu77f4QBR7kQftb9YbiKrhhen9XtWTWhBKQ1QaN7',
+            proof: '4gLkQ9ommfAaKXp1dV3Yr1UgUdx35S9hRFYgmJNgddXpETUbPqniXRYtzm9n1N2PzM7eeUdoorvqitCaz9qT7t6d',
         }
     },
     [SIGN_TYPE.TRANSFER]: {
@@ -120,6 +147,19 @@ export const txs = {
             id: '3N6RJ6JCJEvLcVFkojfSTUoJLVuhGVnXbae8DkvMUcft',
             proof: '2WyNnqkU2edRB1qAVgVsxSpm89wMoC9Zg1W52MShXsjtyEnNA5WRHmBXNSxNR8GERU34Bpeh4diqnKJdpt6Jcs3i'
         },
+        3: {
+            name: 'lease',
+            data: {
+                recipient: '3P3PfgFKpfisSW6RCsbmgWXtwUH8fHAESw4',
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                amount: Money.fromTokens(3.14220034, WavesAsset),
+                fee: Money.fromTokens(0.001, WavesAsset),
+                timestamp: new Date('2019-05-23T12:36:04.304Z'),
+                version: 3,
+            },
+            id: 'H75iub6aEjGkTMPfPC4S4KeRJoiUDh9jEMiCSxCH3JTX',
+            proof: '5GJBdnbZCp64Mac68mZD1K27H91BsXqhn687hqQoscBP7evWZzS7MaWX66j2CMYKYbKosdYfuUqPzRsRVz7bUHJN'
+        },
     },
     [SIGN_TYPE.CANCEL_LEASING]: {
         2: {
@@ -133,6 +173,18 @@ export const txs = {
             },
             id: '6mJ7g8n7rVXcd1E5MuurZcYEfB5iH5N9wbNbwXz7Rhot',
             proof: 'dPz1HUk8FyxF6pBdPAy9QgTBwuZVrrs8aVnDpcovEpfp7P6ojSQbugnUR47ZviZitF4ASEzcxPyXMhSTg2VB3Vu',
+        },
+        3: {
+            name: 'cancel leasing',
+            data: {
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                leaseId: 'Ag6o9tTqT85AxAwWxzbWR9MEBzxptGjM2h59sGNNPzeT',
+                fee: Money.fromTokens(0.001, WavesAsset),
+                timestamp: '2019-05-23T12:28:53.064Z',
+                version: 3,
+            },
+            id: 'eXwu1xFzFq8fVeSh9EzfbiAdudWQzcGqXgnP2SwGAeG',
+            proof: '2ZQcg97xy1NJ1ihHKRAqrCpWnKPkUEW6DQYhxzJFEmjowMTVqs7LFLB1MqFu8j4Xx1VjKq91wY1hkCCivbLFhDbX',
         }
     },
     [SIGN_TYPE.CREATE_ALIAS]: {
@@ -147,6 +199,18 @@ export const txs = {
             },
             id: 'FPPLnwckHW7koBLsuThp1rHB8PbZMzpySzndy6ziUga4',
             proof: '78VKQC7nvmMC6rfSDKX7kqoJ8UUAffeF8ScU6GevsMKHL2mgRDPiL2zLGumETZxCurdbDABDCzxNTwAAyTozFCD',
+        },
+        3: {
+            name: 'create alias',
+            data: {
+                timestamp: new Date('2019-05-22T22:06:36.873Z'),
+                version: 3,
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                alias: 'yes2yunos',
+                fee: Money.fromCoins(100000, WavesAsset),
+            },
+            id: '4ga4CQFzw4Bxjy5mSPB39RcfyeMyvHEkt91Noe7fTsLr',
+            proof: '4ouk6UyT8zk8wfrPhwa8cN9iupRVvnvzevVfNhRywY2ZizoCuw31GC5kj1u3ZSAFZ39VDwCCidpB6qXzC3pPYR3R',
         }
     },
     [SIGN_TYPE.MASS_TRANSFER]: {
@@ -215,6 +279,24 @@ export const txs = {
             },
             id: 'HVBSz73gT2wemWBNd6rAUZfmvtP1f41PVwuwEUyfgXwV',
             proof: 'XFcT3ptaMDkMFMCDUUT7r7LuyaXi45AwUnTFauYVUzFVw27AT5oEAbYrzMZyGWnUeiav2BHwXctK7yd3SMhLVNP',
+        },
+        2: {
+            name: 'data',
+            data: {
+                version: 2,
+                timestamp: '2019-05-17T16:02:48.062Z',
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                fee: Money.fromTokens(0.001, WavesAsset),
+                data: [
+                    {
+                        key: '3P6TxorzdA6yEG4orVU3Z7GbSeh4oq7k1Ko',
+                        type: 'integer',
+                        value: -3
+                    }
+                ]
+            },
+            id: '7wr6jYJx5XRxLoMFfQdmmzCVizNmM17ff4sLCDxsSbw7',
+            proof: '5PaezdWDmLQzyRoGWMAS5VqoUoAycTGMhGxQEVBEm86E392BNbhZWVYNPS6j8LNamJPjURPAJyZGmkFvNiu3Gjyu',
         }
     },
     [SIGN_TYPE.EXCHANGE]: {
@@ -340,6 +422,18 @@ export const txs = {
             id: '2Lvn7WGJdPgGR7Wdd66qyovUTXGGqcPRfkxU2P4msJQB',
             proof: '43L7KoZy3CUj5XunfbNiEqVbYcaeZrsztUa3qDWGUDFjGSTJDkNqhukFaQmcVFdgFKeh6VU1zCaqeYm9Q1kXfcuV',
         },
+        2: {
+            name: 'sponsorship',
+            data: {
+                timestamp: '2019-05-23T01:51:16.417Z',
+                version: 2,
+                fee: Money.fromCoins(100000000, WavesAsset),
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                minSponsoredAssetFee: Money.fromCoins(100000000000, Aracoin)
+            },
+            id: 'BtDvL9MaJqowxTeGRDx7zoLtWddAzmkfS7HsmmGDnTJM',
+            proof: '3Yj4d2C3cinip4iqsfKmvU5wfu8Dgxfg1jKvxGVVwwCZ7ojyVi3FMHM4CF5Ex7qKNUgakybBkdHqhssPiiMtRc2k',
+        },
     },
     [SIGN_TYPE.SET_SCRIPT]: {
         1: {
@@ -353,6 +447,18 @@ export const txs = {
             },
             id: '7KP47taMi46pfcEJFPYpneJojH6Li4efWrsEtqsqS3pN',
             proof: '5MUYQnEZMXa3dqdN1c6r8CwJTG3qy9UxTg5g3gTuj2M6dRsPx3Bf23Jxx7sYa1UKtYmGbVYNu5qDPhzSafYSKE33',
+        },
+        2: {
+            name: 'set script',
+            data: {
+                timestamp: '2019-05-19T16:57:14.262Z',
+                version: 2,
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                script: 'base64:AgQAAAAJaHMxUHVia2V5AQAAACDQVb7HZxGcCjyEGUrIyKkyXvBUTCbTPFHtnRsj8pRfDQQAAAAJaHMyUHVia2V5AQAAACB9+8rXSKq9JZuI77yDN3Gwa1ube2kjCtazzXaevbq1LgQAAAAJaHMxU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAAFAAAACWhzMVB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAQAAAAJaHMyU2lnbmVkAwkAAfQAAAADCAUAAAACdHgAAAAJYm9keUJ5dGVzCQABkQAAAAIIBQAAAAJ0eAAAAAZwcm9vZnMAAAAAAAAAAAEFAAAACWhzMlB1YmtleQAAAAAAAAAAAQAAAAAAAAAAAAkAAGcAAAACCQAAZAAAAAIFAAAACWhzMVNpZ25lZAUAAAAJaHMyU2lnbmVkAAAAAAAAAAACG6WDNQ==',
+                fee: Money.fromCoins(1000000, WavesAsset),
+            },
+            id: 'Hm6gVQN1iC4sJgVY3uvvg2KP3sCrjs9srfnvKxeiq6bo',
+            proof: '36p56qgdJcHdvEBYWzGTZmtzEGrLaNW86q82BdnM1pdqmpLS53ipX82u6hcBPHNLLSz7FKe5u7H7YgDm2TanZZW4',
         }
     },
     [SIGN_TYPE.SET_ASSET_SCRIPT]: {
@@ -368,6 +474,19 @@ export const txs = {
             },
             id: 'GxePoQhGWsF7o2r4kvNqqHaGdDyeBYk8K49mqFREQf6W',
             proof: '2eNxhqTGaBjLAwiyovQyfMoMMWddNzw2VHdbYbsY9jde8c8HeQ4rwE8cWTG4vdyacsNSv35vTJsoBrbWjSvARR3C',
+        },
+        2: {
+            name: 'set asset script',
+            data: {
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                fee: Money.fromCoins(100000000, WavesAsset),
+                timestamp: 1555958479625,
+                version: 2,
+                assetId: 'HFW1aho3BGGZd4yFUmANaj38PjCYh2J2xm1WzKy4Td6G',
+                script: 'base64:AgQAAAAHV0FWRVNJZAEAAAAEE6vZMwQAAAAGaXNzdWVyCQEAAAAHQWRkcmVzcwAAAAEBAAAACjBzQOgYK1aOY+IEAAAAB2Fzc2V0SWQBAAAACJ+kNIQu6TK4BAAAAAckbWF0Y2gwBQAAAAJ0eAMJAAABAAAAAgUAAAAHJG1hdGNoMAIAAAATRXhjaGFuZ2VUcmFuc2FjdGlvbgQAAAABdAUAAAAHJG1hdGNoMAMJAAAAAAAAAggICAUAAAABdAAAAAlzZWxsT3JkZXIAAAAJYXNzZXRQYWlyAAAACnByaWNlQXNzZXQFAAAAB1dBVkVTSWQGCQAAAAAAAAIICAgFAAAAAXQAAAAJc2VsbE9yZGVyAAAACWFzc2V0UGFpcgAAAAthbW91bnRBc3NldAUAAAAHV0FWRVNJZAaA4Tys',
+            },
+            id: 'CwFCATUMBjeid8MHpW7txsaZdsyzei78GBkMNuexURZe',
+            proof: 'fNWNDvpGxLeHrnMpYoTgGW1y3DtDJWqxNbioBCTLMjynDKogsB5y94wYZPgphxLXo8ucEmKqPMR7TbVG7reuH6N',
         }
     },
     [SIGN_TYPE.SCRIPT_INVOCATION]: {
@@ -401,6 +520,37 @@ export const txs = {
             },
             id: 'F3NKXW84ADWjZUdSRHJRNrdGx6eDkGv4R3u1S6xpBPAm',
             proof: '251dDXzmZgXHpnwc9Hc9SuzvSydFmPYd4hayTHerMULvj1x9mdD223CUuzA1zCRmyWTBsmmuPGgrqFZjGV767p9R'
+        },
+        2: {
+            network: 'T',
+            name: 'script invocation',
+            data: {
+                'senderPublicKey': 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                'call': {
+                    'function': 'bet',
+                    'args': [
+                        {
+                            'type': 'string',
+                            'value': '6cPwB9AzRg3D3uTSVSfn1Pvhb5Y5Amxpv7akaCUWRbrv2REP1'
+                        },
+                        {
+                            'type': 'string',
+                            'value': '36'
+                        }
+                    ]
+                },
+                'dApp': '3MqQ9ihYKGehfUnXYf5WmkYSZUD71ByeCQe',
+                'feeAssetId': null,
+                'fee': Money.fromCoins(500000, WavesAsset),
+                'payment': [Money.fromCoins('1400500000', WavesAsset)
+                ],
+                'id': 'F3NKXW84ADWjZUdSRHJRNrdGx6eDkGv4R3u1S6xpBPAm',
+                'type': 16,
+                'version': 1,
+                'timestamp': 1559291920421
+            },
+            id: 'AVpE1esAjgfKRrkBT8vENGsZSLztmAsofvHRPvuwK5Yd',
+            proof: '2xHrKzUrA35HMcF6Y7kTV6ApyydibnKvD8NxuLCvCQ2LwAdtJx2Et6YaC563RMy2ekuyUpSRkXjJwuhpJBdtF46W'
         }
     },
     
