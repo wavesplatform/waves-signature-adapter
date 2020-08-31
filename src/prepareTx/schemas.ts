@@ -44,10 +44,12 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('expiration', null, processors.expiration),
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
         ],
         [SIGN_TYPE.CANCEL_ORDER]: [
             fieldsType.string()('senderPublicKey', null, null, true),
             fieldsType.string()('id', 'orderId'),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
         ],
         [SIGN_TYPE.ISSUE]: [
             fieldsType.string()('senderPublicKey', null, null, true),
@@ -78,6 +80,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
         [SIGN_TYPE.EXCHANGE]: [
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.string()('senderPublicKey', null, null, true),
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
@@ -118,6 +121,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.assetDescription()('description'),
         ],
         [SIGN_TYPE.SPONSORSHIP]: [
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.string()('senderPublicKey', null, null, true),
             //@ts-ignore
             fieldsType.money()('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
@@ -130,6 +134,7 @@ export const getValidateSchema = (networkByte: number) => {
         ],
         [SIGN_TYPE.TRANSFER]: [
             fieldsType.string()('senderPublicKey', null, null, true),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             //@ts-ignore
             fieldsType.money()('amount', 'assetId', processors.moneyToAssetId),
             //@ts-ignore
@@ -174,6 +179,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
         [SIGN_TYPE.MASS_TRANSFER]: [
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.string()('senderPublicKey', null, null, true),
             //@ts-ignore
             fieldsType.money()('totalAmount', 'assetId', processors.moneyToAssetId),
@@ -190,6 +196,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
         ],
         [SIGN_TYPE.DATA]: [
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             fieldsType.string()('senderPublicKey', null, null, true),
             //@ts-ignore
             fieldsType.numberLike()('fee', null, processors.toBigNumber),
