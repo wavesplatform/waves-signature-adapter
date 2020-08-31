@@ -34,7 +34,9 @@ describe('Create data and signature check', () => {
     
     describe('Check transactions', () => {
     
-        it('check issure signature', () => checkTx(SIGN_TYPE.ISSUE, 2).check());
+        it('check issue v2 signature', () => checkTx(SIGN_TYPE.ISSUE, 2).check());
+
+        it('check issue v3 signature', () => checkTx(SIGN_TYPE.ISSUE, 3).check());
 
         it('check reissure signature', () => checkTx(SIGN_TYPE.REISSUE, 2).check());
 
@@ -83,5 +85,7 @@ describe('Create data and signature check', () => {
         it('check matcher create order signature', () => checkTx(SIGN_TYPE.CREATE_ORDER, 1).check());
         
         it('check matcher create order 2 signature', () => checkTx(SIGN_TYPE.CREATE_ORDER, 2).check());
+
+        it('check matcher create order 3 signature', () => checkTx(SIGN_TYPE.CREATE_ORDER, 3).check());
     });
 });

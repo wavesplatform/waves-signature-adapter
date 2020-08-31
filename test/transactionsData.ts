@@ -24,7 +24,24 @@ export const txs = {
             },
             id: 'EJbLEHhB5Sdbmpagug9nBDrBpAfgnTQomhL7xnsvvxS9',
             proof: '3Wgh9tuRdDwQXhAe63iabC5VojkPiJfKPm4tNaawGfpuGncTnT4zMTKzAH3QCjsZQ2c4sqDCyUjDpAAYBGeZLYFb'
-        }
+        },
+        3: {
+            name: 'issure',
+            data: {
+                name: 'JUNKGOLD',
+                senderPublicKey: 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                description: 'きらりと光る電子ゴミ。\nSparkling electronic waste.',
+                quantity: new BigNumber(5300000000),
+                precision: 2,
+                reissuable: true,
+                script: null,
+                fee: Money.fromCoins(100000000, WavesAsset),
+                timestamp: 1558497371511,
+                version: 3,
+            },
+            id: 'AxRm74gTCA2MdcD3LgWBGd946EFBL69KwMPcYXyin9Mk',
+            proof: '3Jp3LqDtBbtJ7uToAgYrqBpiCqYmmdfTVswDEFA95NLZ9bX5A9fusftjSCcMqJKqYtoYMzusEeMHd4n7E1MHiebw'
+        },
     },
     [SIGN_TYPE.REISSUE]: {
         2: {
@@ -489,6 +506,21 @@ export const txs = {
             },
             id: 'FbjthDRAWRxETe9pjgpX3Fi6cBWRzVM5jgitsHaZ7sbj',
             proof: '63N2ogYfxnWA2CYKAKzGrRCR7DDmnqCS1rhfRsseWGFufZvHXkmeiYYBp83CbtKzKAawtzviLYUeYhDuLfw3v3KA'
+        },
+        3: {
+            data: {
+                'version': 3,
+                'senderPublicKey': 'DgJkVZnf5EDPGzftGDbXZ4SKJQ7s7KRJeh7QmQMhYCPh',
+                'matcherPublicKey': 'E3UwaHCQCySghK3zwNB8EDHoc3b8uhzGPFz3gHmWon4W',
+                'orderType': 'buy',
+                'amount': Money.fromCoins(71841490, WavesAsset),
+                'price': Money.fromCoins(30800, TBTC),
+                'timestamp': 1559291009514,
+                'expiration': 1561796609514,
+                'matcherFee': Money.fromCoins(700000, WavesAsset),
+            },
+            id: 'GakLPAJbLEyWM1LURw9yW4KopPGY5Y8QSLpxSmZXZq1v',
+            proof: '3EUueTFDiboDHDvzdKxvM9YPay1FbEJ4UES44pdftkfvmxafMmCVCWbRj1xMzRjhJU4G2toPhPe3yLsaFfQbDYnS'
         }
     },
 };
