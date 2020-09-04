@@ -464,7 +464,7 @@ const transfers = (options: IFieldOptions) => {
     }
 };
 
-const data = (options: IFieldOptions, noKey?: boolean) => {
+const data = (options: IFieldOptions, noKey?: boolean, isArgs?: boolean) => {
     required(options);
     const { value } = options;
     if (!Array.isArray(value)) {
@@ -498,6 +498,19 @@ const data = (options: IFieldOptions, noKey?: boolean) => {
                 case undefined:
                     isNull(itemOptions);
                     break;
+                case 'list':
+                     if(isArgs) {
+                         const listValues = {
+                             ...itemOptions,
+                             name: `${itemOptions.name}:list`,
+                             value: itemOptions.value
+                         };
+
+                         if (listValues.value) {
+                             data(listValues, true);
+                             break;
+                         }
+                     }
                 default:
                     error({ ...options, value: key, name: `${options.name}:${index}:type` }, ERROR_MSG.WRONG_TYPE);
             }
@@ -595,7 +608,7 @@ const call = (options: IFieldOptions) => {
     };
 
     if (argsValue.value) {
-        data(argsValue, true);
+        data(argsValue, true, true);
     }
 };
 
