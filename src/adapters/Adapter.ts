@@ -37,7 +37,11 @@ export abstract class Adapter {
     public isDestroyed(): boolean {
         return this._isDestroyed;
     }
-
+    
+    public abstract getSyncAddress(): string;
+    
+    public abstract getSyncPublicKey(): string;
+    
     public abstract getSignVersions(): Record<SIGN_TYPE, Array<number>>;
 
     public abstract getPublicKey(): Promise<string>;

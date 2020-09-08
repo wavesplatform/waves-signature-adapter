@@ -109,7 +109,7 @@ export class Signable {
         };
         const convert = SIGN_TYPES[this._forSign.type as SIGN_TYPE].toNode || null;
         const signData = convert && convert(dataForBytes, this._adapter.getNetworkByte());
-        
+
         return signData || dataForBytes;
     }
     

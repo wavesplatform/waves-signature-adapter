@@ -25,8 +25,9 @@ export type TSignData =
     IDataTxData |
     ISetScriptData |
     ISponsorshipData |
-    ISetAssetScriptData|
-    IScriptInvocationData;
+    ISetAssetScriptData |
+    IScriptInvocationData |
+    ISIgnUpdateAssetInfo;
 
 export interface ISignAuthData {
     data: IAuthData;
@@ -71,6 +72,11 @@ export interface ISignReissue {
 export interface ISignBurn {
     data: IBurn;
     type: SIGN_TYPE.BURN;
+}
+
+export interface ISIgnUpdateAssetInfo {
+    data: IUpdateAssetInfo;
+    type: SIGN_TYPE.UPDATE_ASSET_INFO;
 }
 
 export interface ISignExchange {
@@ -212,6 +218,12 @@ export interface IReissue extends ICreateTxData {
 export interface IBurn extends ICreateTxData {
     assetId: string;
     amount: string | BigNumber | Money;
+}
+
+export interface IUpdateAssetInfo extends ICreateTxData {
+    assetId: string;
+    name: string;
+    description: string;
 }
 
 export interface IExchange extends ICreateTxData {

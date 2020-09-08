@@ -11,20 +11,21 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.CANCEL_ORDER]: [1],
     [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
     [SIGN_TYPE.WAVES_CONFIRMATION]: [1],
-    [SIGN_TYPE.ISSUE]: [2],
-    [SIGN_TYPE.TRANSFER]: [2],
-    [SIGN_TYPE.REISSUE]: [2],
-    [SIGN_TYPE.BURN]: [2],
-    [SIGN_TYPE.EXCHANGE]: [0,1,2],
-    [SIGN_TYPE.LEASE]: [2],
-    [SIGN_TYPE.CANCEL_LEASING]: [2],
-    [SIGN_TYPE.CREATE_ALIAS]: [2],
-    [SIGN_TYPE.MASS_TRANSFER]: [1],
-    [SIGN_TYPE.DATA]: [1],
-    [SIGN_TYPE.SET_SCRIPT]: [1],
-    [SIGN_TYPE.SPONSORSHIP]: [1],
-    [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
-    [SIGN_TYPE.SCRIPT_INVOCATION]: [1]
+    [SIGN_TYPE.TRANSFER]: [3, 2],
+    [SIGN_TYPE.ISSUE]: [3, 2],
+    [SIGN_TYPE.REISSUE]: [3, 2],
+    [SIGN_TYPE.BURN]: [3, 2],
+    [SIGN_TYPE.EXCHANGE]: [0, 1, 3, 2],
+    [SIGN_TYPE.LEASE]: [3, 2],
+    [SIGN_TYPE.CANCEL_LEASING]: [3, 2],
+    [SIGN_TYPE.CREATE_ALIAS]: [3, 2],
+    [SIGN_TYPE.MASS_TRANSFER]: [2, 1],
+    [SIGN_TYPE.DATA]: [2, 1],
+    [SIGN_TYPE.SET_SCRIPT]: [2, 1],
+    [SIGN_TYPE.SPONSORSHIP]: [2, 1],
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: [2, 1],
+    [SIGN_TYPE.SCRIPT_INVOCATION]: [2, 1],
+    [SIGN_TYPE.UPDATE_ASSET_INFO]: [1]
 };
 
 export class WavesKeeperAdapter extends Adapter {
@@ -110,6 +111,14 @@ export class WavesKeeperAdapter extends Adapter {
         this._onDestoryCb.push(cb);
     }
 
+    public getSyncAddress(): string {
+        return this._address;
+    }
+
+    public getSyncPublicKey(): string {
+        return this._pKey;
+    }
+
     public getPublicKey() {
         return Promise.resolve(this._pKey);
     }
@@ -134,7 +143,7 @@ export class WavesKeeperAdapter extends Adapter {
         if (signData && signData.type === 'customData') {
             return (await WavesKeeperAdapter._api.signCustomData(signData)).signature;
         }
-    
+
         return await WavesKeeperAdapter._api.signRequest(WavesKeeperAdapter._serializedData(signData));
     }
 

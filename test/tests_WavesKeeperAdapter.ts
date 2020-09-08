@@ -119,7 +119,7 @@ describe('WavesKeeper adapter test', () => {
                 fee: new Money(0.1, testAsset),
                 amount: new Money(1, testAsset),
                 recipient: 'test',
-                attachment: ''
+                attachment: '',
             }
         };
 
@@ -134,19 +134,19 @@ describe('WavesKeeper adapter test', () => {
             expect(e).toBe('Done');
         }
     });
-    
+
     it('Test convert UInt8Array transfer', async () => {
-        
+
         const data = {
             type: 4,
             data: {
                 fee: new Money(0.1, testAsset),
                 amount: new Money(1, testAsset),
                 recipient: 'test',
-                attachment: new Uint8Array([1,2,3,4])
+                attachment: new Uint8Array([1,2,3,4]),
             }
         };
-        
+
         try {
             WavesKeeperAdapter.setApiExtension(keeperMock);
             const users = await WavesKeeperAdapter.getUserList();
