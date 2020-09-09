@@ -148,7 +148,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     //@ts-ignore
-    public async signTransaction(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
+    public async signTransaction(bytes: Uint8Array, precisions: Record<string, number>, signData): Promise<string> {
         await this.isAvailable(true);
         const dataStr = await WavesKeeperAdapter._api.signTransaction(WavesKeeperAdapter._serializedData(signData));
         const { proofs, signature } = JSON.parse(dataStr);
@@ -156,7 +156,7 @@ export class WavesKeeperAdapter extends Adapter {
     }
 
     //@ts-ignore
-    public async signOrder(bytes: Uint8Array, amountPrecision: number, signData): Promise<string> {
+    public async signOrder(bytes: Uint8Array, precisions: Record<string, number>, signData): Promise<string> {
         await this.isAvailable(true);
         let promise;
         switch (signData.type) {

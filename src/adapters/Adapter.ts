@@ -52,9 +52,9 @@ export abstract class Adapter {
 
     public abstract signRequest(databytes: Uint8Array, signData?: any): Promise<string>;
 
-    public abstract signTransaction(bytes: Uint8Array, amountPrecision: number, signData?: any): Promise<string>;
+    public abstract signTransaction(bytes: Uint8Array, precisions: Record<string, number>, signData?: any): Promise<string>;
 
-    public abstract signOrder(bytes: Uint8Array, amountPrecision: number, signData: any): Promise<string>;
+    public abstract signOrder(bytes: Uint8Array, precisions: Record<string, number>, signData: any): Promise<string>;
 
     public abstract signData(bytes: Uint8Array): Promise<string>;
 
@@ -100,7 +100,7 @@ export abstract class Adapter {
     
     public static type: AdapterType = AdapterType.Seed;
 
-    public static getUserList(): Promise<Array<string>> {
+    public static getUserList(): Promise<Array<any>> {
         return Promise.resolve([]);
     }
 
