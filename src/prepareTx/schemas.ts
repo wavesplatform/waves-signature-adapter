@@ -239,7 +239,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.numberLike()('fee', 'assetId', processors.moneyToAssetId),
             //@ts-ignore
             fieldsType.timestamp()('timestamp', null, processors.timestamp),
-            fieldsType.number()('chainId', null, processors.addValue(networkByte), true),
+            fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true)
         ]
     };
 };

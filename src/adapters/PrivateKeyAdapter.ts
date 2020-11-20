@@ -90,11 +90,11 @@ export class PrivateKeyAdapter extends Adapter {
         return this._sign(bytes);
     }
 
-    public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+    public signTransaction(bytes: Uint8Array): Promise<string> {
         return this._sign(bytes);
     }
 
-    public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+    public signOrder(bytes: Uint8Array): Promise<string> {
         return this._sign(bytes);
     }
 

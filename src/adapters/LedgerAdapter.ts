@@ -10,7 +10,7 @@ export class LedgerAdapter extends Adapter {
     private _currentUser;
     public static type = AdapterType.Ledger;
     //@ts-ignore
-    private static _ledger;
+    private static _ledger: WavesLedger;
     //@ts-ignore
     private static _hasConnectionPromise;
 
@@ -57,25 +57,38 @@ export class LedgerAdapter extends Adapter {
 
     public signRequest(bytes: Uint8Array): Promise<string> {
         return  this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, bytes));
+            .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, { dataBuffer: bytes }));
     }
 
-    public signTransaction(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+    public signTransaction(bytes: Uint8Array, precision: Record<string, number>, signData: any): Promise<string> {
         if (bytes[0] === 15) {
             return this.signData(bytes);
         }
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signTransaction(this._currentUser.id, {precision: amountPrecision}, bytes));
+            .then(() => LedgerAdapter._ledger.signTransaction(
+                this._currentUser.id, {
+                    amount2Precision: precision.amount2Precision,
+                    amountPrecision: precision.amountPrecision,
+                    feePrecision: precision.feePrecision,
+                    dataType: signData.type,
+                    dataVersion: signData.data.version,
+                    dataBuffer: bytes
+                }));
     }
 
-    public signOrder(bytes: Uint8Array, amountPrecision: number): Promise<string> {
+    public signOrder(bytes: Uint8Array, precision: Record<string, number>, data: any): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, {precision: amountPrecision}, bytes));
+            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, {
+                dataBuffer: bytes,
+                amountPrecision: precision.amountPrecision,
+                feePrecision: precision.feePrecision,
+                dataVersion: data.data.version
+            }));
     }
 
     public signData(bytes: Uint8Array): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, bytes));
+            .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, { dataBuffer: bytes }));
     }
 
     public getEncodedSeed() {
@@ -129,8 +142,8 @@ export class LedgerAdapter extends Adapter {
         return promise;
     }
 
-    public static getUserList(from: Number = 1, to: Number = 1) {
-        return LedgerAdapter._ledger.getPaginationUsersData(from, to);
+    public static getUserList(from: number = 1, to: number = 1) {
+        return LedgerAdapter._ledger.getPaginationUsersData(from, to) as any;
     }
 
     public static initOptions(options: IWavesLedger) {

@@ -255,7 +255,15 @@ export class Signable {
                 if(this._signMethod == "signRequest")
                     return this._adapter.signRequest(bytes, this._forSign)
                 else
-                    return this._adapter[this._signMethod](bytes, this._getAmountPrecision(), this._forSign);
+                    return this._adapter[this._signMethod](
+                        bytes,
+                        {
+                            amountPrecision: this._getAmountPrecision(),
+                            amount2Precision: this._getAmount2Precision(),
+                            feePrecision: this._getFeePrecision(),
+                        },
+                        this._forSign
+                    );
             });
             
             this._signPromise.catch(() => {
@@ -267,7 +275,22 @@ export class Signable {
     
     private _getAmountPrecision() {
         const data = this._forSign.data as any;
+        if (data.type === TRANSACTION_TYPE_NUMBER.SCRIPT_INVOCATION) {
+            const payment = data?.payment ?? [];
+            return payment.length && payment[0]?.asset  ? payment[0].asset.precision : 0;
+        }
         return data.amount && data.amount.asset && data.amount.asset.precision ? data.amount.asset.precision : 0;
+    }
+
+    private _getAmount2Precision() {
+        const data = this._forSign.data as any;
+        const payment = data?.payment ?? [];
+        return payment.length === 2 && payment[1]?.asset  ? payment[1].asset.precision : 0;
+    }
+
+    private _getFeePrecision() {
+        const data = this._forSign.data as any;
+        return data.fee && data.fee.asset && data.fee.asset.precision ? data.fee.asset.precision : 0;
     }
     
 }
