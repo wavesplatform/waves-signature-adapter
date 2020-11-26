@@ -233,7 +233,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.UPDATE_ASSET_INFO]: {
         getBytes: {
-            1: binary.serializeTx,
+            1: protoPerialize.txToProtoBytes,
         },
         toNode: data => {
             return toNode(data, wavesTransactions.updateAssetInfo);
