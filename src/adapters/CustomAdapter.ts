@@ -13,14 +13,14 @@ export interface IUserApi {
     signData?: (bytes: Array<number> | Uint8Array) => Promise<string>;
 }
 
-export class CustomAdapter extends Adapter {
+export class CustomAdapter<T extends IUserApi> extends Adapter {
 
     //@ts-ignore
-    public currentUser: IUserApi;
+    public currentUser: T;
     public static type = AdapterType.Custom;
 
     //@ts-ignore
-    constructor(userApi: IUserApi) {
+    constructor(userApi: T) {
         super();
         this.currentUser = userApi;
         this.type = userApi.type;
