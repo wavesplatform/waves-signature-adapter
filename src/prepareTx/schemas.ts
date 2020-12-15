@@ -1,8 +1,8 @@
-import { prepare } from './prepare';
-import { SIGN_TYPE } from './constants';
+import {prepare} from './prepare';
+import {SIGN_TYPE} from './constants';
 import * as fieldsType from './fieldTypes';
 
-const { processors } = prepare;
+const {processors} = prepare;
 
 export const getValidateSchema = (networkByte: number) => {
     return {
@@ -57,8 +57,8 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.assetDescription()('description'),
             fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             //@ts-ignore
-            fieldsType.numberLike()('quantity', null, processors.toBigNumber),
-            fieldsType.precision()('precision'),
+            fieldsType.numberLike()(['amount', 'quantity'], 'amount', processors.toBigNumber),
+            fieldsType.number()(['precision', 'decimals'], 'decimals'),
             fieldsType.boolean()('reissuable'),
             //@ts-ignore
             fieldsType.script()('script', null, processors.orString, true),
