@@ -57,7 +57,7 @@ export const getValidateSchema = (networkByte: number) => {
             fieldsType.assetDescription()('description'),
             fieldsType.number()('chainId', null, processors.addValue(() => networkByte), true),
             //@ts-ignore
-            fieldsType.numberLike()(['amount', 'quantity'], 'amount', processors.toBigNumber),
+            fieldsType.numberLike()(['amount', 'quantity'], 'quantity', processors.toBigNumber),
             fieldsType.number()(['precision', 'decimals'], 'decimals'),
             fieldsType.boolean()('reissuable'),
             //@ts-ignore
