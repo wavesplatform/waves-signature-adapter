@@ -200,13 +200,14 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
             3: txToProtoBytes,
         },
         toNode: data => toNode(
-            {
-                ...data,
-                quantity: data.amount || data.quantity,
-                script: processScript(data.script),
-            },
-            wavesTransactions.issue
-        ),
+                {
+                    ...data,
+                    decimals: data.decimals || data.precision,
+                    quantity: data.amount || data.quantity,
+                    script: processScript(data.script),
+                },
+                wavesTransactions.issue
+            ),
         adapter: 'signTransaction'
     },
     [SIGN_TYPE.REISSUE]: {
