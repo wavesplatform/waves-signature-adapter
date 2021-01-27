@@ -235,11 +235,11 @@ export class Signable {
         });
     }
     
-    public async getDataForApi() {
+    public async getDataForApi(needSign = true) {
         const data = await this.getSignData();
-        
-        await this.addMyProof();
-        
+        if (needSign) {
+            await this.addMyProof();
+        }
         const proofs = (this._proofs || []).slice();
         
         try {
