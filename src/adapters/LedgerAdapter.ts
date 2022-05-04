@@ -13,7 +13,7 @@ export class LedgerAdapter extends Adapter {
     private static _ledger: WavesLedger;
     //@ts-ignore
     private static _hasConnectionPromise;
-
+    private static _wavesLedgerOptions: IWavesLedger;
 
     //@ts-ignore
     constructor(user) {
@@ -52,12 +52,12 @@ export class LedgerAdapter extends Adapter {
     }
 
     public getAdapterVersion() {
-        return LedgerAdapter._ledger.getVersion();
+        return LedgerAdapter.getLedgerInstance().getVersion();
     }
 
     public signRequest(bytes: Uint8Array): Promise<string> {
         return  this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signRequest(this._currentUser.id, { dataBuffer: bytes }));
+            .then(() => LedgerAdapter.getLedgerInstance().signRequest(this._currentUser.id, { dataBuffer: bytes }));
     }
 
     public signTransaction(bytes: Uint8Array, precision: Record<string, number>, signData: any): Promise<string> {
@@ -65,7 +65,7 @@ export class LedgerAdapter extends Adapter {
             return this.signData(bytes);
         }
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signTransaction(
+            .then(() => LedgerAdapter.getLedgerInstance().signTransaction(
                 this._currentUser.id, {
                     amount2Precision: precision.amount2Precision,
                     amountPrecision: precision.amountPrecision,
@@ -78,7 +78,7 @@ export class LedgerAdapter extends Adapter {
 
     public signOrder(bytes: Uint8Array, precision: Record<string, number>, data: any): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signOrder(this._currentUser.id, {
+            .then(() => LedgerAdapter.getLedgerInstance().signOrder(this._currentUser.id, {
                 dataBuffer: bytes,
                 amountPrecision: precision.amountPrecision,
                 feePrecision: precision.feePrecision,
@@ -88,7 +88,7 @@ export class LedgerAdapter extends Adapter {
 
     public signData(bytes: Uint8Array): Promise<string> {
         return this._isMyLedger()
-            .then(() => LedgerAdapter._ledger.signSomeData(this._currentUser.id, { dataBuffer: bytes }));
+            .then(() => LedgerAdapter.getLedgerInstance().signSomeData(this._currentUser.id, { dataBuffer: bytes }));
     }
 
     public getEncodedSeed() {
@@ -126,7 +126,7 @@ export class LedgerAdapter extends Adapter {
     }
 
     protected _isMyLedger() {
-        const promise = LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
+        const promise = LedgerAdapter.getLedgerInstance().getUserDataById(this._currentUser.id)
             //@ts-ignore
             .then(user => {
                 if (user.address !== this._currentUser.address) {
@@ -143,17 +143,17 @@ export class LedgerAdapter extends Adapter {
     }
 
     public static getUserList(from: number = 1, to: number = 1) {
-        return LedgerAdapter._ledger.getPaginationUsersData(from, to) as any;
+        return LedgerAdapter.getLedgerInstance().getPaginationUsersData(from, to) as any;
     }
 
     public static initOptions(options: IWavesLedger) {
         Adapter.initOptions(options);
-        this._ledger = new WavesLedger( options );
+        LedgerAdapter._wavesLedgerOptions = options;
     }
 
     public static isAvailable() {
         if (!LedgerAdapter._hasConnectionPromise) {
-            LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
+            LedgerAdapter._hasConnectionPromise = LedgerAdapter.getLedgerInstance().probeDevice();
         }
 
         return LedgerAdapter._hasConnectionPromise.then(() => {
@@ -164,6 +164,13 @@ export class LedgerAdapter extends Adapter {
             LedgerAdapter._hasConnectionPromise = null;
             return false;
         });
+    }
+
+    protected static getLedgerInstance(): WavesLedger {
+        if (!LedgerAdapter._ledger) {
+            LedgerAdapter._ledger = new WavesLedger(LedgerAdapter._wavesLedgerOptions);
+        }
+        return LedgerAdapter._ledger;
     }
 }
 
