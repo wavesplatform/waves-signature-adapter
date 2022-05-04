@@ -116,7 +116,7 @@ export class LedgerAdapter extends Adapter {
             [SIGN_TYPE.CANCEL_LEASING]: [2],
             [SIGN_TYPE.CREATE_ALIAS]: [2],
             [SIGN_TYPE.MASS_TRANSFER]: [1],
-            [SIGN_TYPE.DATA]: [1],
+            [SIGN_TYPE.DATA]: [1, 2],
             [SIGN_TYPE.SET_SCRIPT]: [1],
             [SIGN_TYPE.SPONSORSHIP]: [1],
             [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],

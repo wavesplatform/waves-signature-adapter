@@ -5,3 +5,4 @@ dist
 !dist/waves-signature-adapter.js
 .idea
 coverage/
+.DS_Store
