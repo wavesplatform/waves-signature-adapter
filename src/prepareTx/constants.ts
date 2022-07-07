@@ -48,6 +48,7 @@ export enum TRANSACTION_TYPE_NUMBER {
     SET_ASSET_SCRIPT = 15,
     SCRIPT_INVOCATION = 16,
     UPDATE_ASSET_INFO = 17,
+    ETHEREUM_TX = 18,
 }
 
 export enum SIGN_TYPE {
@@ -72,6 +73,7 @@ export enum SIGN_TYPE {
     SET_ASSET_SCRIPT = 15,
     SCRIPT_INVOCATION = 16,
     UPDATE_ASSET_INFO = 17,
+    ETHEREUM_TX = 18,
 }
 
 export interface ITypesMap {
@@ -362,4 +364,8 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
         }, wavesTransactions.invokeScript)),
         adapter: 'signTransaction'
     },
+    [SIGN_TYPE.ETHEREUM_TX]: {
+        getBytes: {},
+        adapter: 'signTransaction'
+    }
 };

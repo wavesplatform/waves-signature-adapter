@@ -25,7 +25,8 @@ const DEFAULT_TX_VERSIONS = {
     [SIGN_TYPE.SPONSORSHIP]: [2, 1],
     [SIGN_TYPE.SET_ASSET_SCRIPT]: [2, 1],
     [SIGN_TYPE.SCRIPT_INVOCATION]: [2, 1],
-    [SIGN_TYPE.UPDATE_ASSET_INFO]: [1]
+    [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
+    [SIGN_TYPE.ETHEREUM_TX]: [1]
 };
 
 export class WavesKeeperAdapter extends Adapter {
