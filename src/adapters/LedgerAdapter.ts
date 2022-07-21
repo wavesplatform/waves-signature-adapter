@@ -127,20 +127,15 @@ export class LedgerAdapter extends Adapter {
     }
 
     protected _isMyLedger() {
-        const promise = LedgerAdapter.getLedgerInstance().getUserDataById(this._currentUser.id)
-            //@ts-ignore
+        return LedgerAdapter.getLedgerInstance().getUserDataById(this._currentUser.id)
             .then(user => {
                 if (user.address !== this._currentUser.address) {
                     this._isDestroyed = true;
-                    throw {error: 'Invalid ledger'};
+                    const errorTxt = 'Invalid ledger';
+                    console.warn(errorTxt);
+                    throw {error: errorTxt};
                 }
             });
-
-        promise.catch((e: any) => {
-            console.warn(e);
-        });
-
-        return promise;
     }
 
     public static getUserList(from: number = 1, to: number = 1) {
