@@ -162,11 +162,9 @@ export interface IGetOrders {
 
 export interface ICreateOrder {
     matcherPublicKey: string;
-    amountAsset: string;
-    priceAsset: string;
     orderType: string;
-    price: string;
-    amount: string;
+    price: Money;
+    amount: Money;
     expiration: number;
     matcherFee: string;
     timestamp: number;
