@@ -638,7 +638,7 @@ const payment = (options: IFieldOptions) => {
     }
 };
 
-export const VALIDATORS = {
+export const VALIDATORS: any = {
     string,
     number,
     required,

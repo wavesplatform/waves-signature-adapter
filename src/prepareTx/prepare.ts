@@ -100,7 +100,7 @@ export module prepare {
             if (!(+time) && typeof time === 'string') {
                 return Date.parse(time);
             }
-            return time && time instanceof Date ? time.getTime() : time;
+            return time && time instanceof Date ? time.getTime() : time as string | number;
         }
 
         export function orString(data: any | string): string {
