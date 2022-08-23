@@ -166,10 +166,11 @@ export interface ICreateOrder {
     price: Money;
     amount: Money;
     expiration: number;
-    matcherFee: string;
+    matcherFee: Money;
     timestamp: number;
     proofs?: Array<string>;
     version?: number;
+    priceMode?: string;
 }
 
 export interface ICancelOrder {

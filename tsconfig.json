@@ -10,7 +10,7 @@
     "declaration": true,
     "removeComments": true,
     "noImplicitReturns": false,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "skipLibCheck": true,
     "strict": true,
     "outDir": "dist",
