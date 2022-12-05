@@ -1,5 +1,5 @@
 import { IAdapterSignMethods } from './interfaces';
-import { libs, protoSerialize } from '@waves/waves-transactions';
+import { libs, protoPerialize } from '@waves/waves-transactions';
 import * as wavesTransactions from '@waves/waves-transactions';
 import { toNode as mlToNode } from '@waves/money-like-to-node';
 import { prepare } from './prepare';
@@ -8,7 +8,7 @@ import { Money } from '@waves/data-entities';
 
 const { LEN, SHORT, STRING, LONG, BASE58_STRING } = libs.marshall.serializePrimitives;
 const { binary } = libs.marshall;
-const { txToProtoBytes, orderToProtoBytes } = protoSerialize;
+const { txToProtoBytes, orderToProtoBytes } = protoPerialize;
 
 const toNode = (data: any, convert?: Function) => {
     const r = mlToNode(data);
@@ -236,7 +236,7 @@ export const SIGN_TYPES: Record<SIGN_TYPE, ITypesMap> = {
     },
     [SIGN_TYPE.UPDATE_ASSET_INFO]: {
         getBytes: {
-            1: protoSerialize.txToProtoBytes,
+            1: protoPerialize.txToProtoBytes,
         },
         toNode: data => {
             return toNode(data, wavesTransactions.updateAssetInfo);
