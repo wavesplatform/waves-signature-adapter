@@ -118,7 +118,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
             [SIGN_TYPE.MASS_TRANSFER]: [1],
             [SIGN_TYPE.DATA]: [1],
             [SIGN_TYPE.SET_SCRIPT]: [1],
-            [SIGN_TYPE.SPONSORSHIP]: [1],
+            [SIGN_TYPE.SPONSORSHIP]: [1, 2],
             [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
             [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
             [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
