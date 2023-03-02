@@ -117,9 +117,9 @@ export class LedgerAdapter extends Adapter {
             [SIGN_TYPE.CREATE_ALIAS]: [2],
             [SIGN_TYPE.MASS_TRANSFER]: [1],
             [SIGN_TYPE.DATA]: [1],
-            [SIGN_TYPE.SET_SCRIPT]: [1],
+            [SIGN_TYPE.SET_SCRIPT]: [2, 1],
             [SIGN_TYPE.SPONSORSHIP]: [1, 2],
-            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [2, 1],
             [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
             [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
             [SIGN_TYPE.ETHEREUM_TX]: [1]
