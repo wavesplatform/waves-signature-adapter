@@ -120,7 +120,7 @@ export class CustomAdapter<T extends IUserApi> extends Adapter {
             [SIGN_TYPE.SET_SCRIPT]: [1],
             [SIGN_TYPE.SPONSORSHIP]: [1, 2],
             [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
-            [SIGN_TYPE.SCRIPT_INVOCATION]: [1],
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1, 2],
             [SIGN_TYPE.UPDATE_ASSET_INFO]: [1],
             [SIGN_TYPE.ETHEREUM_TX]: [1]
         };
